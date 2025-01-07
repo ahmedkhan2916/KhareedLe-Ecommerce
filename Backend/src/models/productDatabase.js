@@ -14,7 +14,7 @@ const ProductDetails=new Schema({
 
     price:{
 
-        type:String,
+        type:Number,
         require:true,
         
     },
@@ -25,13 +25,35 @@ const ProductDetails=new Schema({
         require:true,
     },
 
-    product_image:{ 
+    product_image:{
+        type:String,
+        require:true,
+    },
+
+    product_color:[
+{
+    
+    color:{type:String,required:true},
+
+    image_urls:[
+        
+        {type:String},
+
+    ]
+}],
+
+    rating: {
+        type: Number,
+        default: 0, // Default value if not provided
+      },
+
+      description:{
 
         type:String,
-        unique:true,
 
-    }
+      }
 
 },{ timestamps : true });
+
 
 export const ProductD=mongoose.model("productdetail",ProductDetails);

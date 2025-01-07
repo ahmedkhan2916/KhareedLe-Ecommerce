@@ -6,12 +6,13 @@ import express from "express";
 
 const app=express();
 
+
 const connectDb=async ()=>{
     
 
     try{
 
-       const connectInstance= await mongoose.connect(`mongodb+srv://ahmed:OZSOJh7HijAps7b2@cluster0.p7fsp8z.mongodb.net/MERN`);
+       const connectInstance= await mongoose.connect(process.env.MONGODB);
        console.log("dbConnected Successfuly");
 
        
@@ -28,5 +29,4 @@ const connectDb=async ()=>{
 
 export default connectDb;
     
-
 

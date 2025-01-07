@@ -2,12 +2,13 @@ import express  from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
 const app=express();
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
-
+dotenv.config();
 app.use(bodyParser.json())
 
 
@@ -37,8 +38,6 @@ app.use(cookieParser());
 
 // })
 
-
 import { router } from "./routes/user.routes.js";
 app.use("/users",router);
-
 export {app};

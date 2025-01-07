@@ -35,6 +35,41 @@ import bcrypt from "bcrypt"
     lowercase:true,
     trim:true,
     },
+    
+    bag:[
+
+{
+    productId:{
+
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'productdetail',
+
+    },
+
+    quantity:{
+
+        type:Number,
+        default:0,
+    },
+
+    addedAt:{
+
+        type:Date,
+        default:Date.now,
+
+    }
+
+}
+
+
+
+    ],
+
+    addresses:
+    [{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Address"
+    }],
 
     refreshToken:{
         type:String,
@@ -43,15 +78,15 @@ import bcrypt from "bcrypt"
 
 },{timestamps:true});
 
-
 //pre function() for hashing password just before from save the data into database
-userSignupSchema.pre('save',async function (next){
-
+userSignupSchema.pre('save',async function (next)
+{
    
     if(!this.isModified('password'))
     {
         return next();
     }
+    
 try{
         const salt= await bcrypt.genSalt(10);
 
@@ -67,6 +102,17 @@ catch(err)
     
 
 })
+
+
+
+userSignupSchema.virtual("totalQuantity").get(function()
+{
+
+
+    return this.bag.reduce((total,item)=>total+item.quantity,0);
+
+
+});
 
 
 

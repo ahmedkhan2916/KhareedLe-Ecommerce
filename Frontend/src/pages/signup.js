@@ -53,7 +53,7 @@ function Signup() {
     >
       <div className='childSignupCont flex justify-center  h-screen'>
         <div className='signFormContainer w-96 text-center '>
-          <h1 className='signupHeading text-4xl text-white mt-10'>SIGNUP FORM </h1>
+          <h1 className='signupHeading text-4xl text-white mt-10'>SIGNUP</h1>
           <form className='signupForm pt-2' onSubmit={handleSignup}>
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='firstname' type='text' onChange={(e) => setFirstName(e.target.value)} value={firstname} required />
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='lastname' type='text' onChange={(e) => setLastName(e.target.value)} value={lastname} required />

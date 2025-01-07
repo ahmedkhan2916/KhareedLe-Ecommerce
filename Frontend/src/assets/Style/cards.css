@@ -1,14 +1,15 @@
 .cards{
 
 
-    background-image: url("../images/ferrari.jpg");
+    /* background-image: url("../images/ferrari.jpg"); */
     height: 24rem;
     width: 24rem;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size:contain;
     position: relative;
-    box-shadow: inset 0px 90px 20px 2px #1e1e1ec0;  
+    /* box-shadow: inset 0px 90px 20px 2px #1e1e1ec0;   */
+    box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
     opacity: 1;
 
     /* -moz-box-shadow: inset 0px 850px 500px -500px #6f6f6f; */

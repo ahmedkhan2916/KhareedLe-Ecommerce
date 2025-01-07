@@ -1,0 +1,37 @@
+/* Slideshow Container */
+.slideshow-container {
+    position: relative;
+    width: 100%;
+    height: 400px; /* Adjust based on your image size */
+    overflow: hidden;
+  }
+  
+  /* Images Wrapper */
+  .slideshow-images {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  /* Animation Class */
+  .slideshow-images.animate {
+    transform: translateX(-100%); /* Slide left */
+  }
+  
+  /* Individual Slide */
+  .slide {
+    min-width: 100%; /* Ensure each image takes the full container width */
+    transition: opacity 0.5s ease-in-out;
+    object-fit: cover;
+    height: 100%;
+  }
+  
+  /* Active Slide */
+  .slide.active {
+    opacity: 1;
+  }
+  
+  /* Non-Active Slides */
+  .slide:not(.active) {
+    opacity: 0;
+  }
+  

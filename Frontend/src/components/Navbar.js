@@ -8,6 +8,7 @@ import logout from "../assets/LoginLogos/logout.png"
 import { useDispatch ,useSelector} from 'react-redux';
 import { setStatusCode } from '../store/dataSlice.js';
 import "../assets/mediaquerys/navbarQuery.css";
+import axios from 'axios';
 
 
 // import { set } from 'mongoose';
@@ -28,13 +29,14 @@ function myFunction() {
 
 
 
-function Navbar({user}) {
+function Navbar() {
 
     // console.log(user.status)
     const dispatch = useDispatch();
     const status=useSelector((state)=>state.status.status)
     const [isDropDownOpen,setIsDropDownOpen]=useState(false);
     const userN=useSelector((state)=>state.username.username);
+    const [inputData,setInputData]=useState("");
 
 
     if(status==true)
@@ -56,11 +58,18 @@ function Navbar({user}) {
    
   }
 
-  const handleMouseEnter=()=>{
 
-  setIsDropDownOpen(true);
+const handleUserSearch=async(req,res)=>{
 
-  }
+    const data_api = await axios.get("http://localhost:1000/users/queryraised");
+
+} 
+
+const handleMouseEnter=()=>{
+
+    setIsDropDownOpen(true);
+
+}
 
   const handleMouseExit=()=>{
 
@@ -72,26 +81,32 @@ function Navbar({user}) {
 
   const handleLogout=()=>
   {
+    
     dispatch(setStatusCode(false));
     localStorage.clear();
     // sessionStorage.clear();
     navigate("/users/login");
+
   }
 
  
 
   return (
-    <div className='nav flex bg-slate-50 justify-around '>
-     
+
+    <div className='nav flex bg-slate-50 justify-around'>
+
       <div className='leftLogo'>
+
         <div className='logo'>
-<img src={brandLogo} className='h-24 ml-7'></img>
+
+        <img src={brandLogo} className='h-24 ml-7'></img>
+
         </div>
-      
 
       </div>
 
       <nav className='flex  w-1/4 items-center ml-14 navBar' id="myLinks">
+
         <ul className='flex w-full justify-evenly text-2xl ' >
                     
           <a href="#"><li className='hover:bg-green-400 hover:text-white pt-2 pb-2 pl-3 pr-3 rounded-md'>Home</li></a>
@@ -100,9 +115,11 @@ function Navbar({user}) {
           <a href="#"><li className='hover:bg-green-400 hover:text-white pt-2 pb-2 pl-3 pr-3 rounded-md'>About Us</li></a>
 
         </ul>
+
       </nav>
 
 <div className='hamContainer flex items-center'>     
+
    <a href="javascript:void(0);" class="icon" onClick={myFunction}>
 
 <div className='hamburger'></div>
@@ -110,19 +127,20 @@ function Navbar({user}) {
 <div className='hamburger'></div>
 
 </a>
+
 </div>
 
 
       <div className='searchBar flex items-center w-4/12 '>
   
-      <input type="text" className='inputNav rounded-lg border-solid border-black w-screen text-2xl'>
-      </input>
+      <input type="text" className='pl-7 inputNav rounded-lg border-solid border-black w-screen text-2xl'></input>
 
       <img src={Search} className='w-7 absolute'></img>
       
       </div>
       
 <div className='rightSide flex flex-row justify-evenly'>
+
       <div className='cartDiv flex items-center flex-col justify-center '>
         
       <span className="dot flex justify-center">4</span> 
@@ -130,6 +148,7 @@ function Navbar({user}) {
       <img src={Cart} className='w-7'></img>
 
       </div>
+
 
       <div className="login flex items-center flex-col justify-center cursor-pointer relative"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
 
@@ -142,8 +161,10 @@ function Navbar({user}) {
      :
      (
       <>
+
            <div className='loginLogo'></div>
      <button className="loginBtnNav bg-yellow-200 w-20 rounded mt-1" onClick={handleSubmit}>Login</button>
+
      </>
         )}    
 
@@ -152,6 +173,7 @@ function Navbar({user}) {
         {
 
 Item&&isDropDownOpen&&(
+
 <div className="dropdownMenu absolute top-24 bg-gray-50 rounded-md w-48
  h-72 overflow-hidden flex justify-center">
 <ul className='listProfile pt-3'>
@@ -159,7 +181,8 @@ Item&&isDropDownOpen&&(
 <li className='listProfile pt-1 text-xl'>Orders</li>
 <li className='listProfile pt-1 text-xl'>Wishlist</li>
 <li className='listProfile pt-1 text-xl'>Gifts</li>
-<li className='listProfile pt-1 text-xl flex' onClick={handleLogout}> Logout <img src={logout} className="h-6 pl-1"></img></li>
+<li className='listProfile pt-1 text-xl flex' onClick={handleLogout}> Logout <img src={logout} className="h-6 pl-1"></img>
+</li>
 
 </ul>
 </div>
@@ -171,12 +194,6 @@ Item&&isDropDownOpen&&(
 
       </div>
      </div> 
-
-
-
-   
-
-
 </div>
 
 
