@@ -40,6 +40,7 @@ function App() {
 <Router>
 
       <Routes>
+
         <Route path="/" element={<Home />} />
         <Route path="/product" element={<Purchasing_page/>}/>
         <Route path="users/login" element={<Login/>}/>
@@ -50,6 +51,7 @@ function App() {
         <Route path="users/ferris" element={<FerrisWheel/>}></Route>
         <Route path="users/address" element={<Address/>}></Route>
         <Route path="users/payment" element={<PaymentGateway/>}></Route>
+        
       </Routes>
       
 </Router>

@@ -1,0 +1,9 @@
+.cardsImage{
+ /* height:20vh; */
+ width: 95%;
+background-image: url("https://media-private.canva.com/DyVCc/MAGcLKDyVCc/1/p.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJWF6QO3UH4PAAJ6Q%2F20250113%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250113T141538Z&X-Amz-Expires=96860&X-Amz-Signature=4597495afb7f338379cd90fa64ad42bc972900bf7412199e972d7d474d975fe3&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Tue%2C%2014%20Jan%202025%2017%3A09%3A58%20GMT");
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+
+}

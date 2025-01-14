@@ -62,6 +62,7 @@ function Header() {
      setTotal(totalCart.data.totalQuantity);
      
      
+     
       }
 
       showTotalFunc();

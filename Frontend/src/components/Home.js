@@ -9,6 +9,7 @@ import Footer from './Footer.js';
 import Header from './HeaderChange.js';
 import Why from "../components/why.js";
 import NewArrival from './NewArrival.js';
+import ShopByCategory from './ShopByCategory.js';
 import { useSelector } from 'react-redux';
 import {useLocation} from "react-router-dom"
 import "../assets/Style/Headings.css";
@@ -68,7 +69,9 @@ function Home() {
     <Specification></Specification>
     <ExploreContainer></ExploreContainer>
     <Why></Why>
-    <NewArrival></NewArrival>
+    {/* <NewArrival></NewArrival> */}
+
+    <ShopByCategory></ShopByCategory>
     <Footer></Footer>
     
   

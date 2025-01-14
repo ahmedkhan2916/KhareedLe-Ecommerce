@@ -19,7 +19,7 @@ const router=Router();
 
 const generateAccessToken=(user)=>{
   
-return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1h"});
+return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"15m"});
 
 
 }
@@ -565,7 +565,6 @@ const chatbotResponse=async(req,res)=>{
 
   const {userId}=req.body;
 
-  
   console.log("here is your id of user",userId);
   const user = await User.findById(userId);
 

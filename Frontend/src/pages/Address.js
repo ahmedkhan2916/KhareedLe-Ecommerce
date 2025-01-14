@@ -1,15 +1,49 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../assets/Style/Headings.css"
 import Header from "../components/HeaderChange.js"
 import Map from './Map.js'
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
+
 function Address() {
 
     const navigate = useNavigate();
 
     const [radio,setRadio]=useState({firstRadio:false,secondRadio:false});
     const userId=localStorage.getItem("userID");
+    const [address,setAddress]=useState(localStorage.getItem("UserAddress" || ""));
+
+
+    useEffect(()=>{
+     
+        const updatedAddressFunction= ()=>{
+     const  ComingAddress=localStorage.getItem("UserAddress");
+     if(ComingAddress!==address)
+     {
+
+        setAddress(ComingAddress || "");
+        console.log("this is coming address baby",address);
+
+
+     }
+
+    //
+
+        }
+
+        console.log("this is coming address baby",address);
+
+        window.addEventListener("storage",updatedAddressFunction);
+
+        return ()=>{
+            window.removeEventListener("storage",updatedAddressFunction);
+        }
+    
+    },[address]);
+   
+
+   
+    
 
     const [formData,setFormData]=useState({
 
@@ -99,7 +133,7 @@ function Address() {
             </div> */}
             <Map></Map>
 
-<div className='AddressFormContainer  w-2/5 h-3/4  bg-green-100 flex flex-col justify-center rounded-xl mt-32'>
+<div className='AddressFormContainer ml-5 w-2/5 h-3/4  bg-green-100 flex flex-col justify-center rounded-xl mt-32 items-center' >
 
    <form className='formAddress ml-20 ' onSubmit={handleAddressForm} >
 
@@ -132,9 +166,15 @@ function Address() {
   name="type"
   value="shipping"></input>
             <label className="text-sm">Shipping</label>
-            <button className='submitBtn h-9 w-24 rounded bg-purple-500  text-white' type="submit"  >Submit</button>
+           
+
+<div className='buttonContainerSubmit'>
+            <button className='submitBtn h-9 w-24 rounded bg-purple-500  text-white mt-6' type="submit"  >Submit</button>
+
+            </div>
 
    </form>
+
 
 
    {/* <div className='AddressTypeContainer ml-20 mt-3'>
