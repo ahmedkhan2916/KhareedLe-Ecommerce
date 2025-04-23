@@ -13,7 +13,7 @@ function Footer() {
   return (
     <div className='footerContainer mt-6'>
 
-      <div className='footerContainerChild bg-black pt-12'>
+      <div className=' footerContainerChild  pt-12 bg-red-500 sm:bg-black '>
 
 
           <div className='upperContainer  flex justify-evenly'>
@@ -45,7 +45,7 @@ function Footer() {
 <div className='textContainer  p-2'>
   <p className='text-white'>Help Center</p>
 
-</div>
+</div>      
 
 <div className='textContainer p-2'>
   <p className='text-white'>FAQ's</p>
@@ -228,17 +228,9 @@ function Footer() {
 <img src={ssl} className='h-9'></img>
 
 </div>
-
-
-
-
-
+</div>
 </div>
 
-
-
-
-</div>
 
 
 {/* social media links */}

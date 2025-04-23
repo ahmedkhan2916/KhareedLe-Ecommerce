@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Star from "../assets/Brandlogo/Star.png";
 import axios from "axios";
 import "../assets/Style/Headings.css"
+import { useSelector } from 'react-redux';
+import { fetchID } from '../Services/apiService';
 
 function CustomerReviews() {
   const [prevNo, setPrevNo] = useState(0);
@@ -10,7 +12,8 @@ function CustomerReviews() {
   const [comment,setComment]=useState("");
   const [rating,setRating]=useState("");
 //   const [imgUrl,setImgUrl]=useState([]);
-  const [userId,setUserId]=useState("66d37126494b26924f9f0a4d");
+// const userId = useSelector(state=>state.username.userId);
+
   const [productId,setProductId]=useState("66cb21115ded4d82f9def494");
 
 //   const [userId,productId]=req.body;
@@ -27,17 +30,23 @@ function CustomerReviews() {
 
 
     try {
+      alert("hiii i am cloudinary");
       const response = await axios.post(`https://api.cloudinary.com/v1_1/shekkhu/image/upload`, formData);
 
 
       setUploadResponse( response.data.secure_url ); 
-    //   setImgUrl(response.data.secure_url);
+      // setImgUrl(response.data.secure_url);
 
-    //   console.log(imgUrl);
+      const userIdDecrypt=await fetchID(localStorage.getItem("accessToken"));
+
+      console.log("here is the decrypted userId",userIdDecrypt);
+
+
+      console.log("this is cloudinary secure url",response.data.secure_url);
 
       const reviewData={
 
-        userId,
+        userId:userIdDecrypt,
         productId,
         comment,
         rating,
@@ -48,7 +57,7 @@ function CustomerReviews() {
 
 
       const response2= await axios.post(`http://localhost:1000/users/userreview`,reviewData);
-      console.log(response2);
+      console.log("here is the response2",response2);
         // Store the response data if needed
      
     //   console.log("this is url:",imgUrl);
@@ -91,16 +100,20 @@ function CustomerReviews() {
           </div>
 
           <div className='ratingsContainer flex pb-3' id="starsContainer">
+
             <img className='starImage rounded-full w-6 hover:cursor-pointer' id="1" src={Star} onClick={handleStars} />
             <img className='starImage rounded-full w-6 hover:cursor-pointer' id="2" src={Star} onClick={handleStars} />
             <img className='starImage rounded-full w-6 hover:cursor-pointer' id="3" src={Star} onClick={handleStars} />
             <img className='starImage rounded-full w-6 hover:cursor-pointer' id="4" src={Star} onClick={handleStars} />
             <img className='starImage rounded-full w-6 hover:cursor-pointer' id="5" src={Star} onClick={handleStars} />
+
           </div>
 
           <div className='inputImage'>
+
             <label className='text-xl'>Upload an Image:</label>
             <input type="file" onChange={(event) => setImageSelected(event.target.files[0])} required />
+            
           </div>
 
           <div className='inputText flex pt-4'>

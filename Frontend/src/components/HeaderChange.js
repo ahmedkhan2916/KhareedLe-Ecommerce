@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
+
 // import "../assets/styles/mainStyle.css"
 // import { useContext } from 'react';
 // import { BackgroundColorContext } from './BackgroundColorContext.js';
@@ -14,6 +15,7 @@ import cart from "../assets/images/HeaderLogos/cart.png";
 import user from "../assets/images/HeaderLogos/user.png";
 import arrayDown from "../assets/images/HeaderLogos/down.png"
 import menu from "../assets/images/HeaderLogos/menu-burger.png"
+import KhareedLeLogo from "../assets/BrandHeaderLogo/khareedlecanva2.png";
 // import MobileSidebar from '../layout/MobileSidebar.js';
 import axios from 'axios';
 import logout from "../assets/LoginLogos/logout.png"
@@ -21,6 +23,7 @@ import khareedLe from "../assets/images/HeaderLogos/khareedLe.png";
 import { setProducts } from '../store/dataSlice.js';
 import { fetchData } from '../store/dataSlice.js';
 import Cookies from "universal-cookie";
+import {fetchID,showTotalFuncHeader,fetchSearchItems, accessTokenRefresh} from "../Services/apiService.js";
 
 
 function Header() {
@@ -32,7 +35,8 @@ function Header() {
     const dispatch = useDispatch();
     const status=useSelector((state)=>state.status.status);
     const [cartItems,setCartItems]=useState(localStorage.getItem("cartItems"))
-    const userId = useSelector(state=>state.userId.userId);
+    // const userId = useSelector(state=>state.username.userId);
+    // console.log("UserID redux Persist",userId)
     const numberItem=useSelector(state=>state.counter.value);
     console.log("this is total item",numberItem);
     // const cartItem=useSelector(state=>state.counter)
@@ -42,91 +46,134 @@ function Header() {
     const [searchQuery,setSearchedQuery]=useState([]);
     const [hideSearchBar,sethideSearchBar]=useState("hidden");
     const [dataComing,setDataComing]=useState(localStorage.getItem("data"));
-    const [userIdStorage,setUserIdStorage]=useState(localStorage.getItem("userID"));
+    // const [userIdStorage,setUserIdStorage]=useState(localStorage.getItem("userID"));
     const [total,setTotal]=useState(null);
+    const detail=useSelector((state)=>state.AccessTK.Token)
+    const Id=useSelector((state)=>state);
+    const [access,setAccess]=useState(sessionStorage.getItem("accessToken"));
+
+    console.log("THIS IS USER ID FROM REDUX PERSIST",Id.username.userId);
+    const userDetail=useSelector((state)=>state.username.userId);
+
+    // const accessTheAccessToken=async()=>{
+
+    //   console.log("this is dataaaaaaaa brooooooooo",userDetail)
+    //   //  accessTokenRefresh(userDetail);
+      
+    // const access=await axios.post(
+    //   "http://localhost:1000/users/refresh-token-handler",{encryptId : userDetail}, // Backend endpoint
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     withCredentials: true,
+    //   },  
+
+    // );
+
+    // }
+
+
+
+    // if(!detail)
+    // {
+    //   accessTheAccessToken();
+    // }
+
+ 
+    const [UID,setID]=useState("");
+    console.log("Header Data >>>>>>>",detail);
     // const userId = useSelector(state=>state.userId.userId);
 
-    console.log("this is numberItems",numberItem);
-    
+    console.log("usernameheader",userN);
     localStorage.setItem('totalNumbers',numberItem);
     const itemFetch = localStorage.getItem('totalNumbers');
-    console.log(cookie.get("productName"));
+    // console.log(cookie.get("productName"));
 
     useEffect(()=>{
 
 
-      const showTotalFunc=async()=>{
+    const showTotalFunc=async()=>{
 
-     let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:userIdStorage});
-     console.log(totalCart.data.totalQuantity);
-     setTotal(totalCart.data.totalQuantity);
-     
-     
+      console.log("this is ID CALLING Before Encryption",userDetail);
+    const ID=await fetchID(access);
+    setID(ID);
+    
+    console.log("this is ID CALLING",ID);
+    const totalCart=await showTotalFuncHeader(ID);
+    console.log("i am callinggggggggggggggg",totalCart)
+  
+    setTotal(totalCart);
+
+    console.log("this is state calling",total);
+    console.log(numberItem);
+
      
       }
 
       showTotalFunc();
 
-    },[numberItem]);
+    },[]);
 
-    useEffect( () => {
+    // useEffect( () => {
      
-      if (!userId) {
-        console.error("userId is missing or undefined in Redux.");
-        return; // Stop if userId is invalid
-      } 
+    //   // if (!userId) {
+    //   //   console.error("userId is missing or undefined in Redux.");
+    //   //   return;
+    //   // } 
    
-      const fetchUserItemsData = async () => {
-        try {
+    //   const fetchUserItemsData = async () => {
 
-          const response = await axios.post(`http://localhost:1000/users/showtotal`,{userId});
-          localStorage.setItem("data",response.data.totalQuantity)
-          console.log(response.data.totalQuantity);
-          setDataComing(localStorage.getItem("data"));
+    //     try {
 
-        } catch (error) {
-          console.error("Error fetching total items:", error);
-        }
-      };
+    //       const ID=await fetchID(detail);
+    //       const response = await axios.post(`http://localhost:1000/users/showtotal`,{ID});
+    //       localStorage.setItem("data",response.data.totalQuantity);
+    //       console.log(response.data.totalQuantity);
+    //       setDataComing(localStorage.getItem("data"));
+
+    //     } catch (error) {
+    //       console.error("Error fetching total items:", error);
+    //     }
+    //   };
     
-      fetchUserItemsData();
-    }, [numberItem]);
+    //   fetchUserItemsData();
+
+    // }, [numberItem]);
     
 
 
-    if(status==true)
-    {
+  if(userN)
+  {
       localStorage.setItem("status",status);
       localStorage.setItem("username",userN);
-    }
+  }
    
-    const Item=localStorage.getItem("status");
-    const Username=localStorage.getItem("username");
+  // const Item=localStorage.getItem("status");
+  const Username=localStorage.getItem("username");
     
-   
+  console.log("this is username in local storage",Username)
   
   const navigate=useNavigate();
 
-  const handleSubmit=async (req,res)=>{
+  const handleSubmit=async (req,res)=>
+  {
 
     navigate("/users/login")
    
   }
 
-
-
-
-const handleMouseEnter=()=>{
+  const handleMouseEnter=()=>    
+  {
 
     setIsDropDownOpen(true);
 
-}
+  }
 
-  const handleMouseExit=()=>{
-
+  const handleMouseExit=()=>
+  {
 
     setIsDropDownOpen(false);
-
 
   }
 
@@ -147,9 +194,9 @@ const handleMouseEnter=()=>{
       sethideSearchBar("flex");
     }
 
-   const searchedQuery = await axios.get(`http://localhost:1000/users/userSearch?name=${inputValue}`);
+   const searchedQuery = await fetchSearchItems(inputValue)
 
-   console.log(searchedQuery);
+   console.log("this is search query",searchedQuery);
 
    if(searchedQuery.data.length==0)
    {
@@ -169,27 +216,51 @@ const handleMouseEnter=()=>{
   {
     // console.log(userId);
     // dispatch(increment(0));
-    dispatch(setStatusCode(false));
+    // dispatch(setStatusCode(false));
     localStorage.clear();
     // sessionStorage.clear();
-    navigate("/users/login");
+    // location.reload();
+    navigate("/");
+
+    
 
   }
 
-  const handleCartRoute=async()=>{
-
-    console.log("hiii baby",userIdStorage);
-
-    const bagData=await axios.post('http://localhost:1000/users/fetchbag',{userIdStorage});
-
-    console.log("this is bag data bro",bagData.data.bagItems);
-    localStorage.setItem("bagItem",JSON.stringify(bagData.data.bagItems));
-
-    navigate("/users/shipping");
+  
 
 
+    const handleCartRoute=async()=>{
+
+      // console.log("hiii baby",userIdStorage);
+      // console.log("userID here in cart",userId)
+      // const userId= await fetchID(detail);
+      try{
+
+      if(!localStorage.getItem("accessToken"))
+        {
+         return navigate("/users/login");
+        }
+
+      // console.log("this is UID MY",UID);
+    
+      const bagData=await axios.post('http://localhost:1000/users/fetchbag',{UID:UID});
+   
+      
+      console.log("this is bag data bro",bagData.data.bagItems);
+      localStorage.setItem("bagItem",JSON.stringify(bagData.data.bagItems));
+  
+      navigate("/users/shipping");
+      }
+      catch(error)
+      {
+        return error;
+      }
+  
   }
 
+
+ 
+  
 
     const Items=[
 
@@ -214,20 +285,19 @@ const handleMouseEnter=()=>{
         console.log("yes");
 
         if(dropdown=="hidden")
-        {
+      {
+
         setDropdown("flex");
-        // changeBackgroundColor("	#C0C0C0");
-        
-    //   document.body.style.backgroundColor="gray";
-        document.body.style.backgroundColor="rgba(191, 191, 191)";
+      // changeBackgroundColor("	#C0C0C0");
+      //   document.body.style.backgroundColor="gray";
+       document.body.style.backgroundColor="rgba(191, 191, 191)";
        const target= document.getElementById("ZINDEX");
-
        target.style.zIndex="2000";
-       
 
-        }
-        else{
+      }
 
+      else
+        {
             setDropdown("hidden");
             document.body.style.backgroundColor="white";
             // changeBackgroundColor("white")
@@ -259,25 +329,34 @@ const handleMouseEnter=()=>{
         else{
           
           document.body.style.backgroundColor="#C0C0C0";
-        //   changeBackgroundColor("#C0C0C0")
+          //changeBackgroundColor("#C0C0C0")
 
-          
-      
         }
       
       }
 
 
-      const handleRoute=(id)=>{
+      const handleRoute=async(UID)=>{
+
+        try{
+          
+
+          
+          const resp= await axios.post("http://localhost:1000/users/track-search",{UID:UID});
+          console.log("success here")
+
+
+        }catch(err)
+        {
+          console.log("error from server...>>>")
+        }
         
-          if(!id)
+          if(!UID)
           { return console.log("id is showing undefined");}
         
-        console.log(id);
-      dispatch(fetchData(id));
+      console.log(UID);
+      dispatch(fetchData(UID));
       return navigate(`/product`);
-
-
 
 
       }
@@ -286,9 +365,9 @@ const handleMouseEnter=()=>{
     <div className={` headerContainer h-20 `} >
 
 <div
-        className={`fixed inset-y-0 left-0  bg-white  transform transition-transform duration-300 ease-in-out z-20 ${
+        className={`  fixed inset-y-0 left-0  bg-white  transform transition-transform duration-300 ease-in-out z-20 ${
           sideBar ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        } ` }
          >
         {/* <MobileSidebar handleSidebar={handleSidebar} /> */}
       </div>
@@ -302,7 +381,7 @@ const handleMouseEnter=()=>{
 
 
 </div>
-            <img src={khareedLe} className='logoHeader h-20 cursor-pointer' onClick={()=>navigate("/")}></img>
+            <img src={KhareedLeLogo} className='logoHeader h-44 -mt-4 cursor-pointer' onClick={()=>navigate("/")}></img>
 
         </div>
 
@@ -340,8 +419,10 @@ const handleMouseEnter=()=>{
 
 
                  </div>
+                
                 <img className='rightHeaderLogo h-5' src={cart}></img>
                 <p className='headerText pl-2 tracking-tight'>Cart</p>
+
             </div>
 
             {/* <div className='Items2 flex rounded-full items-center w-max pl-4 pr-4 lg:flex hidden cursor-pointer hover:bg-green-100'>
@@ -361,6 +442,7 @@ const handleMouseEnter=()=>{
     
    
     <ul className='block listProfile2 pt-3'>
+
       {searchQuery.map((company) =>{
       console.log("Company ID: ", company._id);
       
@@ -384,7 +466,7 @@ const handleMouseEnter=()=>{
 
         <div className="login flex items-center flex-col justify-center cursor-pointer relative"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
 
-{ Item ? (
+{ Username ? (
   <>
 <div className='loginLogo'></div>
 <span>{Username}</span>
@@ -404,7 +486,7 @@ const handleMouseEnter=()=>{
 
 {
 
-Item&&isDropDownOpen&&(
+Username&&isDropDownOpen&&(
 
 <div className="dropdownMenu absolute top-16 bg-gray-50 rounded-md w-48
 h-72  flex justify-center">

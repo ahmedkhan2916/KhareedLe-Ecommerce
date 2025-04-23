@@ -8,6 +8,8 @@ import SearchedPage from '../pages/SearchedPage.js';
 import Footer from './Footer.js';
 import Header from './HeaderChange.js';
 import Why from "../components/why.js";
+import GameConsole from './GameConsole.js';
+import MostSearchedSP from "./MostSearchedSP.js";
 import NewArrival from './NewArrival.js';
 import ShopByCategory from './ShopByCategory.js';
 import { useSelector } from 'react-redux';
@@ -72,6 +74,8 @@ function Home() {
     {/* <NewArrival></NewArrival> */}
 
     <ShopByCategory></ShopByCategory>
+    <GameConsole></GameConsole>
+    <MostSearchedSP></MostSearchedSP>
     <Footer></Footer>
     
   

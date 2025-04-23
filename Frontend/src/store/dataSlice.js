@@ -4,27 +4,32 @@ import axios from 'axios';
 // Async thunk for fetching data from an API
 export const fetchData = createAsyncThunk('data/fetchData', async (payload) => {
   console.log(payload)
-  const response = await axios.post("http://localhost:1000/users/postdetails",{payload},{
+  const response = await axios.post("http://localhost:1000/users/postdetails",{payload} , {
 
     headers: {
-      'Content-Type': 'application/json', // Set content type to JSON
-    },
+      'Content-Type': 'application/json',// Set content type to JSON
+  },
+  withCredentials: true,
 
   }); 
 
-  console.log(response.data)
+  console.log("dataSlice data>>>>>>>>>",response.data)
   // Replace with your API URL
   return response.data; // Assumes the response data is an array of objects
 });
 
 //purchasing page data store:
 const dataSlice = createSlice({
-  name: 'data',
-  initialState: {
-    data: [],
-    loading: false,
-    error: null,
+
+     name: 'data',
+     initialState: {
+
+       data: [],
+       loading: false,
+       error: null,
+  
   },
+
   reducers: {
     // You can define additional reducers here if needed
   },
@@ -36,8 +41,9 @@ const dataSlice = createSlice({
       })
       .addCase(fetchData.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload; // Set the array of objects from the API
+        state.data =action.payload; // Set the array of objects from the API
         localStorage.setItem('apiData', JSON.stringify(action.payload));
+
       })
       .addCase(fetchData.rejected, (state, action) => {
         state.loading = false;
@@ -68,6 +74,32 @@ const dataSlice = createSlice({
     },
 },
 })
+
+
+
+export const AccessToken=createSlice({
+
+
+  name:"AccessTK",
+  initialState:{
+
+    Token:"",
+
+  },
+
+  reducers:{
+
+    setAccessTK:(state,action)=>{
+
+
+      state.Token=action.payload;
+
+
+    },
+},
+});
+
+
 
 //store username
 export const setUser=createSlice({
@@ -158,6 +190,7 @@ export const {setUsername,setUserId}=setUser.actions;
 export const {setSimiliarProduct}=similiarProduct.actions;
 export const { setProducts} = productSlice.actions;
 export const {increment}=counterSlice.actions
+export const {setAccessTK}=AccessToken.actions;
 
 
 

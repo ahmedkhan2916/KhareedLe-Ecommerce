@@ -1,6 +1,7 @@
 import {Router} from "express";
-import { SignUp ,Login,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice} from "../controllers/user.controller.js";
+import { SignUp ,Login,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP} from "../controllers/user.controller.js";
 // import runSample from "../controllers/chatbotmodel.js"
+import verifyToken from "../middlewares/verifyToken.js"
 const router=Router();
 
 router.route("/signup").post(SignUp)
@@ -21,6 +22,12 @@ router.route("/deletequantity").post(deleteCountItems);
 router.route("/addressadd").post(address);
 router.route("/changetext").post(changeText);
 router.route("/totalprice").post(totalItemsPrice);
+router.route("/refresh-token-handler").post(refreshTokenHandler);
+router.route("/userid-fetch").get(verifyToken,handleUserIDFetch);
+router.route("/getProductId").get(getProductIdFromCookies);
+router.route("/track-search").post(searchHistory);
+router.route("/fetch-search-history").post(fetchMostSearchedProducts);
+router.route("/update-spp").get(updatePricesSP);
 
 
 export {router}

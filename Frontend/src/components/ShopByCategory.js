@@ -6,7 +6,7 @@ function ShopByCategory() {
   return (
     <>
     
-        <div className='shopByCategoryContainer mt-2'>
+        <div className='shopByCategoryContainer mt-7'>
 
             <div className="shopByCategoryChildCategory">
 
@@ -32,7 +32,7 @@ function ShopByCategory() {
 
         <div className="cardsImage ">
 
-            <img  src="https://media-private.canva.com/fzokE/MAGcLBfzokE/1/p.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJWF6QO3UH4PAAJ6Q%2F20250114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250114T084638Z&X-Amz-Expires=34317&X-Amz-Signature=93622d4ed7be8c35a413de68bb6b7f7568c37acd109aa4458f1cd5b94e856e65&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Tue%2C%2014%20Jan%202025%2018%3A18%3A35%20GMT"></img>
+            <img  src="https://images.unsplash.com/photo-1738344858158-66f743afcf3d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGlwaG9uZSUyMDE2fGVufDB8fDB8fHww"></img>
 
         </div>
 
@@ -57,7 +57,7 @@ function ShopByCategory() {
 
 <div className="cardsImage ">
 
-    <img  src="https://media-private.canva.com/rjD48/MAGcLfrjD48/1/p.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJWF6QO3UH4PAAJ6Q%2F20250113%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250113T185238Z&X-Amz-Expires=82061&X-Amz-Signature=79f9aa2f3ea6c674bb2550465528ec9198815972f46ae521d87c76bf4de90dc4&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Tue%2C%2014%20Jan%202025%2017%3A40%3A19%20GMT"></img>
+    <img  src="https://images.unsplash.com/photo-1643536768014-0756fa85ca4f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZWxlY3Ryb25pY3MlMjBnYWRnZXRzfGVufDB8fDB8fHww"></img>
 
 </div>
 
@@ -83,7 +83,7 @@ function ShopByCategory() {
 
 <div className="cardsImage ">
 
-    <img  src="https://media-private.canva.com/PEsS4/MAGcLSPEsS4/1/p.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJWF6QO3UH4PAAJ6Q%2F20250114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250114T061119Z&X-Amz-Expires=42510&X-Amz-Signature=d50518f56369ae28289767d11b4b7bae2289acf2e3638326e902d4d52fe3c8c5&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Tue%2C%2014%20Jan%202025%2017%3A59%3A49%20GMT"></img>
+    <img  src="https://images.unsplash.com/photo-1734370590723-683dfcb13137?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGdpZnRzJTIwZWxlY3Ryb25pY3N8ZW58MHx8MHx8fDA%3D"></img>
 
 </div>
 

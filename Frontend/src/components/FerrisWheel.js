@@ -2,6 +2,9 @@ import React from "react";
 import { useState } from "react";
 import "../assets/Style/ferris.css";
 import Downarrow from "../assets/images/downarrow.png";
+import {useNavigate}  from "react-router-dom"
+import Celebrate from "../pages/Confetti.js"
+import "../assets/Style/Headings.css"
 
 const FerrisWheel = () => {
   const items = Array.from({ length: 8 }, (_, i) => i + 1); // Generate 8 items
@@ -10,6 +13,21 @@ const FerrisWheel = () => {
   const [rotation, setRotation] = useState(0); // Tracks rotation angle
   const [isSpinning, setIsSpinning] = useState(false); // To disable button while spinning
   const [winningPrize, setWinningPrize] = useState(null); // Tracks the winning prize
+  const navigate=useNavigate();
+
+
+  const congratsThreeTimes=()=>{
+        
+    Celebrate();
+    
+    
+        }
+    
+    
+  
+
+
+
 
   const spinWheel = () => {
     setIsSpinning(true);
@@ -31,16 +49,37 @@ const FerrisWheel = () => {
       setTimeout(()=>{
 
         setWinningPrize(prizes[prizeIndex]); // Set the winning prize
+       
+        const intervalID=setInterval(()=>{
+    
+             
+          congratsThreeTimes();
 
+
+
+      },1500)
+
+      setTimeout(() => {
+          clearInterval(intervalID);
+          
+        }, 5000);
+     
+        return () => clearInterval(intervalID); 
       },4000)
     
+      setTimeout(()=>{
+
+        navigate("/users/payment");
+      
+      },12000)
 
       setIsSpinning(false);
     }, 1000); // Spins for 2 seconds before stopping
   };
 
   return (
-    <div className="ferrisWheelContainer w-1/2 flex flex-col items-center justify-center">
+    <div className="ferrisWheelParentContainer flex items-center">
+    <div className="ferrisWheelContainer w-1/2 flex flex-col items-center justify-center h-screen">
       {/* Pointer */}
       <div>
         <img src={Downarrow} alt="Pointer" className="w-11 h-11" />
@@ -72,12 +111,23 @@ const FerrisWheel = () => {
       </button>
 
       {/* Winning Prize Message */}
-      {winningPrize && (
+
+     
+    
+    </div>
+
+    <div className="absolute top-7 left-1/2">
+      <h1 className="text-5xl HeadingPlayFair">Winning Spin Wheel🎡</h1>
+    </div>
+
+    {winningPrize && (
         <div className="winning-message mt-4">
-          <h2>🎉 Congratulations! You won: {winningPrize} 🎉</h2>
+          <h1 className="text-3xl">🎉 Congratulations! You won: {winningPrize} 🎉</h1>
         </div>
       )}
+
     </div>
+
   );
 };
 

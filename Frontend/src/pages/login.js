@@ -30,7 +30,7 @@ import airpods from "../assets/LoginLogos/airpods.png"
 
 import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
-import {setStatusCode,setUserId,setUsername} from '../store/dataSlice.js'
+import {setAccessTK, setStatusCode,setUserId,setUsername} from '../store/dataSlice.js'
 import loginImage from "../assets/SignupImage/loginImage.jpg"
 import "../assets/Style/Headings.css"
 
@@ -46,8 +46,8 @@ function Login() {
   const [password,setPassword]=useState('');
   const [status,setStatus]=useState(false);
  const dispatch= useDispatch();
-//  const detail=useSelector((state)=>state.details)
-//  console.log(detail);
+ const detail=useSelector((state)=>state.AccessTK.Token)
+ console.log("this is access token stored in redux",detail);
 
    const handleLogin=async(e)=>{
 
@@ -64,21 +64,54 @@ function Login() {
 
     try{
 
-        const response=await axios.post("http://localhost:1000/users/login",bodyData);
+        const response=await axios.post("http://localhost:1000/users/login",bodyData,  {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true, // This ensures the browser sends and receives cookies
+          });
         console.log("loggin succesfuly",response.data);
+        console.log("cookie here",document.cookie);
         const {accessToken,refreshToken,user,id}=response.data;
-        console.log(accessToken,user);
+        console.log("This is new data cookies",accessToken,user,"This is refreshToken",refreshToken);
         localStorage.setItem('refreshToken',refreshToken);
         localStorage.setItem('accessToken',accessToken);
-        localStorage.setItem("userID",response.data.user.id);
-        dispatch(setStatusCode(user.status));
+        sessionStorage.setItem("accessToken",accessToken);
+        // dispatch(setUserId(user.));
+        dispatch(setUserId(user.id));
+        dispatch(setAccessTK(accessToken));
+        console.log("user json",user.id);
+        // dispatch(setStatusCode(user.status));
         dispatch(setUsername(user.name));
-        dispatch(setUserId(response.data.user.id));
         
+      
         
+//         const token=accessToken;
+//         if(!token)
+// {
+//     console.log("token is not present");
+// }
+
+// else{
+//             const IDS=await axios.get("http://localhost:1000/users/userid-fetch", {
+
+//             headers: {
+//             Authorization: `Bearer ${token}`,
+
+//           },});
+
+//           console.log("here is userid with middleware",IDS.data.ID);
+//           dispatch(setUserId(IDS.data.ID));
+//           localStorage.setItem("userID",IDS.data.ID);
         
-       
-        
+
+          
+//           if(!IDS)
+//           {
+//             console.log("user id not recieve");
+//           }
+         
+//         }
+
+
         setStatus(true);
         navigate('/',{state:{user}});
       

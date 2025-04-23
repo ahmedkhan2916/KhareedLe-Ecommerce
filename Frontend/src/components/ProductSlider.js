@@ -7,34 +7,31 @@ import { useEffect,useState } from 'react';
 import axios from "axios";
 
 
-
-
 function ProductSlider() {
 
     const [data,setData]=useState([])
     const dispatch = useDispatch();
    
-   
-   
-
-
-    const handleClick = async (event) => {
+    
+const handleClick = async (event) => {
 
         const id = event.currentTarget.getAttribute('data-id');
         dispatch(fetchData(id));
-        
-        
-      };
+          
+};
     
     useEffect( ()=>{
 
     const fetchData = async () => {
 
         const jsonData = await axios.get("http://localhost:1000/users/getData").then((res) => setData(res.data));
-
+        
+        
        
         
       };
+
+    
       console.log(Array.isArray(data));
       fetchData();
      
@@ -55,6 +52,7 @@ function ProductSlider() {
 <Link to="/product">
     <div className='image w-full'>
 {/* <img className='imageProduct w-full' style={{backgroundImage:`url('/images/ferrari.jpg')`}}></img> */}
+
 <div className='phDiv w-full' style={{backgroundImage:`url(${item.product_image})`}}>
 
     </div>

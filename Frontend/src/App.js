@@ -12,9 +12,10 @@ import Chatbot from "./pages/Chatbot.js";
 import CustomerReviews from './pages/CustomerReviews.js';
 import ShippingAddress from './pages/ShippingAddress.js';
 import FerrisWheel from './components/FerrisWheel.js';
-import Address from './pages/Address.js'
+import Address from './pages/Address.js';
 import PaymentGateway from './pages/PaymentGateway.js';
-
+import CongratsPage from "./pages/CongratsPage.js"
+import Confetti from "./pages/Confetti.js";
 
 
 function App() {
@@ -51,7 +52,8 @@ function App() {
         <Route path="users/ferris" element={<FerrisWheel/>}></Route>
         <Route path="users/address" element={<Address/>}></Route>
         <Route path="users/payment" element={<PaymentGateway/>}></Route>
-        
+        <Route path="users/completed" element={<CongratsPage/>}></Route>
+        <Route path="users/confetti" element={<Confetti/>}> </Route>
       </Routes>
       
 </Router>

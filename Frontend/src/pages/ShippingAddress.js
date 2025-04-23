@@ -7,6 +7,9 @@ import Header from '../components/HeaderChange';
 import axios from "axios";
 import "../assets/Style/Headings.css"
 import { redirect } from 'react-router-dom';
+import {fetchID} from "../Services/apiService.js"
+import { useNavigate } from 'react-router-dom';  //for redirecting to another page
+import { useSelector } from 'react-redux';
 
 function ShippingAddress() {
 
@@ -15,6 +18,8 @@ function ShippingAddress() {
     const [cardColor,setColor]=useState("bg-green-50");
     const [dataDeleted,setDataDeleted]=useState();
     const [total,setTotal]=useState(0);
+    const navigate = useNavigate();
+    // const userId = useSelector(state=>state.username.userId);
     
 
 
@@ -29,7 +34,7 @@ function ShippingAddress() {
             const storedData = JSON.parse(localStorage.getItem("bagItem")) || [];
             setDataBagData(storedData);
       
-            const userId = localStorage.getItem("userID");
+           const userId=await fetchID(localStorage.getItem("accessToken"));
             console.log(userId);
       
             try {
@@ -49,13 +54,25 @@ function ShippingAddress() {
 
       console.log("bagData",dataBagData)
 
+      const HandleConfirm=async ()=>{
+
+            
+          navigate("/users/address")
+
+
+
+        
+
+      }
+
       async function  deleteQuantity(productId)
       {
         
-        const IDS={userId:localStorage.getItem("userID"), productId:productId};
+        const ID=await fetchID(localStorage.getItem("accessToken"));
+        const IDS={userId:ID , productId:productId};
         console.log("this is ids",IDS);
         // const userId=localStorage.getItem("userID");
-        const dataDeleted= await axios.post("http://localhost:1000/users/deletequantity",{ userId: localStorage.getItem("userID"),
+        const dataDeleted= await axios.post("http://localhost:1000/users/deletequantity",{ userId: ID,
             productId: productId})
 
         console.log("this is data deleted",dataDeleted);
@@ -85,8 +102,7 @@ function ShippingAddress() {
 
             <img className='carryBag ml-3 w-9 ' src={bag}></img>
             </div>
-<div className='BagDetailsContainer  pt-3 border-b-2 border-gray-400 pb-4'>
-
+<div className='BagDetailsContainer  pt-3 border-b-2 border-gray-400 pb-4'> 
     <div className='itemsNumberContainer flex justify-start pl-12'>
 
         <h1 className='text-xl'>Total Items</h1>
@@ -102,8 +118,6 @@ function ShippingAddress() {
 
     {
         dataBagData.map((item,index)=>(
-
-            
 
                 <div className={`productCard  flex items-center ${cardColor} justify-around  mt-4  rounded`} key={`${index}`}>
 
@@ -219,6 +233,14 @@ function ShippingAddress() {
 
 
 </div>
+
+<div className="confirmButtonContainer  flex justify-center mt-10">
+
+    <button className="confirmButton bg-purple-500 text-white rounded hover:bg-green-400 w-44 h-10" onClick={HandleConfirm}>Confirm</button>
+
+</div>
+
+
     </div>
 
 </div>

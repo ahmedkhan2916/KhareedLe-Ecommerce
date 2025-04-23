@@ -2,6 +2,7 @@ import { json } from "express";
 import jwt from "jsonwebtoken"
 import { User } from "../models/user.signup.js";
 import { ProductD } from "../models/productDatabase.js";
+import {ProductInsights} from "../models/ProductInsightsSchema.js"
 import address_user from "../models/address.user.js";
 import dotenv from "dotenv"
 import bcrypt from "bcrypt"
@@ -9,6 +10,8 @@ import mongoose from "mongoose"
 import {Router} from "express";
 import review from "../models/user.review.js";
 import dialogflow from '@google-cloud/dialogflow';
+import classErrorHandling from "../middlewares/classErrorHandle.js";
+import crypto from "crypto"
 import { v4 as uuidv4 } from 'uuid';  // Correct import
 
 
@@ -17,9 +20,39 @@ const router=Router();
 
 // dotenv.config({path:"../.env"});
 
+
+
+
 const generateAccessToken=(user)=>{
   
-return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"15m"});
+return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
+
+
+}
+
+//encrypt function encrypting IDS here:- 
+const encryptIDS=(ID)=>{
+
+  const algorithm = 'aes-256-ctr'
+  const secretKey = process.env.ENCRYPTION_KEY;
+
+  const cipher = crypto.createCipher(algorithm, secretKey);
+  let encrypted = cipher.update(ID, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+
+}
+
+//dcrypt function dcrypting IDS here:- 
+const decryptIDS=(ID)=>{
+
+  const algorithm = 'aes-256-ctr'
+  const secretKey = process.env.ENCRYPTION_KEY;
+
+  const decipher = crypto.createDecipher(algorithm, secretKey);
+  let decrypted = decipher.update(ID, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
 
 
 }
@@ -31,96 +64,216 @@ const generateRefreshToken=(user)=>{
   
   }
 
-const SignUp=async (req,res) =>
-  {
+  const SignUp = async (req, res) => {
 
-    const {firstname,lastname,phone,username,password,email} = req.body;
+    const { firstname, lastname, phone, username, password, email } = req.body;
+  
+    // Validate input fields
+    if ([firstname, lastname, phone, username, password, email].some(field => !field || field.trim() === "")) {
+      return res.status(400).json({ error: "All fields are required." });
+    }
+  
+  
+    try {
+      // Check for existing user
+      const existingUser = await User.findOne({ email });
 
-    if([firstname,lastname,phone,username,password,email].some((field)=> field?.trim()===""))
-
-        {
-            return res.send("Error in Signup Fill the Data Correctly..!");
-        }
-
-      console.log(req.body);
-
-      const user=await User.create({
-
+      if (existingUser) {
+        return res.status(409).json({ error: "Email already registered." });
+      }
+  
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      // Create user
+      const user = await User.create({
         firstname,
         lastname,
-        email,
         phone,
         username,
-        password,
-
+        password: hashedPassword,
+        email,
       });
-
-     const createdUser=await User.findById(user._id).select("-password");
-
-     if(!createdUser)
-     {
-
-    
-      res.send("Error in Database..!!!!");
-
-     }
-
-
-
-      res.json({firstname:firstname,lastname:lastname,email:email,contact:phone,username:username,password:password});
-
-}
+  
+      const createdUser = await User.findById(user._id).select("-password");
+      if (!createdUser) {
+        return res.status(500).json({ error: "Error saving user data." });
+      }
+  
+      res.status(201).json({
+        message: "Signup successful!",
+        user: { firstname, lastname, email, phone, username },
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  };
 
 // import bcrypt from 'bcrypt';
 // import { generateAccessToken, generateRefreshToken } from './tokenUtils.js';
 // import User from '../models/User.js'; // Adjust the path based on your folder structure
 
-const Login = async (req, res) => {
+const Login = async (req, res,next) => {
+
   const { email, password } = req.body;
 
-  // Check if all fields are filled
-  if ([ email, password].some(str => !str || str.trim() === '')) {
-    return res.status(402).send("Error: Please fill all fields correctly.");
+
+
+
+  // Validate input fields
+  if ([email, password].some(field => !field || field.trim() === "")) {
+
+     res.status(400).json({ error: "Email and password are required."});
+     
   }
 
   try {
     // Check if user exists
-    const userCheck = await User.findOne({ $or: [{ email }] });
-    if (!userCheck) {
-      return res.status(404).send("This User does not exist.");
+    const user = await User.findOne({ email });
+ 
+    if (!user) {
+
+      throw new classErrorHandling("User Not Found",402);
+      // return res.status(404).json({ error: "User not found." });
     }
+
 
     // Validate password
-    const isMatch = await bcrypt.compare(password, userCheck.password);
-    if (!isMatch) {
-      return res.status(406).send("Password does not match.");
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+   
+    if (!isPasswordValid) {
+      
+      return res.status(401).json({ error: "Invalid password." });
+
     }
+  
+    console.log("passwordvalid",isPasswordValid);
+    const ID=user._id.toString();
+    const encrypt=encryptIDS(ID)
 
     // Generate tokens
-    const accessToken = generateAccessToken({ Id: userCheck._id });
-    const refreshToken = generateRefreshToken({ Id: userCheck._id });
+    const accessToken = generateAccessToken({ id: encrypt});
+    const refreshToken = generateRefreshToken({ id: encrypt});
+   
+    console.log("encrypted",encryptIDS(ID));
+    // const encrypt=encryptIDS(ID)
+    console.log("decrypted",decryptIDS(encrypt));
 
-    // Save refreshToken in the database
-    userCheck.refreshToken = refreshToken;
-    await userCheck.save({ validateBeforeSave: false });
+    console.log("this is refreshTokennnn",refreshToken);
 
+      // Save refresh token in database
+    user.refreshToken = refreshToken;
 
-    // Return the tokens
-    return res.status(200).json({ accessToken, refreshToken,user:{  //Status Pending send tokens via cookies in http-only
+    await user.save({ validateBeforeSave: false });
 
-      id:userCheck._id,
-      name:userCheck.firstname,
-      email:userCheck.email,
-      status:true
-      
+    // Set refresh token as an HTTP-only cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false, // Ensure HTTPS
+      sameSite:"None",
+      maxAge: 7 * 24 * 60 * 60 * 1000,//7 days
+    });
 
+    
+    res.status(200).json({
+      message: "Login successful!",
+      accessToken,
+      refreshToken,
 
-    } });
+      user: {
+        id: encrypt,
+        name: user.firstname,
+        // email: user.email,
+      },
+    });
   } catch (error) {
-    console.error("Error during login:", error);
-    return res.status(500).send("Server error.");
+    // console.error("Login error:", error);
+    // res.status(500).json({ error: "Internal server error." });
+    next(error);
+  }
+
+};
+
+const handleUserIDFetch=(req,res)=>{
+
+  try {
+
+    const userId = req.user.id; // Extract userID from the token payload
+    console.log("here is my payload",userId);
+    const ID=decryptIDS(userId)
+    console.log("here is my payload",ID);
+    res.status(200).json({ ID });
+
+  } catch (error) {
+    next(error)
+  }
+
+}
+
+
+const refreshTokenHandler = async (req, res) => {
+
+  try {
+    const { encryptId } = req.body;
+
+    console.log("iiiiiidddddddddddddddddddddddd",encryptId);
+
+    if (!encryptId) {
+      return res.status(400).json({ error: "Missing required ID in the request." });
+    }
+
+    const refreshToken = req.cookies.refreshToken; // Retrieve token from HTTP-only cookie
+
+     console.log("hello this is Refreshhh Tokennnnnnnnnn",refreshToken);
+    if (!refreshToken) {
+      return res.status(401).json({ error: "Refresh token missing. Please log in again." });
+    }
+   console.log("refreshToken is hereeeeeeeeeeeeeee",refreshToken);
+    // Verify the refresh token
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
+      if (err) {
+        if (err.name === "TokenExpiredError") {
+          return res.status(403).json({ error: "Refresh token expired. Please log in again." });
+        }
+        return res.status(403).json({ error: "Invalid refresh token." });
+      }
+
+      const userId = decryptIDS(encryptId); // Decrypt the user ID
+      if (!userId) {
+        return res.status(403).json({ error: "Invalid ID provided." });
+      }
+
+      // Fetch the user and validate the stored refresh token
+      const user = await User.findById(userId);
+      if (!user || user.refreshToken !== refreshToken) {
+        return res.status(403).json({ error: "Invalid or tampered refresh token." });
+      }
+
+      // Generate a new access token
+      const newAccessToken = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "15m",
+      });
+
+      // Optionally, rotate the refresh token for better security
+      // const newRefreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+      // user.refreshToken = newRefreshToken;
+      // await user.save();
+
+      res.status(200).json({
+        message: "Token refreshed successfully.",
+        accessToken: newAccessToken,
+        // Uncomment if using token rotation
+        // refreshToken: newRefreshToken,
+      });
+    });
+  } catch (error) {
+    console.error("Error in refresh token handler:", error.message);
+    res.status(500).json({ error: "Server error. Please try again later." });
   }
 };
+
+
 
 const UploadPost=async (req,res)=>{
 
@@ -163,10 +316,11 @@ const getData=async (req,res)=>{
   {
    return res.send("no data found sorry...!!!");
   }
-
+console.log("this is dataProduct",data);
   return res.json(data);
 
 }
+
 
 const sendDataById=async(req,res)=>{
 
@@ -176,9 +330,9 @@ const {payload} = req.body;
 
 console.log("this is my payload",payload);
 
-
  const userProduct=await ProductD.findById(payload);
 
+ console.log("hello world.....",userProduct);
  if(!userProduct)
  {
 
@@ -186,15 +340,49 @@ console.log("this is my payload",payload);
   return res.sendStatus(400).json({"data":"Sorry data not Found..>!!!"});
 
  }
+ 
+ console.log("this is userProduct ID",userProduct._id);
 
-return res.json(userProduct);
+ 
+
+ res.cookie("productID",userProduct._id.toString(),{
+  httpOnly: true,
+  secure: false, // Ensure HTTPS
+  sameSite:"Lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 1 day
+})
+return res.json(userProduct);  //productID coming here fix here store productId in cookies..!!
 
 }
+
+const getProductIdFromCookies = async (req, res) => {
+
+  try {
+    console.log("Cookies in Backend:", req.cookies);
+    const productID = req.cookies.productID; // Read productID from cookies
+    console.log("hello i am hereeeee babyyyy",productID);
+    if (!productID) {
+      return res.status(400).json({ message: "No productID found in cookies" });
+    }
+
+    console.log("Retrieved Product ID from Cookies:", productID);
+    
+    return res.json({ productID }); // Send the productID back to the frontend
+
+  } catch (error) {
+    console.error("Error retrieving product ID:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
 
 
 const update=async(req,res)=>{
 
   const priceSimi=req.query.value
+  console.log("this is similiar data in backend",priceSimi);
   const convertPrice=Number(priceSimi);
  
 
@@ -211,29 +399,59 @@ const update=async(req,res)=>{
 
 
     );
-
+  console.log("this is my result in similiar data",result)
    return res.json(result);
 
-  }catch(error)
-  {
+  }
+  catch(error)
+  { 
     return res.send("sorry no product is available on minimum price..!!");
 
   }
 
 }
 
+//update smartphone prices
+const updatePricesSP=async(req,res)=>{
+
+const {PID}=req.body;
+
+if(!PID || !mongoose.Types.ObjectId.isValid(PID))
+{
+  return res.status(402).json({"error":"ID NOT COMING INTO BODY"});
+}
+
+try{
+  
+  const result=await ProductD.findByIdAndUpdate(PID,{$set:{price:60000}},{new:true});
+  console.log("this is update prices",result);
+if(!result)
+{
+  return res.status(401).json({"error":"ID NOT FOUND SORRY"});
+}
+
+return res.status(200).json({"Success":"Data Updated Successfully"});
+
+}
+catch(error)
+{
+  return res.status(402).json({"error":"Something Error"});
+}
+
+}
+
+
 
 const user_review=async(req,res)=>{
 
   const {userId,productId,rating,comment,imgUrl}=req.body;
 
-  // if(!rating || !comment)
-  // {
+  if(!rating || !comment)
+  {
 
-  //   return res.sendStatus(402).json({err:"bad request"});
+    return res.sendStatus(402);
 
-
-  // }
+  }
 
 try{
   
@@ -429,7 +647,7 @@ const chatbotResponse=async(req,res)=>{
    });
  
    const sessionPath = sessionClient.projectAgentSessionPath('newagent-ttok', sessionId);
- 
+
    // The text query request
    const request = {
      session: sessionPath,
@@ -467,8 +685,6 @@ const chatbotResponse=async(req,res)=>{
      console.log('  No intent matched.');
    }
  }
-
-
 
  const addCountItems=async(req,res)=>{
 
@@ -559,7 +775,6 @@ const chatbotResponse=async(req,res)=>{
   }
 };
 
-
  const showTotalItemsCount=async (req,res)=>{
 
 
@@ -569,11 +784,8 @@ const chatbotResponse=async(req,res)=>{
   const user = await User.findById(userId);
 
   if(!user)
-
   {
-
     return res.status(404).send("user not found baby...!");
-
   }
 
   let totalQuantity = user.bag.reduce((total, item) => total + item.quantity, 0);
@@ -585,13 +797,12 @@ const chatbotResponse=async(req,res)=>{
  }
 
  const fetchBagItems = async (req, res) => {
-    const { userIdStorage } = req.body;
+    const { UID } = req.body;
 
-    console.log("userId:", userIdStorage);
+    console.log("userId:", UID);
 
-  
     try {
-        const user = await User.findById(userIdStorage).populate('bag.productId');
+        const user = await User.findById(UID).populate('bag.productId');
         if (!user) {
             console.log("User not found");
             return res.status(404).json({ message: "User not found" });
@@ -710,7 +921,7 @@ return res.status(201).json({"Exist":"product is not Exist in Bag"});
 
   } catch(err){
 
-    res.send(400).json({"error":"something went wrong"});
+    res.sendStatus(400)
 
   }
 
@@ -756,5 +967,99 @@ const totalItemsPrice = async (req, res) => {
 
 
 
+ const searchHistory = async (req, res) => {
+  try {
+    const { UID } = req.body;
 
-export {SignUp,Login,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice};
+    const productSchemaData=await ProductD.findById(UID);
+
+    console.log("Product Data>>>>>>",productSchemaData.product_image);
+
+
+
+  console.log("backend product ID",UID);
+    if (!UID) {
+      return res.status(400).json({ error: "Product ID (UID) is required!" });
+    }
+
+    // Ensure the productId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(UID)) {
+      return res.status(400).json({ error: "Invalid Product ID format!" });
+    }
+
+    // Update or create the document
+    const result = await ProductInsights.findOneAndUpdate(
+      { productId: UID },  // 🔥 Only filter by productId (to find existing product)
+      { 
+        $inc: { searchCount: 1 },  // 🔥 Increment searchCount
+        $setOnInsert: {  // 🔥 Set these fields ONLY if creating a new document
+          product_image: productSchemaData.product_image,
+          product_name: productSchemaData.product_name,
+          price: productSchemaData.price
+        }
+
+      },
+      { new: true, upsert: true } // ✅ Return updated document, create if not found
+    );
+    
+
+    
+
+      // const newProduct = new ProductInsights({
+
+      //   productId: UID,
+      //   product_image: productSchemaData.product_image,
+      //   product_name: productSchemaData.product_name,
+      //   price: productSchemaData.price,
+      //   searchCount: 1,
+       
+      // },);
+
+      // await newProduct.save();
+
+      // if(!newProduct)
+      // {
+
+      // }
+
+    
+      // const updatedData = await ProductInsights.findOneAndUpdate(
+      //   {},
+
+      //   {
+      //     $push: { productDetails: newProduct },//✅ Push new product if it doesn't exist
+      //     $inc: { searchCount: 1 }
+      //   },
+      //   { new: true, upsert: true }
+      // );
+
+      return res.status(201).json({
+        message: "New search record created!",
+        data: newProduct,
+      });
+  } catch (error){
+    console.error("Error updating search count:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+  const fetchMostSearchedProducts = async (req, res) => {
+    try {
+
+      const result = await ProductInsights.find()
+       
+        .sort({ searchCount: -1 }) 
+                                    // Sort in descending order
+        .limit(6);                // Get only the top 6 products
+
+        console.log("productInsights",result);
+        //  console.log(result);
+        console.log('result here insights',result.productId);
+         res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error", error });
+    }
+  };
+
+export {SignUp,Login,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice,refreshTokenHandler,handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP};

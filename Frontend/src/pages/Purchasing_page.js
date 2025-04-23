@@ -11,6 +11,8 @@ import star from "../assets/Brandlogo/rating.png"
 import Header from '../components/HeaderChange.js';
 import { increment } from '../store/dataSlice.js';
 import Cookies from "universal-cookie"
+import {fetchID} from "../Services/apiService.js";
+import Footer from "../components/Footer.js";
 
 
 
@@ -21,20 +23,114 @@ function Purchasing_page()
   const data = useSelector(state => state.data.data);  // Access the inner `data` object
   const error = useSelector(state => state.data.error);  // Access `error` state
   const loading = useSelector(state => state.data.loading);
-  const userId = useSelector(state=>state.userId.userId);
-  
-  // localStorage.setItem("userID",userId);
-  console.log("this is data error",data);
+  const userId = useSelector(state=>state.username.userId);
+  const similiarData=useSelector(state=>state.similiarproductstore.dataSimiliar);  //fix data here carry all these data to localStorage or redux persist all these purchase page data:-
+  console.log("this is similiarDataaaa here",similiarData);
+  const apiDataRedux=useSelector(state=>state.data.data)   //bug occuring here give localStorage data here which not be perished
+  const [apiData,setApiData]=useState(JSON.parse(localStorage.getItem("apiData")));
+  const [productColors, setProductColors] = useState([]);
+  const [timer,setTimer]=useState(true);
+
+
+  console.log("this is data coming in purchasing page",data);
+    // localStorage.setItem("userID",userId);
   // localStorage.setItem("productColor",JSON.stringify(data.product_color));
 
-  console.log("this is my api data",JSON.parse(localStorage.getItem("apiData")))
-  const apiData=JSON.parse(localStorage.getItem("apiData"));
-  console.log("this is stored api data",apiData.product_color);
-
-  // const arrayBackProductColor= || [];
-  // console.log(arrayBackProductColor)
-  console.log("this is my userId",userId);
  
+
+
+ useEffect(()=>{
+
+//  setTimeout( () => {
+//     setApiData(JSON.parse(localStorage.getItem("apiData")))
+//     if (apiData && apiData.product_color){
+
+  //       setProductColors(apiData.product_color);
+  //       setTimer(false);
+  //     }
+  //     // setTimer(false);
+  //   console.log("Yes this is Interval Timeeeeeeeee");
+  //   },1000);
+  // setTimeout(()=>{
+  //   setApiData(JSON.parse(localStorage.getItem("apiData")))
+  //   if (apiData && apiData.product_color) {     
+  //     setProductColors(apiData.product_color);
+  //   }
+  //   setTimer(false);
+  // },1000)
+
+//   if(loading===true)
+// {
+
+//     setApiData(JSON.parse(localStorage.getItem("apiData")));
+//     setProductColors(apiData.product_color);
+//     setTimer(false);
+//     console.log("data coming here smoothlyyyyyyy",loading);
+
+// }
+
+
+if (!loading) { // Run only when loading becomes false
+  const storedData = JSON.parse(localStorage.getItem("apiData"));
+
+  if (storedData && storedData.product_color) {
+    setApiData(storedData);
+    setProductColors(storedData.product_color);
+  }
+
+  setTimer(false);
+  console.log("Data updated:", storedData);
+}
+
+
+
+ },[loading]);  
+
+ 
+
+   console.log("this data is coming productColorssssss",productColors);
+
+  // useEffect(() => {
+  //   // Extract product_color from apiData and update state
+
+ 
+    
+  //   if (apiData && apiData.product_color) {
+  //     setProductColors(apiData.product_color);
+  //   }
+  // }, [apiData]);
+
+
+  console.log("this is my api data",productColors);
+
+
+
+  // useEffect(() => {
+  //   // Attempt to fetch `apiData` from localStorage on component mount
+  //   const storedData = localStorage.getItem("apiData");
+
+  //   if (storedData) {
+  //     setApiData(JSON.parse(storedData));
+  //   } else {
+  //     // Simulate an API call or localStorage update
+  //     const fetchApiData = async () => {
+      
+  //       // localStorage.setItem("apiData", JSON.stringify(data));
+  //       setApiData(data);
+  //     };
+
+  //     fetchApiData();
+  //   }
+  // }, []);
+
+
+
+    // const apiData=JSON.parse(localStorage.getItem("apiData"));
+    // console.log("this is stored api data",apiData.product_color);
+    // const arrayBackProductColor= || [];
+    // console.log(arrayBackProductColor)
+  console.log("this is my userId",userId);
+  
   const [pic,setPic]=useState(localStorage.getItem("productImage"));
   const [productName,setProductName]=useState(localStorage.getItem("productName"));
   const [details,setDetails]=useState(localStorage.getItem("details"));
@@ -42,7 +138,13 @@ function Purchasing_page()
   const [price,setPrice]=useState(localStorage.getItem("price"));
   const [rating,setRating]=useState(localStorage.getItem("rating"));
   const [magnifier,setMagnifier]=useState({});
-  const [reData,setReData]=useState([]);
+
+  const [reData, setReData] = useState(() => {
+    const stored = localStorage.getItem("reData");
+    return stored ? JSON.parse(stored) : [];
+  });   //lazy Initializer approach i am using here...:-
+  
+ 
   const [picUrl,setPicUrl]=useState("");
   const [color,setColor]=useState( data?.product_color?.[0]?.color || '' );
   const [totalItemsCart,setTotalItemsCart]=useState(localStorage.getItem("itemsCart"));
@@ -50,51 +152,123 @@ function Purchasing_page()
   const [buttonClick,setButtonClick]=useState();
   const [buttonClick2,setButtonClick2]=useState(false);
   const [buttonText,setButtonText]=useState("");
-   const [loading2,setLoading2]=useState(true);
+  const [loading2,setLoading2]=useState(true);
+  const [cookPID,setCookPID]=useState("");
+  const [similiarProduct,setSimiliarProduct]=useState(JSON.parse(localStorage.getItem("similiarP")));
   const dispatch=useDispatch();
+
+ 
+  useEffect(()=>{
+
+    const fetchProductId = async () => {
+      try {
+       
+        const response = await axios.get("http://localhost:1000/users/getProductId", {
+          withCredentials: true, // Ensure cookies are sent with request
+        });
+    
+        console.log("Product ID from Backend Cookies:", response.data.productID);
+        setCookPID(response.data.productID)
+        const timer = setTimeout(() => {
+              sendUserIds();
+            }, 2500);
+       
+        // return response.data.productID; // Use this productID as needed
+        return () => clearTimeout(timer); // Cleanup function
+    
+      } catch (error) {
+        console.error("Error fetching product ID:", error);
+        return null;
+      }
+    };
+
+    fetchProductId();
+
+  },[cookPID])
+
+  const sendUserIds = async (req,res) => {
+    try {
+     
+      console.log("Triggered by button click"); 
+      const ID=await fetchID(localStorage.getItem("accessToken"));
+
+      
+      const Ids = {
+        userId: ID,
+        productId: cookPID,
+      };  
+    
+      
+      
+
+      const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
+
+      console.log("Response status:", sendIDS.status);
+
+      if (sendIDS.status === 200) {
+        console.log("Product already exists in the cart");
+        console.log("this is my product ID",Ids.productId);
+        setButtonClick2(true);
+      }
+
+      console.log("this is my product ID",Ids.productId);
+
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
+    finally{
+      setLoading2(false);
+    }
+  };
 
   //  console.log(loca);
   //Error occuring here Error No:-1
-  useEffect(() => {
-    const sendUserIds = async () => {
-      try {
+  // useEffect(() => {
+  //   const sendUserIds = async (req,res) => {
+  //     try {
+       
+  //       console.log("Triggered by button click"); 
+  //       const ID=await fetchID(localStorage.getItem("accessToken"));
 
-        console.log("Triggered by button click"); 
-        const Ids = {
-          userId: localStorage.getItem("userID"),
-          productId: localStorage.getItem("productID"),
-        };  
+  //       alert(cookPID)
+  //       const Ids = {
+  //         userId: ID,
+  //         productId: cookPID,
+  //       };  
       
         
         
   
-        const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
+  //       const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
   
-        console.log("Response status:", sendIDS.status);
+  //       console.log("Response status:", sendIDS.status);
   
-        if (sendIDS.status === 200) {
-          console.log("Product already exists in the cart");
-          console.log("this is my product ID",Ids.productId);
-          setButtonClick2(true);
-        }
+  //       if (sendIDS.status === 200) {
+  //         console.log("Product already exists in the cart");
+  //         console.log("this is my product ID",Ids.productId);
+  //         setButtonClick2(true);
+  //       }
 
-        console.log("this is my product ID",Ids.productId);
+  //       console.log("this is my product ID",Ids.productId);
 
-      } catch (error) {
-        console.error("Error adding product to cart:", error);
-      }
-      finally{
-        setLoading2(false);
-      }
-    };
+  //     } catch (error) {
+  //       console.error("Error adding product to cart:", error);
+  //     }
+  //     finally{
+  //       setLoading2(false);
+  //     }
+  //   };
   
-    const timer = setTimeout(() => {
-      sendUserIds();
-    }, 1000); // 1-second delay
+  //   const timer = setTimeout(() => {
+  //     sendUserIds();
+  //   }, 1000); // 1-second delay
   
-    return () => clearTimeout(timer); // Cleanup function
-  }, []);
+  //   return () => clearTimeout(timer); // Cleanup function
+  // }, []);
   
+  useEffect(() => {
+    localStorage.setItem("reData", JSON.stringify(reData));
+  }, [reData]);  //refresh automatically when data will added in review database
 
 
    useEffect(() => {
@@ -114,21 +288,44 @@ localStorage.setItem("cartItems",totalItemsCart);
 
 
 
+useEffect(() => {
+  const fetchSimilarProducts = async () => {
+    if (data && data.price) {
+      try {
+        const response = await axios.get(`http://localhost:1000/users/update?value=${data.price}`);
+        
+        if (response.data) {
+          dispatch(setSimiliarProduct(response.data)); // Update Redux store
+          console.log("Fetched similar data:", response.data);
+        } else {
+          console.log("No similar products found.");
+        }
+      } catch (error) {
+        console.error("Error fetching similar products:", error);
+      }
+    }
+  };
+
+  fetchSimilarProducts();
+}, [data, dispatch]);
+
+
   useEffect(()=>{
 
+   const datas=async ()=>{
 
     if(data && data.product_image && data.product_name)
     {
-
-
-
+   console.log("yes i am hereeee babbyyyyyy in data is coming correctly");
       // similiar product api
-      const api=axios.get(`http://localhost:1000/users/update?value=${data.price}`).then(response=>dispatch(setSimiliarProduct(response.data))).catch((err)=>console.log(err));
-
-
+      // const api=await axios.get(`http://localhost:1000/users/update?value=${data.price}`).then(response=>dispatch(setSimiliarProduct(response.data))).catch((err)=>console.log(err));
+      //  console.log("this is similiar data dispatch",api);
       // costumer reviews api
-     const reviewData= axios.get('http://localhost:1000/users/fetchuser').then(res=>setReData(res.data.data));
-
+     const reviewData= await axios.get('http://localhost:1000/users/fetchuser')
+     localStorage.setItem("reData",JSON.stringify(reviewData.data.data));
+     // .then(res=>localStorage.setItem("reData",JSON.stringify(res.data.data)));
+    
+      console.log("reviewData",reviewData.data.data)  ///bug is here showing undefined here...>>>>
       console.log("description_data",data.description);
       cookie.set("productName", data.product_name, { path: "/", maxAge: 3600 });
       localStorage.setItem("productImage",data.product_image);
@@ -138,9 +335,15 @@ localStorage.setItem("cartItems",totalItemsCart);
       localStorage.setItem("price",data.price);
       localStorage.setItem("rating",data.rating);
       localStorage.setItem("productID",data._id);
+    
       
     
       setPic(localStorage.getItem("productImage"));
+      const data1 = localStorage.getItem("reData");
+      if (data1) {
+        const parsedData = JSON.parse(data1);
+        setReData(parsedData); // Store in state
+      }
       setProductName(localStorage.getItem("productName"));
       setDetails(localStorage.getItem("details"));
       setDescription(localStorage.getItem("description"));
@@ -148,17 +351,29 @@ localStorage.setItem("cartItems",totalItemsCart);
       setRating(localStorage.getItem("rating"));
 
     }
+
+
+  }
+
+  datas();
+
   },[data])
 
-  const similiarData=useSelector(state=>state.similiarproductstore.dataSimiliar);
+// useEffect(()=>{
 
-  console.log(similiarData)
+//     console.log("this is similiar Dataaaa in useEffect",similiarData)
+
+//     localStorage.setItem("similiarP",similiarData);
+
+//     setSimiliarProduct(localStorage.getItem("similiarP"));
+
+//   },[similiarData])
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  console.log(reData);
-
+  console.log("this is reDataaa brooooooooooooooooo",reData);
+ 
   const handleMouseOver=(e)=>{
 
     const {top,left,width,height}=e.target.getBoundingClientRect();
@@ -189,17 +404,50 @@ localStorage.setItem("cartItems",totalItemsCart);
     });
   }
 
+  const handleBuyButton=async()=>{
+
+    const IDS=await fetchID(localStorage.getItem("accessToken"));
+
+    const Ids={userId:IDS,productId:localStorage.getItem("productID")};
+    navigate("/users/shipping")
+
+
+    try{
+
+    const sendIDS=await axios.post("http://localhost:1000/users/addbag",Ids); 
+    
+    
+    }
+    catch(error)
+    {
+      return console.error("this is error in buy button",error)
+        
+     }
+
+  }
+
+
+
   const handleAddtoCart=async()=>{
 
     
-    console.log(localStorage.getItem("userID"));
+    // console.log(localStorage.getItem("userID"));
 
-    const Ids={userId:localStorage.getItem("userID"),productId:localStorage.getItem("productID")};
+    if(!localStorage.getItem("accessToken"))
+    {
+     return navigate("/users/login");
+    }
 
-const showTotalId = { userId: localStorage.getItem("userID") }; // Wrap userID in an object
+    const ID=await fetchID(localStorage.getItem("accessToken"));
 
-const response=await axios.post("http://localhost:1000/users/showtotal", showTotalId);
-      
+    console.log("id is here Encrypted ID",ID)
+
+    const Ids={userId:ID,productId:localStorage.getItem("productID")};
+
+    const showTotalId = { userId: ID }; // Wrap userID in an object
+
+    const response=await axios.post("http://localhost:1000/users/showtotal", showTotalId);
+    
     console.log(response.data.totalQuantity);
     
     
@@ -213,8 +461,9 @@ const response=await axios.post("http://localhost:1000/users/showtotal", showTot
     const sendUserIds = async () => {
       try {
         console.log("Triggered by button click");
+        const ID=await fetchID(localStorage.getItem("accessToken")); 
         const Ids = {
-          userId: localStorage.getItem("userID"),
+          userId: ID,
           productId: localStorage.getItem("productID"),
         };
   
@@ -223,8 +472,10 @@ const response=await axios.post("http://localhost:1000/users/showtotal", showTot
         console.log("Response status:", sendIDS.status);
   
         if (sendIDS.status === 200) {
+
           console.log("Product already exists in the cart");
           setButtonClick2(true);
+
         }
 
         let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:Ids.userId});
@@ -247,6 +498,7 @@ const response=await axios.post("http://localhost:1000/users/showtotal", showTot
 
   const handleColorClick = (color) => {
     setColor(color); // Set the clicked color as the selected color
+    console.log("holaaaaaaa similiarrrrrrr",similiarData)
   };
 
   //send userId and ProductId for track user product Items:-
@@ -277,9 +529,14 @@ const response=await axios.post("http://localhost:1000/users/showtotal", showTot
   
   // }
 
-  if (loading2) {
-    return <p className="loading-text text-center text-xl">Loading...</p>;
+  if (timer) {
+    return <p className="loading-text text-center text-xl">Loading...Hello worlddddd</p>;
   }
+
+  console.log("this is the localStorage reData",localStorage.getItem("reData"));
+  console.log("this is the reData State Data",reData)
+  
+  
   
   return(
 <div className=''>
@@ -295,9 +552,12 @@ const response=await axios.post("http://localhost:1000/users/showtotal", showTot
 <div className='leftContainer  flex flex-col w-1/3 '>
 
 <div className='image-container h-max overflow-y-scroll overflow-x-hidden rounded-xl'>
+
+  
   {
-    apiData.product_color
-      .filter((item) => item.color === color) // Filter based on selected color
+    
+ productColors
+      .filter((item) => item.color === `${!color?"Black":color}` ) // Filter based on selected color
       .map((item) => (
         <div key={item.color}>
           {
@@ -348,7 +608,7 @@ backgroundImage:`url(${picUrl})`
   <h1 className="">{description}</h1>
   </div>
   <div className="purchaseBtn  flex w-1/3 pl-4  justify-around pt-8">
-  <button className="btn text-base  w-2/4 h-10 rounded-md mr-2 text-white bg-orange-400" >Buy</button>
+  <button className="btn text-base  w-2/4 h-10 rounded-md mr-2 text-white bg-orange-400" onClick={handleBuyButton}>Buy</button>
   {
     buttonClick2? <button className="btn text-base  text-white w-2/4 h-10 rounded-md ml-2 bg-green-400" onClick={()=>navigate("/users/shipping")}>Go to Cart</button>: <button className="btn text-base  text-white w-2/4 h-10 rounded-md ml-2 bg-green-400" onClick={handleAddtoCart}>Add to Cart</button>
  
@@ -440,49 +700,6 @@ backgroundImage:`url(${picUrl})`
 </div>
 
 
-<div className='suggestItems  pt-12'>
-
-   <div className="similiarProductContainer flex justify-center">
-
-    <h1 className="text-base">Similiar Products</h1>
-
-    </div> 
-
-
-{/* similiar product Container */}
-<div className='productDetailsCont mt-12 flex'>
-{
-   
-    similiarData.map((item)=>(
-<div className='productContainer  ml-16 border-t-2 border-l-2 border-r-2 border-b-2' key={item._id} data-id={item._id} >
-<Link to="/product">
-    <div className='image w-full'>
-{/* <img className='imageProduct w-full' style={{backgroundImage:`url('/images/ferrari.jpg')`}}></img> */}
-<div className='phDiv w-full' style={{backgroundImage:`url(${item.product_image})`}}>
-
-    </div>
-    </div>
-    <div className='productName w-full flex flex-col items-center'>
-
-        <h3 className='text-base'>  {item.product_name} </h3>
-        <span className='text-base'>₹{item.price}</span>
-
-    </div>
-    </Link>
-</div>
-
-    )) }
-
-    </div>
-
-
-
-
-
-
-
-</div>
-
 
 <div className="reviewContainer  ">
 
@@ -537,11 +754,16 @@ backgroundImage:`url(${picUrl})`
 
 
 
+
+
 </div>
 
 </div>
 </div>
 
+
+
+{/* <Footer></Footer> */}
 
 </div>
 

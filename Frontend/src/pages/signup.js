@@ -16,9 +16,12 @@ function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (password !== confirmpass) {
+    if (password !== confirmpass) 
+      
+    {
       return alert("Password is not Matching..!!!");
     }
+
 
     const bodyData = {
       firstname,

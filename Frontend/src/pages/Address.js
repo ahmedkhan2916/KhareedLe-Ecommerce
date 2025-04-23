@@ -3,16 +3,30 @@ import "../assets/Style/Headings.css"
 import Header from "../components/HeaderChange.js"
 import Map from './Map.js'
 import axios from "axios"
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
+import {fetchID} from "../Services/apiService.js"
 
 function Address() {
 
     const navigate = useNavigate();
 
     const [radio,setRadio]=useState({firstRadio:false,secondRadio:false});
-    const userId=localStorage.getItem("userID");
+    // const userId = useSelector(state=>state.username.userId);
     const [address,setAddress]=useState(localStorage.getItem("UserAddress" || ""));
+//     const [userId,setUserId]=useState();
 
+//     useEffect(()=>{
+
+
+
+// setUserId(fetchID(localStorage.getItem("accessToken")));
+
+
+
+
+
+//     },[])
 
     useEffect(()=>{
      
@@ -77,6 +91,8 @@ function Address() {
 
         e.preventDefault();
 
+        const userId=await fetchID(localStorage.getItem("accessToken"));
+        
         const dataSent= await axios.post("http://localhost:1000/users/addressadd",{...formData,userId});
 
         console.log("this is data",dataSent);

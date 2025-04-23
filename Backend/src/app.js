@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+import errorHandling from "./middlewares/errorHandling.js";
 const app=express();
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -16,8 +17,8 @@ app.use(bodyParser.json())
 
 app.use(cors(
     {
-        origin:process.env.CORS_ORIGIN,
-        credentials:true,
+        origin: 'http://localhost:3000', // Replace with your front-end's URL
+        credentials: true, 
 }));
 
 //default limit of json is 2mb:
@@ -30,6 +31,7 @@ app.use(express.urlencoded({extended:true,limit:"16kb"}));
 
 app.use(cookieParser());
 
+app.use(errorHandling);
 // app.get("/signup",(req,res)=>{
 
 

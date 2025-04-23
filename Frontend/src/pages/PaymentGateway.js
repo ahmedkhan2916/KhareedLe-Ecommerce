@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import Header from "../components/HeaderChange.js";
 import "../assets/Style/payment.css"
 import "../assets/Style/Headings.css"
+import { useNavigate } from 'react-router-dom'; 
 
 function PaymentGateway() {
   const [selectedPayment, setSelectedPayment] = useState(""); // To track selected payment method
   const [codDetails, setCodDetails] = useState("COD Fee will be Charged by ₹80"); // COD-specific details
   const [debitDetails,setDebitDetails]=useState({cardnumber:"",username:"",validation:"",cvv:""})
   const [counter,setCounter]=useState(0);
+  const navigate=useNavigate();
 
   const handlePaymentSelect = (e) => {
     setSelectedPayment(e.target.value);
@@ -16,6 +18,18 @@ function PaymentGateway() {
 //   const handleCodDetailsChange = (e) => {
 //     setCodDetails({ ...codDetails, [e.target.name]: e.target.value });
 //   };
+
+const handleCongrats=()=>{
+
+  navigate("/users/completed");
+
+
+
+
+
+}
+
+
 
 const handleDebitDetails=(e)=>{
 
@@ -216,8 +230,6 @@ const handleDebitDetails=(e)=>{
 
 />
 
-
-
                 </div>
 
 
@@ -232,6 +244,7 @@ const handleDebitDetails=(e)=>{
         <button
           type="submit"
           className="w-full bg-transparent text-white py-2 rounded hover:bg-green-600 mt-2"
+          onClick={handleCongrats}
         >
           Proceed to Pay
         </button>

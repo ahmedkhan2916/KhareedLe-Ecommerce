@@ -11,20 +11,57 @@ const Map = () => {
   const map = useRef(null);
   const marker = useRef(null);
   const [address, setAddress] = useState("");
+  const [location,setLocation]=useState({lat:null,lng:null});
+
+  const getUserLocation = () => {
+  
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error fetching location:", error);
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
 
   useEffect(() => {
-    if (!mapContainer.current || map.current) return; // Ensure the container is ready and map is not already initialized
+    getUserLocation();
+   
+  }, []);
+
+  // useEffect(()=>{
+
+  //   fetchAddress(0,0);
+
+
+  // },location.lat)
+
+
+
+
+  useEffect(() => {
+
+  
+    if (!mapContainer.current || map.current || !location.lat) return; // Ensure the container is ready and map is not already initialized
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current, // Pass the valid DOM element
       // style: "mapbox://styles/mapbox/streets-v11", // Add the style
-      center: [77.1025, 28.7041], // Center coordinates [lng, lat]
+      center: [location.lng, location.lat], // Center coordinates [lng, lat]
       zoom: 12,
     });
-
+      
     // Add a draggable marker
     marker.current = new mapboxgl.Marker({ draggable: true })
-      .setLngLat([77.1025, 28.7041])
+      .setLngLat([location.lng, location.lat])
       .addTo(map.current);
 
     marker.current.on("dragend", () => {
@@ -33,20 +70,24 @@ const Map = () => {
     });
 
     // Trigger map resize
+    fetchAddress(location.lng, location.lat);
     map.current.resize();
-  }, []);
+  }, location.lat);
+
+ 
 
   const fetchAddress = async (longitude, latitude) => {
     const geocodingClient = MapboxGeocoding({
       accessToken: mapboxgl.accessToken,
     });
-
+// alert(location.lng);
     try {
       const response = await geocodingClient
         .reverseGeocode({ query: [longitude, latitude] })
         .send();
 
       if (response && response.body.features.length > 0) {
+        
         setAddress(response.body.features[0].place_name);
         console.log("Map data:", response);
         localStorage.setItem("UserAddress", response.body.features[0].place_name); // Store the address
@@ -69,7 +110,7 @@ const Map = () => {
         className="mt-6 p-4 bg-white rounded-lg shadow-md"
         style={{ width: "80%" }}
       >
-        <strong>Address:</strong> {address || "Fetching address..."}
+        <strong>Address:{location.lat}||{location.lng}</strong> {address || "Fetching address..."}
       </div>
     </div>
   );
