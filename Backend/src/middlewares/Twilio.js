@@ -22,19 +22,4 @@
 
 // sendWhatsapp.mjs or use "type": "module" in package.json
 
-import twilio from 'twilio';
 
-const accountSid = process.env.ACCOUNT_SID_TWILIO
-const authToken = process.env.AUTH_TOKEN_TWILIO;
-
-const client = twilio(accountSid, authToken);
-
-client.messages
-.create({
-    from: 'whatsapp:+14155238886',
-contentSid: process.env.CONTENT_SID,
-contentVariables: '{"1":"12/1","2":"3pm"}',
-to: 'whatsapp:+919643423183'
-})
-  .then(message => console.log('WhatsApp Message SID:', message.sid))
-  .catch(error => console.error('Error sending WhatsApp message:', error));
