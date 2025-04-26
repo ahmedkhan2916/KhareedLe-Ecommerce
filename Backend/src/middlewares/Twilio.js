@@ -24,15 +24,15 @@
 
 import twilio from 'twilio';
 
-const accountSid = 'AC3c103405912e4ed8d6f5804c91ed8d85';
-const authToken = 'd60b651d9033ed1f1845b7191daecaad';
+const accountSid = process.env.ACCOUNT_SID_TWILIO
+const authToken = process.env.AUTH_TOKEN_TWILIO;
 
 const client = twilio(accountSid, authToken);
 
 client.messages
 .create({
     from: 'whatsapp:+14155238886',
-contentSid: 'HX350d429d32e64a552466cafecbe95f3c',
+contentSid: process.env.CONTENT_SID,
 contentVariables: '{"1":"12/1","2":"3pm"}',
 to: 'whatsapp:+919643423183'
 })
