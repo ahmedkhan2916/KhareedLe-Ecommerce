@@ -13,7 +13,7 @@ import { increment } from '../store/dataSlice.js';
 import Cookies from "universal-cookie"
 import {fetchID} from "../Services/apiService.js";
 import Footer from "../components/Footer.js";
-
+import BuyButton from "../components/BuyButton.js"
 
 
 function Purchasing_page() 
@@ -192,7 +192,13 @@ if (!loading) { // Run only when loading becomes false
       console.log("Triggered by button click"); 
       const ID=await fetchID(localStorage.getItem("accessToken"));
 
-      
+      if(!ID)
+      {
+
+        //  alert("198 line no on purchasePage ID not Defined");
+         return;
+
+      }
       const Ids = {
         userId: ID,
         productId: cookPID,
@@ -461,7 +467,16 @@ useEffect(() => {
     const sendUserIds = async () => {
       try {
         console.log("Triggered by button click");
+       
+
         const ID=await fetchID(localStorage.getItem("accessToken")); 
+   
+        if(!ID)
+        {
+          return ;
+        }
+        
+
         const Ids = {
           userId: ID,
           productId: localStorage.getItem("productID"),
@@ -608,7 +623,8 @@ backgroundImage:`url(${picUrl})`
   <h1 className="">{description}</h1>
   </div>
   <div className="purchaseBtn  flex w-1/3 pl-4  justify-around pt-8">
-  <button className="btn text-base  w-2/4 h-10 rounded-md mr-2 text-white bg-orange-400" onClick={handleBuyButton}>Buy</button>
+  {/* <button className="btn text-base  w-2/4 h-10 rounded-md mr-2 text-white bg-orange-400" onClick={handleBuyButton}>Buy</button> */}
+  <BuyButton></BuyButton>
   {
     buttonClick2? <button className="btn text-base  text-white w-2/4 h-10 rounded-md ml-2 bg-green-400" onClick={()=>navigate("/users/shipping")}>Go to Cart</button>: <button className="btn text-base  text-white w-2/4 h-10 rounded-md ml-2 bg-green-400" onClick={handleAddtoCart}>Add to Cart</button>
  

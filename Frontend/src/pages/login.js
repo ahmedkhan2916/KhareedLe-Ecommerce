@@ -28,7 +28,7 @@ import playstation from "../assets/LoginLogos/playstation.png"
 import xbox from "../assets/LoginLogos/xbox.png"
 import airpods from "../assets/LoginLogos/airpods.png"
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {setAccessTK, setStatusCode,setUserId,setUsername} from '../store/dataSlice.js'
 import loginImage from "../assets/SignupImage/loginImage.jpg"
@@ -38,8 +38,7 @@ import "../assets/Style/Headings.css"
  
 function Login() {
   
-    const imgArray=[headphone,apple,airpods,samsung,applelogo,oneplus,oppo,vivo,moto,playstation,xbox];
-
+  const imgArray=[headphone,apple,airpods,samsung,applelogo,oneplus,oppo,vivo,moto,playstation,xbox];
   const navigate=useNavigate();
   const [currentIndex,setCurrentIndex]=useState(0);
   const [email,setEmail]=useState('');
@@ -47,7 +46,12 @@ function Login() {
   const [status,setStatus]=useState(false);
  const dispatch= useDispatch();
  const detail=useSelector((state)=>state.AccessTK.Token)
- console.log("this is access token stored in redux",detail);
+//  console.log("this is access token stored in redux",detail);
+const location = useLocation();
+
+
+
+
 
    const handleLogin=async(e)=>{
 
@@ -113,9 +117,10 @@ function Login() {
 
 
         setStatus(true);
-        navigate('/',{state:{user}});
+        const searchParams = new URLSearchParams(location.search);
+        const redirectPath = searchParams.get('redirect') || '/'; // fallback to home if not found
       
-        
+        navigate(redirectPath);
         
         
     }catch(error){

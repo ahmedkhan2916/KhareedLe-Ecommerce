@@ -1,0 +1,22 @@
+.hamburger {
+    width: 35px;
+    height: 5px;
+    background-color: black;
+    margin: 6px 0;
+  }
+
+
+  .loginLogo{
+
+    background-color: red;
+    height: 2.7rem;
+    width: 2.7rem;
+    border-radius: 50%;
+    background-image: url("../LoginLogos/user.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    cursor: pointer;
+  
+  
+  }

@@ -22,6 +22,7 @@ import logout from "../assets/LoginLogos/logout.png"
 import khareedLe from "../assets/images/HeaderLogos/khareedLe.png";
 import { setProducts } from '../store/dataSlice.js';
 import { fetchData } from '../store/dataSlice.js';
+import Sidebar from "../components/Sidebar.js"
 import Cookies from "universal-cookie";
 import {fetchID,showTotalFuncHeader,fetchSearchItems, accessTokenRefresh} from "../Services/apiService.js";
 
@@ -41,6 +42,7 @@ function Header() {
     console.log("this is total item",numberItem);
     // const cartItem=useSelector(state=>state.counter)
     const [isDropDownOpen,setIsDropDownOpen]=useState(false);
+    const [hideNavbar,setHideNavbar]=useState(0);
     const userN=useSelector((state)=>state.username.username);
     // const [inputData,setInputData]=useState("");
     const [searchQuery,setSearchedQuery]=useState([]);
@@ -50,7 +52,7 @@ function Header() {
     const [total,setTotal]=useState(null);
     const detail=useSelector((state)=>state.AccessTK.Token)
     const Id=useSelector((state)=>state);
-    const [access,setAccess]=useState(sessionStorage.getItem("accessToken"));
+    const [access,setAccess]=useState(localStorage.getItem("accessToken"));
 
     console.log("THIS IS USER ID FROM REDUX PERSIST",Id.username.userId);
     const userDetail=useSelector((state)=>state.username.userId);
@@ -96,7 +98,17 @@ function Header() {
     const showTotalFunc=async()=>{
 
       console.log("this is ID CALLING Before Encryption",userDetail);
+    if(!localStorage.getItem("accessToken"))
+      {
+        return; 
+      }
     const ID=await fetchID(access);
+
+    if(!ID)
+    {
+      return ;
+    }
+
     setID(ID);
     
     console.log("this is ID CALLING",ID);
@@ -185,6 +197,7 @@ function Header() {
 
     if(inputValue.trim()==0)
     {
+      setHideNavbar(0)
       dispatch(setProducts({}));
       setSearchedQuery([]);
       sethideSearchBar("hidden");
@@ -192,6 +205,8 @@ function Header() {
     }
     else{
       sethideSearchBar("flex");
+      setHideNavbar(1);
+
     }
 
    const searchedQuery = await fetchSearchItems(inputValue)
@@ -220,7 +235,7 @@ function Header() {
     localStorage.clear();
     // sessionStorage.clear();
     // location.reload();
-    navigate("/");
+    navigate("/users/login");
 
     
 
@@ -279,6 +294,7 @@ function Header() {
     const [dropdownBottom,setDropdownBottom]=useState(null);
     const [sideBar,setSidebar]=useState(false);
 
+    
 
     const handleDropdown=()=>{
    
@@ -307,6 +323,21 @@ function Header() {
     const handleBottomHeader=(id)=>{
 
       setDropdownBottom(id);
+
+    }
+
+    const handleHideNavbar=()=>{
+
+  if(hideNavbar)
+    {
+        setHideNavbar(0);
+     
+    }
+
+    else{
+      setHideNavbar(1);
+    }
+
 
     }
 
@@ -365,7 +396,7 @@ function Header() {
     <div className={` headerContainer h-20 `} >
 
 <div
-        className={`  fixed inset-y-0 left-0  bg-white  transform transition-transform duration-300 ease-in-out z-20 ${
+        className={`  fixed inset-y-0 left-0  bg-red-500 sm:bg-green-500 transform transition-transform duration-300 ease-in-out z-20 ${
           sideBar ? 'translate-x-0' : '-translate-x-full'
         } ` }
          >
@@ -373,25 +404,29 @@ function Header() {
       </div>
 
     <div className='headerItemsContainer flex  justify-around h-full items-center  ' >
-        <div className='imageContainer   flex items-center rounded-full' >
 
-        <div className='hamburgureMenuSideBar xl:hidden flex'  onClick={handleSidebar}>
+<div className={`sideBarComponentContainer ${hideNavbar?'hidden':'block'} sm:hidden`}>
 
-<img src={menu} className='h-5 pr-7' ></img>
-
+<Sidebar></Sidebar>
 
 </div>
-            <img src={KhareedLeLogo} className='logoHeader h-44 -mt-4 cursor-pointer' onClick={()=>navigate("/")}></img>
+
+
+        <div className={`imageContainer ${hideNavbar?'hidden':'block'}  flex items-center rounded-full`} >
+
+
+
+            <img src={KhareedLeLogo} className='logoHeader h-24 -mt-4 cursor-pointer sm:h-44' onClick={()=>navigate("/")}></img>
 
         </div>
 
         <div className='rightItemContainer text-sm flex w-fit  '>
-            <div className='Items2 flex rounded-full items-center w-max lg:pl-4 pr-4 md:flex hidden cursor-pointer hover:bg-green-100'>
+            <div className={`Items2 rounded-full items-center w-max lg:pl-4 pr-4 cursor-pointer hidden hover:bg-green-100 sm:flex`}>
                 <img className='rightHeaderLogo h-5' src={headset}></img>
                 <p className='headerText pl-2 tracking-tight text-sm'>Contact us</p>
             </div>
 
-            <div className='Items2 flex rounded-full items-center w-max pl-4 pr-4  relative cursor-pointer hover:bg-green-100 lg:flex hidden' onClick={handleDropdown} id="ZINDEX">
+            <div className={`Items2 hidden rounded-full items-center w-max pl-4 pr-4  relative cursor-pointer   hover:bg-green-100 sm:flex `} onClick={handleDropdown} id="ZINDEX">
                 <img className='rightHeaderLogo h-5' src={web}></img>
                 <p className='headerText pl-2 tracking-tight' >IN/INR</p>
                 <img src={arrayDown} className='h-4 pl-2'></img>
@@ -405,7 +440,7 @@ function Header() {
             </div>
 
 
-            <div className='Items2 flex rounded-full items-center w-max pl-4 pr-4 md:flex hidden cursor-pointer hover:bg-green-100'  onClick={handleCartRoute}>
+            <div className={`Items2 flex rounded-full items-center w-max pl-4 pr-4 hover:bg-green-100 sm:flex`}  onClick={handleCartRoute}>
               <div className="relative bottom-5 left-5 bg-green-500 rounded-full p-1">             
                  <h2 className="text-white text-xs">
                   
@@ -420,7 +455,7 @@ function Header() {
 
                  </div>
                 
-                <img className='rightHeaderLogo h-5' src={cart}></img>
+                <img className='rightHeaderLogo h-5 ' src={cart}></img>
                 <p className='headerText pl-2 tracking-tight'>Cart</p>
 
             </div>
@@ -432,7 +467,8 @@ function Header() {
 
             <div className='searchBar flex items-center w-4/12 '>
   
-      <input type="text" className='inpSearch pl-7 inputNav rounded-lg border-solid border-black w-56 text-2xl ' onChange={handleSearchInput}></input>
+      <input type="text" className={`pl-7 placeholder:italic placeholder:text-base rounded-lg text-lg sm:text-2xl ${hideNavbar ? '' : 'w-0'} border-none sm:!border-2 sm:!border-black sm:w-96`} placeholder="Search...."
+ onChange={handleSearchInput}></input>
 
      <div className={`dropdownMenu absolute top-16 bg-gray-50 rounded-md w-56
       h-72  ${hideSearchBar}  justify-center`}>
@@ -456,7 +492,7 @@ function Header() {
 </>
 </div>
 
-      <img src={Search} className='w-7 absolute'></img>
+      <img src={Search} className='w-7 absolute'  onClick={handleHideNavbar}></img>
       
       </div>
 
@@ -464,7 +500,7 @@ function Header() {
 
         </div>
 
-        <div className="login flex items-center flex-col justify-center cursor-pointer relative"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
+        <div className="login items-center flex-col justify-center cursor-pointer relative hidden sm:flex"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
 
 { Username ? (
   <>
