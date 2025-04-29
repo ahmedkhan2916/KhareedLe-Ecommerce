@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import errorHandling from "./middlewares/errorHandling.js";
+
 const app=express();
 
 app.use(bodyParser.urlencoded({ extended: false }))
