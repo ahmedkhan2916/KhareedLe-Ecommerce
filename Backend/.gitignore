@@ -1,9 +1,12 @@
-node_modules/
+
 
 
 
 # Node modules
 node_modules/
+
+#env file ignore
+/backend/.env*
 
 # Environment files
 .env
