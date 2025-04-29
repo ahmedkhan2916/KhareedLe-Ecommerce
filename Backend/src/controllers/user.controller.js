@@ -66,16 +66,20 @@ const generateRefreshToken=(user)=>{
 
   const SignUp = async (req, res) => {
 
-    const { firstname, lastname, phone, username, password, email } = req.body;
+    const { firstname, lastname, username, password, email } = req.body;
   
     // Validate input fields
-    if ([firstname, lastname, phone, username, password, email].some(field => !field || field.trim() === "")) {
+
+    console.log(firstname,lastname,username,password,email);
+
+    if ([firstname, lastname,username, password, email].some(field => !field || field.trim() === "")) {
       return res.status(400).json({ error: "All fields are required." });
     }
-  
+ 
   
     try {
       // Check for existing user
+      console.log("im here");
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
@@ -89,7 +93,6 @@ const generateRefreshToken=(user)=>{
       const user = await User.create({
         firstname,
         lastname,
-        phone,
         username,
         password: hashedPassword,
         email,
@@ -102,7 +105,7 @@ const generateRefreshToken=(user)=>{
   
       res.status(201).json({
         message: "Signup successful!",
-        user: { firstname, lastname, email, phone, username },
+        user: { firstname, lastname, email,username },
       });
     } catch (error) {
       console.error("Signup error:", error);
@@ -119,7 +122,7 @@ const Login = async (req, res,next) => {
   const { email, password } = req.body;
 
 
-
+console.log("password",password)
 
   // Validate input fields
   if ([email, password].some(field => !field || field.trim() === "")) {
@@ -138,10 +141,11 @@ const Login = async (req, res,next) => {
       // return res.status(404).json({ error: "User not found." });
     }
 
-
+    console.log("password",password,user.password,user.email);
     // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
    
+    console.log("hashed password",isPasswordValid)
     if (!isPasswordValid) {
       
       return res.status(401).json({ error: "Invalid password." });
@@ -201,6 +205,11 @@ const handleUserIDFetch=(req,res)=>{
 
     const userId = req.user.id; // Extract userID from the token payload
     console.log("here is my payload",userId);
+    if(!userId)
+    {
+      return;
+    }
+    
     const ID=decryptIDS(userId)
     console.log("here is my payload",ID);
     res.status(200).json({ ID });

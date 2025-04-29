@@ -57,7 +57,7 @@ const location = useLocation();
 
     e.preventDefault();
 
-    console.log(email,password);
+    console.log("this is my email and password",email,password);
 
     const bodyData={
       

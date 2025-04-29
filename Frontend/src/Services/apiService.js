@@ -6,6 +6,11 @@ export const fetchID = async (accessToken) => {
 
   try {
 
+    if(!localStorage.getItem("accessToken"))
+    {
+      return;
+    }
+
     const IDS=await axios.get("http://localhost:1000/users/userid-fetch", {
 
       headers: {
@@ -30,6 +35,12 @@ export const showTotalFuncHeader=async(ID)=>{
 
   try{
 
+
+    if(!localStorage.getItem("accessToken"))
+      {
+        return;
+      }
+
     let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:ID});
     return totalCart.data.totalQuantity
 
@@ -47,6 +58,8 @@ export const showTotalFuncHeader=async(ID)=>{
 export const fetchSearchItems=async(inputValue)=>{
 
 try{
+
+ 
   const searchedQuery=await axios.get(`http://localhost:1000/users/userSearch?name=${inputValue}`);
 
   return searchedQuery;

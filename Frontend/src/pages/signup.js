@@ -29,11 +29,14 @@ function Signup() {
       email,
       username,
       password,
-      contact,
+      
     };
+
+    console.log("this is signup data...>>>>>",bodyData)
 
     try {
       const apiDat = await axios.post("http://localhost:1000/users/signup", bodyData);
+      // alert("success")
       console.log("signup successfully");
       navigate('/users/login');
     } catch (error) {
@@ -64,7 +67,7 @@ function Signup() {
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='username' type='text' onChange={(e) => setUsername(e.target.value)} value={username} required />
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='password' type='text' onChange={(e) => setPassword(e.target.value)} value={password} required />
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='confirmPassword' type='text' onChange={(e) => setConfirmPass(e.target.value)} value={confirmpass} required />
-            <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='contact no' type='text' onChange={(e) => setContact(e.target.value)} value={contact} required />
+            {/* <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='contact no' type='text' onChange={(e) => setContact(e.target.value)} value={contact} required /> */}
             <button type="submit" className="btnSignup w-8/12 h-10 rounded-md bg-yellow-500 mt-2 text-xl">Signup</button>
             <span className='flex underline text-white justify-center mt-10 cursor-pointer hover:text-blue-500' onClick={() => navigate("/users/login")}>Back to Login Page</span>
           </form>

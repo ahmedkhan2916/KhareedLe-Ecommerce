@@ -156,6 +156,7 @@ if (!loading) { // Run only when loading becomes false
   const [cookPID,setCookPID]=useState("");
   const [similiarProduct,setSimiliarProduct]=useState(JSON.parse(localStorage.getItem("similiarP")));
   const dispatch=useDispatch();
+  
 
  
   useEffect(()=>{
@@ -291,6 +292,7 @@ localStorage.setItem("cartItems",totalItemsCart);
 
 
 },[totalItemsCart])
+
 
 
 
@@ -494,6 +496,8 @@ useEffect(() => {
         }
 
         let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:Ids.userId});
+        // console.log("this is total cart items",totalCart.data.totalQuantity);
+         
         dispatch(increment(totalCart.data.totalQuantity));
 
       } catch (error) {

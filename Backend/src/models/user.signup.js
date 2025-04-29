@@ -8,7 +8,7 @@ import bcrypt from "bcrypt"
 
     lastname:String,
 
-    phone:String,
+    // phone:String,
 
     username:{
 

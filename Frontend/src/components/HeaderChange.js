@@ -25,6 +25,8 @@ import { fetchData } from '../store/dataSlice.js';
 import Sidebar from "../components/Sidebar.js"
 import Cookies from "universal-cookie";
 import {fetchID,showTotalFuncHeader,fetchSearchItems, accessTokenRefresh} from "../Services/apiService.js";
+import BuyButton from "../components/BuyButton.js";
+import Cart from '../components/Cart.js';
 
 
 function Header() {
@@ -46,6 +48,7 @@ function Header() {
     const userN=useSelector((state)=>state.username.username);
     // const [inputData,setInputData]=useState("");
     const [searchQuery,setSearchedQuery]=useState([]);
+    const [blur,setBlur]=useState(false);
     const [hideSearchBar,sethideSearchBar]=useState("hidden");
     const [dataComing,setDataComing]=useState(localStorage.getItem("data"));
     // const [userIdStorage,setUserIdStorage]=useState(localStorage.getItem("userID"));
@@ -88,12 +91,11 @@ function Header() {
     // const userId = useSelector(state=>state.userId.userId);
 
     console.log("usernameheader",userN);
-    localStorage.setItem('totalNumbers',numberItem);
+    
     const itemFetch = localStorage.getItem('totalNumbers');
     // console.log(cookie.get("productName"));
 
     useEffect(()=>{
-
 
     const showTotalFunc=async()=>{
 
@@ -253,7 +255,9 @@ function Header() {
 
       if(!localStorage.getItem("accessToken"))
         {
-         return navigate("/users/login");
+          setBlur(true);
+          return;
+        //  return navigate("/users/login");
         }
 
       // console.log("this is UID MY",UID);
@@ -439,31 +443,7 @@ function Header() {
                 </div>
             </div>
 
-
-            <div className={`Items2 flex rounded-full items-center w-max pl-4 pr-4 hover:bg-green-100 sm:flex`}  onClick={handleCartRoute}>
-              <div className="relative bottom-5 left-5 bg-green-500 rounded-full p-1">             
-                 <h2 className="text-white text-xs">
-                  
-                  {
-
-                    total
-
-                  }
-                  
-                  </h2>
-
-
-                 </div>
-                
-                <img className='rightHeaderLogo h-5 ' src={cart}></img>
-                <p className='headerText pl-2 tracking-tight'>Cart</p>
-
-            </div>
-
-            {/* <div className='Items2 flex rounded-full items-center w-max pl-4 pr-4 lg:flex hidden cursor-pointer hover:bg-green-100'>
-                <img className='rightHeaderLogo h-5' src={user}></img>
-                <p className='headerText pl-2 tracking-tight'>Sign in</p>
-            </div> */}
+            <Cart></Cart>
 
             <div className='searchBar flex items-center w-4/12 '>
   

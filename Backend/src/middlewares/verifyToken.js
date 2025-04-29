@@ -12,6 +12,7 @@ const verifyToken=async(req,res,next)=>{
   
     if(!authToken)
     {
+      // return;
       throw new classErrorHandling("Token not found",401);
     }
   
