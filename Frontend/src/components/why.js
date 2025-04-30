@@ -14,7 +14,7 @@ function Why() {
         <div className="whyContainerChild">
 
 {/* heading of whyContainer */}
-<div className="whyUpperHeading  flex  justify-items-center items-center sm:justify-center ">
+<div className="whyUpperHeading  flex  justify-items-center  sm:justify-center ">
 
     <h1 className="text-3xl HeadingPlayFair sm:text-5xl">Why We are Different from Others?</h1>
 

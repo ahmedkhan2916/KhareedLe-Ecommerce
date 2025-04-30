@@ -63,7 +63,7 @@ function ExploreContainer() {
         <div className="upperSection h-3/6  flex flex-col sm:flex-row">
         <div className='headingCont w-screen  flex items-center justify-center'>
         
-            <h1 className='text-3xl w-screen HeadingPlayFair sm:text-6xl sm:w-4/5'>Explore Hundreds of Electronics Products</h1>
+            <h1 className='text-3xl w-4/5 HeadingPlayFair sm:text-6xl '>Explore Hundreds of Electronics Products</h1>
 
             </div>
 
