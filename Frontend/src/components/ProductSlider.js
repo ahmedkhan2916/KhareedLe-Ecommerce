@@ -26,7 +26,7 @@ const handleClick = async (event) => {
 
         const jsonData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getData`).then((res) => setData(res.data));
         
-        
+        // const jsonData = await axios.get('http://localhost:1000/users/getData').then((res) => setData(res.data));
        
         
       };

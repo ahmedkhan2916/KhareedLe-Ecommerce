@@ -14,9 +14,9 @@ function Why() {
         <div className="whyContainerChild">
 
 {/* heading of whyContainer */}
-<div className="whyUpperHeading  flex justify-center">
+<div className="whyUpperHeading  flex  justify-items-center items-center sm:justify-center ">
 
-    <h1 className="text-5xl HeadingPlayFair">Why We are Different from Others?</h1>
+    <h1 className="text-3xl HeadingPlayFair sm:text-5xl">Why We are Different from Others?</h1>
 
 
 </div>
@@ -24,15 +24,15 @@ function Why() {
 {/* container of points */}
 <div className="pointsContainer pt-20">
 
-    <div className="pointsCard flex justify-around ">
+    <div className="pointsCard flex justify-around flex-col sm:flex-row">
 
-        <div className="imageSectionPoints w-1/3 rounded-lg">
+        <div className="imageSectionPoints w-screen  rounded-lg sm:w-1/3">
 
             <img src={fastestDelivery} className='h-80  w-full object-cover rounded-lg'></img>
 
         </div>
 
-        <div className="textContainerPoints w-2/5 flex justify-center flex-col">
+        <div className="textContainerPoints w-screen  flex justify-center flex-col p-5  sm:w-2/5">
 
             <div className="upperHeadingText">
                 <h2 className="text-4xl HeadingPlayFair font-bold">Ultra-Fast 24 hour Delivery.</h2>
@@ -51,11 +51,11 @@ function Why() {
 
 {/* second card */}
 
-<div className="pointsCard flex justify-around pt-20">
+<div className="pointsCard flex justify-around pt-20 flex-col-reverse sm:flex-row">
 
 
 
-<div className="textContainerPoints w-2/5 flex justify-center flex-col">
+<div className="textContainerPoints w-screen  flex justify-center flex-col p-5  sm:w-2/5">
 
     <div className="upperHeadingText">
         <h2 className="text-4xl font-medium HeadingPlayFair">Competitive Price.</h2>
@@ -70,7 +70,7 @@ function Why() {
 </div>
 
 
-<div className="imageSectionPoints w-1/3 rounded-lg">
+<div className="imageSectionPoints  w-screen  rounded-lg sm:w-1/3">
 
     <img src={lower} className='h-80 rounded-lg w-full object-cover'></img>
 
@@ -83,15 +83,15 @@ function Why() {
 
 {/* 3rd pointcard */}
 
-<div className="pointsCard flex justify-around pt-20">
+<div className="pointsCard flex justify-around pt-20 flex-col sm:flex-row">
 
-<div className="imageSectionPoints w-1/3 rounded-lg">
+<div className="imageSectionPoints w-screen  rounded-lg sm:w-1/3">
 
     <img src={surprise} className='h-80 rounded-lg w-full object-cover'></img>
 
 </div>
 
-<div className="textContainerPoints w-2/5 flex justify-center flex-col">
+<div className="textContainerPoints w-screen  flex justify-center flex-col p-5  sm:w-2/5">
 
     <div className="upperHeadingText">
         <h2 className="text-4xl font-medium HeadingPlayFair">Exclusive Surprise Gifts.</h2>
@@ -109,11 +109,11 @@ function Why() {
 
 {/* 4 point card */}
 
-<div className="pointsCard flex justify-around pt-20">
+<div className="pointsCard flex justify-around pt-20 flex-col-reverse sm:flex-row">
 
 
 
-<div className="textContainerPoints w-2/5 flex justify-center flex-col ">
+<div className="textContainerPoints w-screen  flex justify-center flex-col  p-5  sm:w-2/5">
 
     <div className="upperHeadingText">
         <h2 className="text-4xl font-medium HeadingPlayFair">Quality Assurance.</h2>
@@ -128,7 +128,7 @@ function Why() {
 </div>
 
 
-<div className="imageSectionPoints w-1/3 rounded-lg">
+<div className="imageSectionPoints w-screen  rounded-lg sm:w-1/3">
 
     <img src={Quality} className='h-80 rounded-lg w-full object-cover'></img>
 
@@ -142,15 +142,15 @@ function Why() {
 {/* 5 point card */}
 
 
-<div className="pointsCard flex justify-around pt-20 pb-14">
+<div className="pointsCard flex justify-around pt-20 pb-14 flex-col sm:flex-row">
 
-<div className="imageSectionPoints w-1/3 rounded-lg">
+<div className="imageSectionPoints w-screen  rounded-lg sm:w-1/3">
 
     <img src={Inhand} className='h-80 rounded-lg w-full object-cover'></img>
 
 </div>
 
-<div className="textContainerPoints w-2/5 flex justify-center flex-col">
+<div className="textContainerPoints w-screen  flex justify-center flex-col p-5 sm:w-2/5">
 
     <div className="upperHeadingText">
         <h2 className="text-4xl font-medium HeadingPlayFair">Experience Before You Own.</h2>

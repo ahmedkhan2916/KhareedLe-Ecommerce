@@ -57,20 +57,21 @@ function ExploreContainer() {
 
     
     
-    <div className=' h-screen pt-16'>
+    <div className=' h-[60vh] pt-16 sm:h-screen'>
 
         
-        <div className="upperSection h-3/6  flex">
-        <div className='headingCont w-2/4  flex items-center justify-center'>
+        <div className="upperSection h-3/6  flex flex-col sm:flex-row">
+        <div className='headingCont w-screen  flex items-center justify-center'>
         
-            <h1 className='text-6xl w-3/4 HeadingPlayFair'>Explore Hundreds of Electronics Products</h1>
+            <h1 className='text-3xl w-screen HeadingPlayFair sm:text-6xl sm:w-4/5'>Explore Hundreds of Electronics Products</h1>
 
             </div>
 
-            <div className='rightupperSection  w-2/4 grid grid-cols-2 gap-1 items-center'>
+            <div className='rightupperSection  w-screen grid grid-cols-2 gap-1 items-center  justify-items-center  sm:justify-center'>
+
                 <div className='rightDivs w-1/2 h-3/5 border-l-slate-500 border-l-4 flex flex-col '>
                     <div className='heading pl-3'>
-                        <h2 className='text-5xl text-orange-500'>1000+</h2>
+                        <h2 className='text-3xl text-orange-500 sm:text-5xl'>1000+</h2>
                     </div>
                     <div className='para pl-3'>
                         <p className='text-lg'>Smartphones</p>
@@ -81,7 +82,7 @@ function ExploreContainer() {
 
                 <div className='rightDivs w-1/2 h-3/5 border-l-slate-500 border-l-4 flex flex-col '>
                     <div className='heading pl-3'>
-                        <h2 className='text-5xl text-orange-500'>500+</h2>
+                        <h2 className='text-3xl text-orange-500 sm:text-5xl'>500+</h2>
                     </div>
                     <div className='para pl-3'>
                         <p className='text-lg'>Laptops</p>
@@ -92,7 +93,7 @@ function ExploreContainer() {
 
                 <div className='rightDivs w-1/2 h-3/5 border-l-slate-500 border-l-4 flex flex-col '>
                     <div className='heading pl-3'>
-                        <h2 className='text-5xl text-orange-500'>50+</h2>
+                        <h2 className='text-3xl text-orange-500 sm:text-5xl'>50+</h2>
                     </div>
                     <div className='para pl-3'>
                         <p className='text-lg'>Gaming Console's</p>
@@ -104,7 +105,7 @@ function ExploreContainer() {
 
                 <div className='rightDivs w-1/2 h-3/5 border-l-slate-500 border-l-4 flex flex-col '>
                     <div className='heading pl-3'>
-                        <h2 className='text-5xl text-orange-500'>1000+</h2>
+                        <h2 className='text-3xl text-orange-500 sm:text-5xl'>1000+</h2>
                     </div>
                     <div className='para pl-3'>
                         <p className='text-lg'>Accessories</p>
@@ -115,7 +116,8 @@ function ExploreContainer() {
 
             </div>
         </div>
-        <div className='lowerSection h-3/6  flex justify-center items-center'>
+        
+        {/* <div className='lowerSection h-3/6  flex justify-center items-center'>
       
         <div className='buttonContainer' id="btnMinus">
             <button className='btn text-3xl'  onClick={ScrollLeft}><img src={Arrow} className='arrowImg2 h-7'></img></button>
@@ -276,7 +278,7 @@ function ExploreContainer() {
         </div>
 
 
-        </div>
+        </div> */}
         </div>
   )
 }
