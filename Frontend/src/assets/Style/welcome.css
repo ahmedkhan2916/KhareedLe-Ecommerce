@@ -11,7 +11,7 @@
 }
 
 .brand {
-  color: #ff9800;
+  color: #51eb15;
 }
 
 .rocket-loader {
@@ -27,7 +27,7 @@
   margin: auto;
   width: 100px;
   height: 100px;
-  border: 2px dashed #ff9800;
+  border: 2px dashed #51eb15;
   border-radius: 50%;
   animation: rotate 2s linear infinite;
 }
@@ -37,7 +37,7 @@
   top: -12px; /* Half of icon size */
   left: 50%;
   transform: translateX(-50%);
-  color: #ff9800;
+  color: #51eb15;
 }
 
 @keyframes rotate {
