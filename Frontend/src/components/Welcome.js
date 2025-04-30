@@ -15,7 +15,7 @@ const Welcome = ({ onFinish }) => {
   return (
     <div className="welcome-screen">
         <div className="khareedWelcomeHeading flex flex-row">
-      <h1>Welcome to <span className="brand">KHAREED LE</span></h1>
+      <h1>Welcome to <span className="brand">KHAREED LE</span><span className="trademark text-sm align-super ml-1">®</span></h1>
       <ShoppingBag className="Shopping-Bag ml-1" size={22}></ShoppingBag>
       </div>
       <div className="rocket-loader">
