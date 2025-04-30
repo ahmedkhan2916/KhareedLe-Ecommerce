@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import Navbar from './Navbar';
 import '../App.css';
 import ProductSlider from '../components/ProductSlider.js';
@@ -14,6 +14,7 @@ import NewArrival from './NewArrival.js';
 import ShopByCategory from './ShopByCategory.js';
 import { useSelector } from 'react-redux';
 import {useLocation} from "react-router-dom"
+import Welcome from "./Welcome.js"
 import "../assets/Style/Headings.css";
 
 function Home() {
@@ -32,9 +33,15 @@ function Home() {
 
   const {user}=location.state || false;
   console.log("this data is user",user);
+  const [showWelcome, setShowWelcome] = useState(true);
+
+
 
   return (
-
+<>
+{
+  showWelcome ?(<Welcome onFinish={()=>setShowWelcome(false)}></Welcome>):
+  (
     <div className="Home w-screen overflow-x-hidden">
 
       {/* { log ? (
@@ -81,8 +88,10 @@ function Home() {
   
 
         </div>
+          )}
+        </>
 
-    
+
   )
 }
 
