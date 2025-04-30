@@ -55,7 +55,7 @@ function Home() {
     <div className='smartphoneContainer pt-40'>
       <div className="smartphoneHeading flex justify-center">
 
-    <h1 className='text-2xl HeadingPlayFair sm:text-4xl'>PowerFull Smartphones</h1>
+    <h1 className='text-3xl HeadingPlayFair sm:text-4xl'>PowerFull Smartphones</h1>
     
     </div>
     <ProductSlider></ProductSlider>
