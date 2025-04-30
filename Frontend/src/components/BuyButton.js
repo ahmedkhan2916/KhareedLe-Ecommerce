@@ -24,7 +24,7 @@ const BuyButton = () => {
 
     try{
 
-    const sendIDS=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/addbag`,Ids); 
+    const sendIDS=await axios.post("http://localhost:1000/users/addbag",Ids); 
     
     
     }

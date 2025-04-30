@@ -35,7 +35,7 @@ function Home() {
 
   return (
 
-    <div className="Home">
+    <div className="Home w-screen overflow-x-hidden">
 
       {/* { log ? (
                        <Signup></Signup>
