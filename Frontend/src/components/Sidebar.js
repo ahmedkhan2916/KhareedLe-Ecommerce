@@ -130,7 +130,7 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed z-30 top-0 left-0 h-full w-11/12 text-center
+        className={`fixed z-30 top-0 left-0 h-full w-5/6 text-center
              bg-white text-black p-5 transform transition-transform duration-500 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } sideBarContainerChild`}
