@@ -102,7 +102,7 @@ const generateRefreshToken=(user)=>{
       if (!createdUser) {
         return res.status(500).json({ error: "Error saving user data." });
       }
-  
+
       res.status(201).json({
         message: "Signup successful!",
         user: { firstname, lastname, email,username },
@@ -112,6 +112,7 @@ const generateRefreshToken=(user)=>{
       res.status(500).json({ error: "Internal server error." });
     }
   };
+
 
 // import bcrypt from 'bcrypt';
 // import { generateAccessToken, generateRefreshToken } from './tokenUtils.js';

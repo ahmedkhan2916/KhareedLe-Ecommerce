@@ -164,7 +164,11 @@ if (!loading) { // Run only when loading becomes false
     const fetchProductId = async () => {
       try {
        
-        const response = await axios.get("http://localhost:1000/users/getProductId", {
+        // const response = await axios.get("http://localhost:1000/users/getProductId", {
+        //   withCredentials: true, // Ensure cookies are sent with request
+        // });
+
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getProductId`, {
           withCredentials: true, // Ensure cookies are sent with request
         });
     
@@ -208,7 +212,9 @@ if (!loading) { // Run only when loading becomes false
       
       
 
-      const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
+      // const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
+
+      const sendIDS = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/changetext`, Ids);
 
       console.log("Response status:", sendIDS.status);
 
@@ -300,7 +306,7 @@ useEffect(() => {
   const fetchSimilarProducts = async () => {
     if (data && data.price) {
       try {
-        const response = await axios.get(`http://localhost:1000/users/update?value=${data.price}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/update?value=${data.price}`);
         
         if (response.data) {
           dispatch(setSimiliarProduct(response.data)); // Update Redux store
@@ -329,7 +335,7 @@ useEffect(() => {
       // const api=await axios.get(`http://localhost:1000/users/update?value=${data.price}`).then(response=>dispatch(setSimiliarProduct(response.data))).catch((err)=>console.log(err));
       //  console.log("this is similiar data dispatch",api);
       // costumer reviews api
-     const reviewData= await axios.get('http://localhost:1000/users/fetchuser')
+     const reviewData= await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/fetchuser`)
      localStorage.setItem("reData",JSON.stringify(reviewData.data.data));
      // .then(res=>localStorage.setItem("reData",JSON.stringify(res.data.data)));
     
@@ -422,7 +428,7 @@ useEffect(() => {
 
     try{
 
-    const sendIDS=await axios.post("http://localhost:1000/users/addbag",Ids); 
+    const sendIDS=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/addbag`,Ids); 
     
     
     }
@@ -454,14 +460,14 @@ useEffect(() => {
 
     const showTotalId = { userId: ID }; // Wrap userID in an object
 
-    const response=await axios.post("http://localhost:1000/users/showtotal", showTotalId);
+    const response=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/showtotal`, showTotalId);
     
     console.log(response.data.totalQuantity);
     
     
 
 
-    const sendIDS=await axios.post("http://localhost:1000/users/addbag",Ids); 
+    const sendIDS=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/addbag`,Ids); 
 
     console.log("this is  total cart items",sendIDS.status)
 
@@ -484,7 +490,7 @@ useEffect(() => {
           productId: localStorage.getItem("productID"),
         };
   
-        const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
+        const sendIDS = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/changetext`, Ids);
   
         console.log("Response status:", sendIDS.status);
   
@@ -495,7 +501,7 @@ useEffect(() => {
 
         }
 
-        let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:Ids.userId});
+        let totalCart=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/showtotal`,{userId:Ids.userId});
         // console.log("this is total cart items",totalCart.data.totalQuantity);
          
         dispatch(increment(totalCart.data.totalQuantity));

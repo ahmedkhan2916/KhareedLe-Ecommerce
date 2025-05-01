@@ -13,8 +13,7 @@ function Footer() {
   return (
     <div className='footerContainer mt-6'>
 
-      <div className=' footerContainerChild  pt-12 bg-red-500 sm:bg-black '>
-
+      <div className=' footerContainerChild  pt-12    bg-black '>
 
           <div className='upperContainer  flex justify-evenly'>
 

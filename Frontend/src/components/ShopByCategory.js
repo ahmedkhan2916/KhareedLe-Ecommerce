@@ -20,7 +20,7 @@ function ShopByCategory() {
 
 <div className='itemsCategoryContainer  h-1/4 w-full p-8 '>
 
-<div className='categoryCardsContainer  h-full w-full flex '>
+<div className='categoryCardsContainer  h-full w-full flex flex-col sm:flex-row '>
 
     <div className="cardsShop  flex flex-col items-center h-full w-full shadow-2xl rounded-xl justify-between ">
 
