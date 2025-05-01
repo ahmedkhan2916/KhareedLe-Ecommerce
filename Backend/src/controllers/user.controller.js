@@ -175,7 +175,7 @@ console.log("password",password)
     // Set refresh token as an HTTP-only cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, // Ensure HTTPS
+      secure: true, // Ensure HTTPS
       sameSite:"None",
       maxAge: 7 * 24 * 60 * 60 * 1000,//7 days
     });
@@ -357,8 +357,8 @@ console.log("this is my payload",payload);
 
  res.cookie("productID",userProduct._id.toString(),{
   httpOnly: true,
-  secure: false, // Ensure HTTPS
-  sameSite:"Lax",
+  secure: true, // Ensure HTTPS
+  sameSite:"none",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 1 day
 })
 return res.json(userProduct);  //productID coming here fix here store productId in cookies..!!

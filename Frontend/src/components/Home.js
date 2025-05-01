@@ -70,11 +70,11 @@ function Home() {
 
     
     {/* <SliderWallpaper></SliderWallpaper> */}
-    {
+    {/* {
       Object.keys(dataSearched).length===0 ? <div>Hello world</div>:<SearchedPage></SearchedPage>
 
 
-    }
+    } */}
     <Specification></Specification>
     <ExploreContainer></ExploreContainer>
     <Why></Why>

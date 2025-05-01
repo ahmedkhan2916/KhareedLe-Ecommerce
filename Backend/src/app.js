@@ -22,7 +22,7 @@ app.use(cors(
 
             'https://khareed-le-ecommerce.vercel.app',
             'https://khareed-le-ecommerce-git-main-ahmedkhan2916s-projects.vercel.app',
-            'https://khareed-le-ecommerce-6i7cd3wey-ahmedkhan2916s-projects.vercel.app'
+            'https://khareed-le-ecommerce-git-main-ahmedkhan2916s-projects.vercel.app/'
 
 
         ],
