@@ -22,6 +22,7 @@ function Signup() {
       return alert("Password is not Matching..!!!");
     }
 
+    
 
     const bodyData = {
       firstname,
@@ -31,12 +32,13 @@ function Signup() {
       password,
       
     };
-
+    
+    
     console.log("this is signup data...>>>>>",bodyData)
 
     try {
       const apiDat = await axios.post("http://localhost:1000/users/signup", bodyData);
-      // alert("success")
+      alert("success")
       console.log("signup successfully");
       navigate('/users/login');
     } catch (error) {

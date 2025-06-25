@@ -11,9 +11,13 @@ function Address() {
 
     const navigate = useNavigate();
 
+
     const [radio,setRadio]=useState({firstRadio:false,secondRadio:false});
     // const userId = useSelector(state=>state.username.userId);
     const [address,setAddress]=useState(localStorage.getItem("UserAddress" || ""));
+    const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
+     const product = useSelector(state => state.product.product);
+
 //     const [userId,setUserId]=useState();
 
 //     useEffect(()=>{
@@ -91,7 +95,7 @@ function Address() {
 
         e.preventDefault();
 
-        const userId=await fetchID(localStorage.getItem("accessToken"));
+        const userId=await fetchID(token);
         
         const dataSent= await axios.post("http://localhost:1000/users/addressadd",{...formData,userId});
 

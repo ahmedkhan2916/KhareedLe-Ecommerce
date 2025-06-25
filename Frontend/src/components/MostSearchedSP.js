@@ -70,7 +70,7 @@ const handleClick = async (event) => {
 {
     data.map((item)=>(
 <div className='productContainer  ml-16 border-t-2 border-l-2 border-r-2 border-b-2' key={item.productId} data-id={item.productId} onClick={handleClick}>
-<Link to="/product">
+<Link to={`/product/${item.productId}`}>
     <div className='image w-[50vw]  sm:w-[9vw]'>
 {/* <img className='imageProduct w-full' style={{backgroundImage:`url('/images/ferrari.jpg')`}}></img> */}
 

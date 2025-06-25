@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import {useLocation} from "react-router-dom"
 import Welcome from "./Welcome.js"
 import "../assets/Style/Headings.css";
+import GamingConsoleSection from './GamingConsoleSection.js';
 
 function Home() {
 
@@ -42,7 +43,7 @@ function Home() {
 {
   showWelcome ?(<Welcome onFinish={()=>setShowWelcome(false)}></Welcome>):
   (
-    <div className="Home w-screen overflow-x-hidden">
+    <div className="Home w-screen overflow-hidden">
 
       {/* { log ? (
                        <Signup></Signup>
@@ -82,6 +83,7 @@ function Home() {
 
     <ShopByCategory></ShopByCategory>
     <GameConsole></GameConsole>
+    <GamingConsoleSection></GamingConsoleSection>
     <MostSearchedSP></MostSearchedSP>
     <Footer></Footer>
     

@@ -5,8 +5,8 @@ import surprise from '../assets/AI Images/surprisegifts4.jpg'
 import Quality from "../assets/AI Images/quality4.jpg";
 import Inhand from "../assets/AI Images/inhand3.jpg";
 import "../assets/Style/Headings.css"
-
 import "../assets/Style/why.css"
+
 function Why() {
   return (
     <div className='whyContainerMain'>

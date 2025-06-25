@@ -5,283 +5,192 @@ import { useNavigate } from 'react-router-dom';
 import "../assets/Style/purchasingPage.css"
 // import ProductSlider from "../components/ProductSlider.js";
 import { useSelector,useDispatch } from 'react-redux';
-import { setSimiliarProduct,SimiliarProduct,counterSlice } from '../store/dataSlice.js';
+import { setSimiliarProduct,SimiliarProduct,counterSlice , setProducts} from '../store/dataSlice.js';
 import { Link } from 'react-router-dom';
 import star from "../assets/Brandlogo/rating.png"
 import Header from '../components/HeaderChange.js';
-import { increment } from '../store/dataSlice.js';
+import { increment,refreshToken} from '../store/dataSlice.js';
+import {setProductData} from "../store/dataSlice.js"
 import Cookies from "universal-cookie"
 import {fetchID} from "../Services/apiService.js";
 import Footer from "../components/Footer.js";
 import BuyButton from "../components/BuyButton.js"
+import { useParams } from "react-router-dom";
+import {fetchData,fetchReviewData,fetchUserID,fetchBagTotal2,fetchAddToBag,changeButtonText,resetButtonText} from "../store/dataSlice.js";
+import ReviewSection from "../components/ReviewSection.js"
 
 
 function Purchasing_page() 
 {
   const cookie =new Cookies();
   const navigate=useNavigate();
+
   const data = useSelector(state => state.data.data);  // Access the inner `data` object
   const error = useSelector(state => state.data.error);  // Access `error` state
   const loading = useSelector(state => state.data.loading);
-  const userId = useSelector(state=>state.username.userId);
+  const { reviewData, loadingReview, errorReview } = useSelector((state) => state.review);
+  const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
+  const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
+  const { totalBag,statusTotalBag,errorBagTotal,}=useSelector((state)=>state.fetchBagTotalStore);
+  const {  bagItem, statusItem,errorItem}=useSelector((state)=>state.quantityItemBag);
+  const { buttonText, statusButtonText, errorButtonText } = useSelector((state) => state.changeButtonText);
+  //  console.log("Token from redux store>>>>>>>>",token);
+
+
+  const {id}=useParams();
+
+console.log("Data coming from fetch dataaa?????",data)
+console.log("Data coming from review dataaa?????",reviewData)
+//these are data container and we will use redux to store these data
+
+  const product = useSelector(state => state.product.product); // Access the product data from Redux store
+  const [productSlice2,setProductSlice2]=useState({});
+  console.log("data is here of reduct productslice2>>>>>>>>",product)//<<<<<data coming here from productSlice2 dataslice file and from store
+
+
+
+
+
   const similiarData=useSelector(state=>state.similiarproductstore.dataSimiliar);  //fix data here carry all these data to localStorage or redux persist all these purchase page data:-
-  console.log("this is similiarDataaaa here",similiarData);
-  const apiDataRedux=useSelector(state=>state.data.data)   //bug occuring here give localStorage data here which not be perished
   const [apiData,setApiData]=useState(JSON.parse(localStorage.getItem("apiData")));
   const [productColors, setProductColors] = useState([]);
   const [timer,setTimer]=useState(true);
 
 
-  console.log("this is data coming in purchasing page",data);
-    // localStorage.setItem("userID",userId);
-  // localStorage.setItem("productColor",JSON.stringify(data.product_color));
 
- 
+ useEffect(()=>{
+
+  dispatch(fetchData(id));
+  
+
+ },[id])
 
 
  useEffect(()=>{
 
-//  setTimeout( () => {
-//     setApiData(JSON.parse(localStorage.getItem("apiData")))
-//     if (apiData && apiData.product_color){
-
-  //       setProductColors(apiData.product_color);
-  //       setTimer(false);
-  //     }
-  //     // setTimer(false);
-  //   console.log("Yes this is Interval Timeeeeeeeee");
-  //   },1000);
-  // setTimeout(()=>{
-  //   setApiData(JSON.parse(localStorage.getItem("apiData")))
-  //   if (apiData && apiData.product_color) {     
-  //     setProductColors(apiData.product_color);
-  //   }
-  //   setTimer(false);
-  // },1000)
-
-//   if(loading===true)
-// {
-
-//     setApiData(JSON.parse(localStorage.getItem("apiData")));
-//     setProductColors(apiData.product_color);
-//     setTimer(false);
-//     console.log("data coming here smoothlyyyyyyy",loading);
-
-// }
 
 
-if (!loading) { // Run only when loading becomes false
-  const storedData = JSON.parse(localStorage.getItem("apiData"));
 
-  if (storedData && storedData.product_color) {
-    setApiData(storedData);
-    setProductColors(storedData.product_color);
+if (!loading) { 
+
+  if (data && data.product_color) {
+    setApiData(data);
+    setProductColors(data.product_color);
   }
 
   setTimer(false);
-  console.log("Data updated:", storedData);
+ 
 }
 
 
 
  },[loading]);  
 
+
+
+
+
+  useEffect(() => {
+    if (product && Object.keys(product).length > 0) {
+      setProductSlice2(product);
+      console.log("data of product is here??????",product);
+    }
+  }, [product]);
+
+
+useEffect(()=>{
+
+
+
+ dispatch(increment(totalBag)); //Increament by 1:
+
+
+
+},[totalBag])
+
+
  
-
-   console.log("this data is coming productColorssssss",productColors);
-
-  // useEffect(() => {
-  //   // Extract product_color from apiData and update state
-
- 
-    
-  //   if (apiData && apiData.product_color) {
-  //     setProductColors(apiData.product_color);
-  //   }
-  // }, [apiData]);
-
-
-  console.log("this is my api data",productColors);
-
-
-
-  // useEffect(() => {
-  //   // Attempt to fetch `apiData` from localStorage on component mount
-  //   const storedData = localStorage.getItem("apiData");
-
-  //   if (storedData) {
-  //     setApiData(JSON.parse(storedData));
-  //   } else {
-  //     // Simulate an API call or localStorage update
-  //     const fetchApiData = async () => {
-      
-  //       // localStorage.setItem("apiData", JSON.stringify(data));
-  //       setApiData(data);
-  //     };
-
-  //     fetchApiData();
-  //   }
-  // }, []);
-
-
-
-    // const apiData=JSON.parse(localStorage.getItem("apiData"));
-    // console.log("this is stored api data",apiData.product_color);
-    // const arrayBackProductColor= || [];
-    // console.log(arrayBackProductColor)
-  console.log("this is my userId",userId);
   
-  const [pic,setPic]=useState(localStorage.getItem("productImage"));
-  const [productName,setProductName]=useState(localStorage.getItem("productName"));
-  const [details,setDetails]=useState(localStorage.getItem("details"));
-  const [description,setDescription]=useState(localStorage.getItem("description"));
-  const [price,setPrice]=useState(localStorage.getItem("price"));
-  const [rating,setRating]=useState(localStorage.getItem("rating"));
+
   const [magnifier,setMagnifier]=useState({});
 
-  const [reData, setReData] = useState(() => {
-    const stored = localStorage.getItem("reData");
-    return stored ? JSON.parse(stored) : [];
-  });   //lazy Initializer approach i am using here...:-
+ 
   
+  const [reviewState,setReviewState]=useState([]);//reviewData coming by redux
  
   const [picUrl,setPicUrl]=useState("");
   const [color,setColor]=useState( data?.product_color?.[0]?.color || '' );
   const [totalItemsCart,setTotalItemsCart]=useState(localStorage.getItem("itemsCart"));
-  const [dataComing,setDataComing]=useState();
-  const [buttonClick,setButtonClick]=useState();
+
   const [buttonClick2,setButtonClick2]=useState(false);
-  const [buttonText,setButtonText]=useState("");
+
   const [loading2,setLoading2]=useState(true);
-  const [cookPID,setCookPID]=useState("");
-  const [similiarProduct,setSimiliarProduct]=useState(JSON.parse(localStorage.getItem("similiarP")));
+
+
   const dispatch=useDispatch();
   
 
+  useEffect( () => {
+
  
-  useEffect(()=>{
-
-    const fetchProductId = async () => {
-      try {
-       
-        // const response = await axios.get("http://localhost:1000/users/getProductId", {
-        //   withCredentials: true, // Ensure cookies are sent with request
-        // });
-
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getProductId`, {
-          withCredentials: true, // Ensure cookies are sent with request
-        });
+ 
+    const sendUserIds = async () => 
     
-        console.log("Product ID from Backend Cookies:", response.data.productID);
-        setCookPID(response.data.productID)
-        const timer = setTimeout(() => {
-              sendUserIds();
-            }, 2500);
-       
-        // return response.data.productID; // Use this productID as needed
-        return () => clearTimeout(timer); // Cleanup function
-    
-      } catch (error) {
-        console.error("Error fetching product ID:", error);
-        return null;
-      }
-    };
-
-    fetchProductId();
-
-  },[cookPID])
-
-  const sendUserIds = async (req,res) => {
-    try {
-     
-      console.log("Triggered by button click"); 
-      const ID=await fetchID(localStorage.getItem("accessToken"));
-
-      if(!ID)
-      {
-
-        //  alert("198 line no on purchasePage ID not Defined");
-         return;
-
-      }
-      const Ids = {
-        userId: ID,
-        productId: cookPID,
-      };  
-    
+    {
       
-      
+    try{
 
-      // const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
+  
+   dispatch(resetButtonText());
+    setButtonClick2(false);
+   
+    const Ids = {
+      userId: UserID,
+      productId: id,  // Use the value passed in
+    };  
 
-      const sendIDS = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/changetext`, Ids);
+    // const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
 
-      console.log("Response status:", sendIDS.status);
+    dispatch(changeButtonText(Ids));
 
-      if (sendIDS.status === 200) {
-        console.log("Product already exists in the cart");
-        console.log("this is my product ID",Ids.productId);
-        setButtonClick2(true);
-      }
+     console.log("buttonText",buttonText)
 
-      console.log("this is my product ID",Ids.productId);
+   
+  } catch (error) {
+    console.error("Error adding product to cart:", error);
+  } finally {
+    setLoading2(false);
+  }
+};
 
-    } catch (error) {
-      console.error("Error adding product to cart:", error);
-    }
-    finally{
-      setLoading2(false);
-    }
+sendUserIds();
+ 
+}, []);
+
+
+
+useEffect(() => {
+
+  setButtonClick2(false);
+
+  if (!UserID || !id) return;
+
+  const Ids = {
+    userId: UserID,
+    productId: id,
   };
 
-  //  console.log(loca);
-  //Error occuring here Error No:-1
-  // useEffect(() => {
-  //   const sendUserIds = async (req,res) => {
-  //     try {
-       
-  //       console.log("Triggered by button click"); 
-  //       const ID=await fetchID(localStorage.getItem("accessToken"));
+  dispatch(changeButtonText(Ids));
+ 
+  if(buttonText === 200) {
+    setButtonClick2(true);
+  }
 
-  //       alert(cookPID)
-  //       const Ids = {
-  //         userId: ID,
-  //         productId: cookPID,
-  //       };  
-      
-        
-        
-  
-  //       const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
-  
-  //       console.log("Response status:", sendIDS.status);
-  
-  //       if (sendIDS.status === 200) {
-  //         console.log("Product already exists in the cart");
-  //         console.log("this is my product ID",Ids.productId);
-  //         setButtonClick2(true);
-  //       }
+}, [dispatch,buttonText]);
 
-  //       console.log("this is my product ID",Ids.productId);
 
-  //     } catch (error) {
-  //       console.error("Error adding product to cart:", error);
-  //     }
-  //     finally{
-  //       setLoading2(false);
-  //     }
-  //   };
+
   
-  //   const timer = setTimeout(() => {
-  //     sendUserIds();
-  //   }, 1000); // 1-second delay
-  
-  //   return () => clearTimeout(timer); // Cleanup function
-  // }, []);
-  
-  useEffect(() => {
-    localStorage.setItem("reData", JSON.stringify(reData));
-  }, [reData]);  //refresh automatically when data will added in review database
 
 
    useEffect(() => {
@@ -299,14 +208,37 @@ localStorage.setItem("cartItems",totalItemsCart);
 
 },[totalItemsCart])
 
+useEffect(()=>{
 
+ 
+
+  const InitialCartSetup=async()=>{
+
+    // if(!localStorage.getItem("accessToken"))return;
+
+    if(!UserID)
+    {
+      return;
+    }
+
+
+  // let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:UserID});
+  // console.log("this is total cart items",totalCart.data.totalQuantity);
+
+  dispatch(fetchBagTotal2({ ID: UserID })); // Fetch updated total quantity
+   
+ 
+  }
+
+  InitialCartSetup();
+},[UserID])
 
 
 useEffect(() => {
   const fetchSimilarProducts = async () => {
     if (data && data.price) {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/update?value=${data.price}`);
+        const response = await axios.get(`http://localhost:1000/users/update?value=${data.price}`);
         
         if (response.data) {
           dispatch(setSimiliarProduct(response.data)); // Update Redux store
@@ -321,7 +253,7 @@ useEffect(() => {
   };
 
   fetchSimilarProducts();
-}, [data, dispatch]);
+}, [data]);
 
 
   useEffect(()=>{
@@ -330,39 +262,32 @@ useEffect(() => {
 
     if(data && data.product_image && data.product_name)
     {
-   console.log("yes i am hereeee babbyyyyyy in data is coming correctly");
-      // similiar product api
-      // const api=await axios.get(`http://localhost:1000/users/update?value=${data.price}`).then(response=>dispatch(setSimiliarProduct(response.data))).catch((err)=>console.log(err));
-      //  console.log("this is similiar data dispatch",api);
-      // costumer reviews api
-     const reviewData= await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/fetchuser`)
-     localStorage.setItem("reData",JSON.stringify(reviewData.data.data));
-     // .then(res=>localStorage.setItem("reData",JSON.stringify(res.data.data)));
+
+     dispatch(fetchReviewData()) 
+
+     dispatch(setProductData({
+
+      image: data.product_image,
+      name: data.product_name,
+      details: data.product_details,
+      description: data.description,
+      price: data.price,
+      rating: data.rating,
+      id: data._id
+
+     })); 
     
-      console.log("reviewData",reviewData.data.data)  ///bug is here showing undefined here...>>>>
-      console.log("description_data",data.description);
-      cookie.set("productName", data.product_name, { path: "/", maxAge: 3600 });
-      localStorage.setItem("productImage",data.product_image);
-      localStorage.setItem("productName",data.product_name);
-      localStorage.setItem("details",data.product_details);
-      localStorage.setItem("description",data.description);
-      localStorage.setItem("price",data.price);
-      localStorage.setItem("rating",data.rating);
-      localStorage.setItem("productID",data._id);
+     
     
+
+
+     
+    
+     
       
-    
-      setPic(localStorage.getItem("productImage"));
-      const data1 = localStorage.getItem("reData");
-      if (data1) {
-        const parsedData = JSON.parse(data1);
-        setReData(parsedData); // Store in state
-      }
-      setProductName(localStorage.getItem("productName"));
-      setDetails(localStorage.getItem("details"));
-      setDescription(localStorage.getItem("description"));
-      setPrice(localStorage.getItem("price"));
-      setRating(localStorage.getItem("rating"));
+  
+      
+ 
 
     }
 
@@ -373,20 +298,13 @@ useEffect(() => {
 
   },[data])
 
-// useEffect(()=>{
 
-//     console.log("this is similiar Dataaaa in useEffect",similiarData)
-
-//     localStorage.setItem("similiarP",similiarData);
-
-//     setSimiliarProduct(localStorage.getItem("similiarP"));
-
-//   },[similiarData])
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  console.log("this is reDataaa brooooooooooooooooo",reData);
+
+  console.log("this is reviewState Data brooooooooooooooooo",reviewState);
  
   const handleMouseOver=(e)=>{
 
@@ -420,7 +338,7 @@ useEffect(() => {
 
   const handleBuyButton=async()=>{
 
-    const IDS=await fetchID(localStorage.getItem("accessToken"));
+    const IDS=UserID;
 
     const Ids={userId:IDS,productId:localStorage.getItem("productID")};
     navigate("/users/shipping")
@@ -428,7 +346,7 @@ useEffect(() => {
 
     try{
 
-    const sendIDS=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/addbag`,Ids); 
+    const sendIDS=await axios.post("http://localhost:1000/users/addbag",Ids); 
     
     
     }
@@ -446,38 +364,48 @@ useEffect(() => {
 
     
     // console.log(localStorage.getItem("userID"));
-
-    if(!localStorage.getItem("accessToken"))
+    dispatch(resetButtonText());
+    setButtonClick2(false);
+    if(!token)
     {
      return navigate("/users/login");
     }
 
-    const ID=await fetchID(localStorage.getItem("accessToken"));
+    // const ID=await fetchID(token);
 
-    console.log("id is here Encrypted ID",ID)
+    console.log("id is here Encrypted ID",UserID,id)
+    const Ids={userId:UserID,productId:id,Signal:false};
 
-    const Ids={userId:ID,productId:localStorage.getItem("productID")};
+    const showTotalId = { ID: UserID }; // Wrap userID in an object
 
-    const showTotalId = { userId: ID }; // Wrap userID in an object
-
-    const response=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/showtotal`, showTotalId);
+ 
+    // alert(showTotalId);
+    dispatch(fetchBagTotal2(showTotalId))
     
-    console.log(response.data.totalQuantity);
+    // const response=await axios.post("http://localhost:1000/users/showtotal", showTotalId);
+    
+    // console.log(response.data.totalQuantity);
     
     
+   //tommorow task is :- shift all apis to async thunk and don't call api multiple times unless it neccessary call api on only when component load and store it into redux.
 
+   dispatch(fetchAddToBag(Ids))
+    // const sendIDS=await axios.post("http://localhost:1000/users/addbag",Ids); 
 
-    const sendIDS=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/addbag`,Ids); 
+    // console.log("this is  total cart items",sendIDS.status)
+ dispatch(changeButtonText({
+  userId: UserID,
+  productId: id
+}));
 
-    console.log("this is  total cart items",sendIDS.status)
-
+setButtonClick2(true);
     
     const sendUserIds = async () => {
       try {
         console.log("Triggered by button click");
        
 
-        const ID=await fetchID(localStorage.getItem("accessToken")); 
+        const ID=UserID;
    
         if(!ID)
         {
@@ -487,38 +415,46 @@ useEffect(() => {
 
         const Ids = {
           userId: ID,
-          productId: localStorage.getItem("productID"),
+          productId: product.id
         };
-  
-        const sendIDS = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/changetext`, Ids);
-  
-        console.log("Response status:", sendIDS.status);
-  
-        if (sendIDS.status === 200) {
+      //  console.log("IDS hereeee......",Ids);
 
-          console.log("Product already exists in the cart");
-          setButtonClick2(true);
+       
+        // const sendIDS = await axios.post("http://localhost:1000/users/changetext", Ids);
+       
+        console.log("Response status:",buttonText);
+  
+        // if(buttonText === 200)
+        // {
 
-        }
+        //   console.log("Product already exists in the cart");
+        //   setButtonClick2(true);
 
-        let totalCart=await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/showtotal`,{userId:Ids.userId});
-        // console.log("this is total cart items",totalCart.data.totalQuantity);
-         
-        dispatch(increment(totalCart.data.totalQuantity));
+        // }
+
+        // let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:Ids.userId});
+
+        const dataSend={ID: UserID,}
+
+        dispatch(fetchBagTotal2( dataSend )); // Fetch updated total quantity
+      
+        dispatch(increment(totalBag));
 
       } catch (error) {
         console.error("Error adding product to cart:", error);
       }
     };
   
-    const timer = setTimeout(() => {
-      sendUserIds();
-    }, 30); // 1-second delay
+    if(statusItem==='succeeded')
+    {
+      console.log("yes baby i am inside this function")
+sendUserIds();
+    }
+    // const timer = setTimeout(() => {
+      
+    // }, 1000); // 1-second delay
   
-    return () => clearTimeout(timer);
-
-
-
+    // return () => clearTimeout(timer);
   }
 
   const handleColorClick = (color) => {
@@ -526,42 +462,15 @@ useEffect(() => {
     console.log("holaaaaaaa similiarrrrrrr",similiarData)
   };
 
-  //send userId and ProductId for track user product Items:-
-  // const handleItemCounting=async()=>{
-
-    // dispatch(increment());
 
 
-  //  console.log(localStorage.getItem("userID"));
-
-//     const Ids={userId:localStorage.getItem("userID"),productId:localStorage.getItem("productID")};
-
-// const showTotalId = { userId: localStorage.getItem("userID") }; // Wrap userID in an object
-
-// const response=await axios.post("http://localhost:1000/users/showtotal", showTotalId);
-      
-//     console.log(response.data.totalQuantity);
-    
-//     dispatch(increment(dataComing));
-
-
-//     const sendIDS=await axios.post("http://localhost:1000/users/addbag",Ids); 
-
-//     console.log("this is  total cart items",sendIDS.status)
-
-    // setTotalItemsCart(sendIDS.data.bag.length); 
-    // console.log("this is count data:",);
-  
+  // if (timer) {
+  //   return <p className="loading-text text-center text-xl">Loading...Hello worlddddd</p>;
   // }
 
-  if (timer) {
-    return <p className="loading-text text-center text-xl">Loading...Hello worlddddd</p>;
-  }
-
-  console.log("this is the localStorage reData",localStorage.getItem("reData"));
-  console.log("this is the reData State Data",reData)
-  
-  
+ 
+  console.log("here is my productSlice2 Data >>>>>>",product);
+ 
   
   return(
 <div className=''>
@@ -614,29 +523,29 @@ backgroundImage:`url(${picUrl})`
 <div className='rightDetailCont pt-12 flex flex-col items-center'>
 
 <div className='textCont'>
-<h1 className='text-3xl' id="imagez"> {productName} </h1>
+<h1 className='text-3xl' id="imagez"> {productSlice2.name} </h1>
 </div>
 
 <div className="ratingsContainer flex items-center">
- <h1 className='text-base'>Ratings:</h1><span className="ratingStars text-base" >{rating}</span> 
+ <h1 className='text-base'>Ratings:</h1><span className="ratingStars text-base" >{productSlice2.rating}</span> 
  <img src={star} className='h-5'></img>
 
 </div>
 
 <div className='textCont pt-1'>
-<h1 className="text-2xl">Price:₹{price}</h1>
+<h1 className="text-2xl">Price:₹{productSlice2.price}</h1>
 </div>
 <div className="detailsCont pt-2 ">
-  <h1 className='text-2xl'>{details}</h1>
+  <h1 className='text-2xl'>{productSlice2.details}</h1>
   </div>
   <div className="descriptionCont w-4/5">
-  <h1 className="">{description}</h1>
+  <h1 className="">{productSlice2.description}</h1>
   </div>
   <div className="purchaseBtn  flex w-1/3 pl-4  justify-around pt-8">
   {/* <button className="btn text-base  w-2/4 h-10 rounded-md mr-2 text-white bg-orange-400" onClick={handleBuyButton}>Buy</button> */}
   <BuyButton></BuyButton>
-  {
-    buttonClick2? <button className="btn text-base  text-white w-2/4 h-10 rounded-md ml-2 bg-green-400" onClick={()=>navigate("/users/shipping")}>Go to Cart</button>: <button className="btn text-base  text-white w-2/4 h-10 rounded-md ml-2 bg-green-400" onClick={handleAddtoCart}>Add to Cart</button>
+  {    //fix go to cart logic dispatch dispatch(fetchBagData(UID));
+     buttonClick2 ? <button className="btn text-base  text-white w-2/4 h-10 rounded-md ml-2 bg-green-400" onClick={()=>navigate("/users/shipping")}>Go to Cart</button>: <button className="btn text-base  text-white w-2/4 h-10 rounded-md ml-2 bg-green-400" onClick={handleAddtoCart} >Add to Cart</button>
  
   }
 </div>  
@@ -662,7 +571,7 @@ backgroundImage:`url(${picUrl})`
     <div className='containerVariants flex w-full justify-evenly'>
 
 {
-  apiData.product_color.map((item,index)=>(
+  productColors.map((item,index)=>(
 
       <div className='colorImages w-16 h-16 bg-cover bg-red-400 border-2 border-solid ' key={index} style={{backgroundImage:`url(${item.image_urls?.[0]})`}} onClick={()=>handleColorClick(item.color)}>
 
@@ -727,17 +636,22 @@ backgroundImage:`url(${picUrl})`
 
 
 
-<div className="reviewContainer  ">
+{/* <div className="reviewContainer  ">
 
 <div className='reviewHeading flex justify-center pt-10'>
     <h1 className='text-2xl'>Reviews & Comments</h1>
 
   </div>
 
-
+ 
 
   {
-  reData.map((reviewDataMap)=>(
+  
+  loadingReview ? (
+    <div className="text-gray-500 text-sm pl-20 pt-5">Loading reviews...</div>
+  ) :(
+
+  reviewData?.data?.map((reviewDataMap)=>(
     <div className='reviewChildContainer  pl-20 pt-5'>
 
     <div className="uperReviewContainer">
@@ -757,6 +671,7 @@ backgroundImage:`url(${picUrl})`
         <h1>{reviewDataMap.comment}</h1>
     
       </div>
+      
 
       <div className="imageReview flex">
 
@@ -768,16 +683,17 @@ backgroundImage:`url(${picUrl})`
     
     </div>
     </div>
-
+  )
   ))
+
 }
 
 
 
-</div>
+</div> */}
 
 
-
+<ReviewSection></ReviewSection>
 
 
 

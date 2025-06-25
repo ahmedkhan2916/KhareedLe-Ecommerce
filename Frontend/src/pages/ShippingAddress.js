@@ -8,8 +8,9 @@ import axios from "axios";
 import "../assets/Style/Headings.css"
 import { redirect } from 'react-router-dom';
 import {fetchID} from "../Services/apiService.js"
+import {fetchBagData,refreshToken,setSignal} from '../store/dataSlice.js';
 import { useNavigate } from 'react-router-dom';  //for redirecting to another page
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 
 function ShippingAddress() {
 
@@ -19,38 +20,65 @@ function ShippingAddress() {
     const [dataDeleted,setDataDeleted]=useState();
     const [total,setTotal]=useState(0);
     const navigate = useNavigate();
-    // const userId = useSelector(state=>state.username.userId);
+    const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
+    const bagData = useSelector((state) => state.bag.data);
+    const loading = useSelector((state) => state.bag.loading);
+    const error = useSelector((state) => state.bag.error);
+   
     
+    // const userId = useSelector(state=>state.username.userId);
+    const dispatch=useDispatch();
+    console.log("three states coming>>>>>>>>>",bagData,loading,error);
 
 
+            useEffect(()=>{
+    
+             const fetchBagItemsFunction=async()=>{
+    
+    
+                  const ID = await fetchID(token);
+                  dispatch(fetchBagData(ID));
+    
+    
+    
+              }
+    
+     fetchBagItemsFunction();
+    
+    
+    
+            },[token])
     // const dataBagParse=localStorage.getItem("bagItem")
 
     // const dataBagStored=JSON.parse(dataBagParse);
 
-    // console.log(dataBagData)
+    console.log("this is loading status in bagItem fatch",loading);
 
     useEffect(() => {
-        const fetchTotalPrice = async () => {
-            const storedData = JSON.parse(localStorage.getItem("bagItem")) || [];
-            setDataBagData(storedData);
-      
-           const userId=await fetchID(localStorage.getItem("accessToken"));
-            console.log(userId);
-      
-            try {
-              const response = await axios.post("http://localhost:1000/users/totalprice", { userId });
-              console.log("here the total price",response.data.Price)
-              setTotal(response.data.Price); // Assuming `total` is the key in the response
-            } catch (error) {
-                // console.log("here userId",userId)
-              console.error("Error fetching total price:", error);
-            }
-          };
-      
-          fetchTotalPrice();
 
-        
-      }, []);
+        const fetchTotalPrice = async () => {
+          // Safely get data from localStorage
+          // setDataBagData(storedData);
+
+          try {
+            const userId = await fetchID(token);
+            console.log("User ID:", userId);
+      
+            const response = await axios.post("http://localhost:1000/users/totalprice", {
+              userId
+            });
+      
+            console.log("Total Price:", response.data.Price);
+            setTotal(response.data.Price);
+          } catch (error) {
+            console.error("Error fetching total price:", error);
+          }
+        };
+      
+        fetchTotalPrice();
+      }, [bagData]);
+      
+
 
       console.log("bagData",dataBagData)
 
@@ -68,25 +96,26 @@ function ShippingAddress() {
       async function  deleteQuantity(productId)
       {
         
-        const ID=await fetchID(localStorage.getItem("accessToken"));
+        const ID=await fetchID(token);
+
         const IDS={userId:ID , productId:productId};
+
         console.log("this is ids",IDS);
         // const userId=localStorage.getItem("userID");
         const dataDeleted= await axios.post("http://localhost:1000/users/deletequantity",{ userId: ID,
-            productId: productId})
+          
+        productId: productId})
 
         console.log("this is data deleted",dataDeleted);
-         
-        // setDataBagData((prevData) =>
-        //     prevData.map((item) =>
-        //         item.productId === productId
-        //             ? { ...item, quantity: Math.max(0, item.quantity - 1) }
-        //             : item
-        //     ).filter(item => item.quantity > 0) // Remove items with 0 quantity
-        // );
+      
 
+        dispatch(fetchBagData(ID)); 
+
+    
       }
   
+      console.log("this is the bagData length",bagData.bagItems?.length);
+
   return (
 
 <>
@@ -117,7 +146,9 @@ function ShippingAddress() {
 <div className="leftSideProducts w-4/6  pl-4">
 
     {
-        dataBagData.map((item,index)=>(
+      
+    !bagData || bagData.length === 0 ? (<div>YOUR CART IS EMPTY BROOOO......</div>):(
+        bagData.bagItems?.map((item,index)=>(
 
                 <div className={`productCard  flex items-center ${cardColor} justify-around  mt-4  rounded`} key={`${index}`}>
 
@@ -178,6 +209,7 @@ function ShippingAddress() {
             </div>
 
         )
+      )
 
         )
 

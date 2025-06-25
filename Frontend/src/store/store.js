@@ -1,16 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // Default is localStorage for web
-import dataReducer from './dataSlice.js';
+import dataReducer, { fetchBagData, fetchBagTotal2, quantityItemBagStore } from './dataSlice.js';
 import {
   statusCode,
   setUser,
@@ -18,46 +7,44 @@ import {
   productSlice,
   counterSlice,
   AccessToken,
+  productSlideReducer,
+  bagSlice,
+  authLogin,
+  productSliceReducer,
+  reviewSliceReducer,
+  access_Tok,
+  SignalBoolean,
+  fetchIDStoreReducer,
+  fetchCartQty,
+  fetchBagDataStore,
+  changeButtonTextStore
+
+
 } from './dataSlice';
-
-// Configure persistence for specific slices
-const persistConfig = {
-  key: 'root', // Root key for the persisted store
-  storage,     // Storage engine
-  whitelist: ['username','userId'], // Persist the username slice (includes userId)
-};
-
-const dataPersistConfig={
-
-  key:'dataApi',
-  storage,
-  whitelist:['apiData']
-
-
-
-}
-
-// Persisted reducers
-const persistedSetUserReducer = persistReducer(persistConfig, setUser.reducer);
-const persistDataReducer=persistReducer(dataPersistConfig,dataReducer);
 
 const store = configureStore({
   reducer: {
-    data: persistDataReducer,
+    data: dataReducer,
     status: statusCode.reducer,
-    username: persistedSetUserReducer, // Persisted Username Slice (Includes userId)
+    username: setUser.reducer,
     similiarproductstore: similiarProduct.reducer,
     products: productSlice.reducer,
     counter: counterSlice.reducer,
-    AccessTK:AccessToken.reducer,
+    AccessTK: AccessToken.reducer,
+    slideproducts: productSlideReducer,
+    bag: bagSlice.reducer,
+    auth: authLogin,
+    product:productSliceReducer,
+    review: reviewSliceReducer,
+    userAuth:access_Tok,
+    signal: SignalBoolean.reducer,
+    fetchID:fetchIDStoreReducer,
+    fetchProductQty: fetchCartQty,
+    fetchBagTotalStore: fetchBagDataStore,
+    quantityItemBag:quantityItemBagStore,
+    changeButtonText:changeButtonTextStore
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
-export const persistor = persistStore(store); // CreatePersistor
 export default store;

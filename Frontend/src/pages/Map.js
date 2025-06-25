@@ -72,7 +72,7 @@ const Map = () => {
     // Trigger map resize
     fetchAddress(location.lng, location.lat);
     map.current.resize();
-  }, location.lat);
+  }, [location.lat]);
 
  
 

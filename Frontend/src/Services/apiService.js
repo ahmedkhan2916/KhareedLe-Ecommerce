@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useSelector,useDispatch } from "react-redux";
 
+
 // Function to fetch user details
 export const fetchID = async (accessToken) => {
 
   try {
 
-    if(!localStorage.getItem("accessToken"))
+    if(!accessToken)
     {
       return;
     }
@@ -36,7 +37,7 @@ export const showTotalFuncHeader=async(ID)=>{
   try{
 
 
-    if(!localStorage.getItem("accessToken"))
+    if(!ID)
       {
         return;
       }

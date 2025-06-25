@@ -7,7 +7,6 @@ import { useState } from 'react';
 function NewArrival() {
 
     const [index,setIndex]=useState(0);
-    // const Images=["https://blog.playstation.com/tachyon/2024/09/1d0ae4eca1d42d088bde97428219325f0c6d5a51.jpg","https://media.wired.com/photos/629133e5e9a46d033b3380c7/16:9/w_2399,h_1349,c_limit/Finding-a-PlayStation-5-Is-About-to-Get-Easier-Gear-shutterstock_1855958302.jpg"]
 
     const Images=[Banner,Banner2];
 

@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 import Search from "../assets/images/Search.png";
 import "../assets/Style/navbarStyle.css"
 import { useDispatch ,useSelector} from 'react-redux';
-import { increment, setStatusCode } from '../store/dataSlice.js';
+import { clearBag, increment, setStatusCode } from '../store/dataSlice.js';
 import headset from "../assets/images/HeaderLogos/headset.png";
 import web from "../assets/images/HeaderLogos/web.png";
 import cart from "../assets/images/HeaderLogos/cart.png";
@@ -18,15 +18,17 @@ import menu from "../assets/images/HeaderLogos/menu-burger.png"
 import KhareedLeLogo from "../assets/BrandHeaderLogo/khareedlecanva2.png";
 // import MobileSidebar from '../layout/MobileSidebar.js';
 import axios from 'axios';
-import logout from "../assets/LoginLogos/logout.png"
+import logoutPNG from "../assets/LoginLogos/logout.png"
 import khareedLe from "../assets/images/HeaderLogos/khareedLe.png";
 import { setProducts } from '../store/dataSlice.js';
-import { fetchData } from '../store/dataSlice.js';
+import { fetchData,refreshToken,setSignal ,setBagData,fetchBagData,fetchUserID,fetchBagTotal2,setTotalBagNull,userIDNULL} from '../store/dataSlice.js';
 import Sidebar from "../components/Sidebar.js"
 import Cookies from "universal-cookie";
 import {fetchID,showTotalFuncHeader,fetchSearchItems, accessTokenRefresh} from "../Services/apiService.js";
 import BuyButton from "../components/BuyButton.js";
 import Cart from '../components/Cart.js';
+import {logoutAccessTK,logout} from '../store/dataSlice.js'
+import Logout from "../components/Logout.js";
 
 
 function Header() {
@@ -36,13 +38,13 @@ function Header() {
 // const { bgColor, changeBackgroundColor } = useContext(BackgroundColorContext);
     const cookie=new Cookies();
     const dispatch = useDispatch();
-    const status=useSelector((state)=>state.status.status);
+    const status2=useSelector((state)=>state.status.status);
     const [cartItems,setCartItems]=useState(localStorage.getItem("cartItems"))
-    // const userId = useSelector(state=>state.username.userId);
-    // console.log("UserID redux Persist",userId)
+     const Signal_Boolean_Response=useSelector(state=>state.signal)
+    // console.log("here is boolean data Signal",Signal_Boolean_Response)
     const numberItem=useSelector(state=>state.counter.value);
     console.log("this is total item",numberItem);
-    // const cartItem=useSelector(state=>state.counter)
+
     const [isDropDownOpen,setIsDropDownOpen]=useState(false);
     const [hideNavbar,setHideNavbar]=useState(0);
     const userN=useSelector((state)=>state.username.username);
@@ -54,67 +56,93 @@ function Header() {
     // const [userIdStorage,setUserIdStorage]=useState(localStorage.getItem("userID"));
     const [total,setTotal]=useState(null);
     const detail=useSelector((state)=>state.AccessTK.Token)
+    const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
     const Id=useSelector((state)=>state);
-    const [access,setAccess]=useState(localStorage.getItem("accessToken"));
+    const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
+    const { totalBag,statusTotalBag,errorBagTotal,}=useSelector((state)=>state.fetchBagTotalStore);
 
     console.log("THIS IS USER ID FROM REDUX PERSIST",Id.username.userId);
     const userDetail=useSelector((state)=>state.username.userId);
 
-    // const accessTheAccessToken=async()=>{
-
-    //   console.log("this is dataaaaaaaa brooooooooo",userDetail)
-    //   //  accessTokenRefresh(userDetail);
-      
-    // const access=await axios.post(
-    //   "http://localhost:1000/users/refresh-token-handler",{encryptId : userDetail}, // Backend endpoint
-    //   {
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     withCredentials: true,
-    //   },  
-
-    // );
-
-    // }
-
-
-
-    // if(!detail)
-    // {
-    //   accessTheAccessToken();
-    // }
-
- 
     const [UID,setID]=useState("");
-    console.log("Header Data >>>>>>>",detail);
-    // const userId = useSelector(state=>state.userId.userId);
 
-    console.log("usernameheader",userN);
     
-    const itemFetch = localStorage.getItem('totalNumbers');
-    // console.log(cookie.get("productName"));
+     useEffect(() => {
+    if (UserID && token) {
+      dispatch(fetchBagTotal2({ ID: UserID }));
+    }
+  }, [UserID, token, totalBag]);
+
+
+    
+    useEffect(() => {
+    
+      const SignalBoolean=async()=>{
+
+      console.log("Signal Boolean",Signal_Boolean_Response);
+    
+
+      if(Signal_Boolean_Response)
+          {
+            dispatch(setBagData({data:[]}));
+            dispatch(setSignal({signal:false}));
+    
+          }
+    
+    }
+    
+        SignalBoolean();
+    
+    
+        },[])
+
+
+
+    useEffect(()=>{
+
+
+
+  console.log("hello this is my world refreshToken");
+  dispatch(refreshToken());
+
+
+
+  //  return;
+
+
+    },[])
+
+    
+      useEffect(()=>{
+  
+  dispatch(fetchUserID(token));
+  
+  
+      },[token])
+
+
+
 
     useEffect(()=>{
 
     const showTotalFunc=async()=>{
 
-      console.log("this is ID CALLING Before Encryption",userDetail);
-    if(!localStorage.getItem("accessToken"))
-      {
-        return; 
-      }
-    const ID=await fetchID(access);
+    //   console.log("this is ID CALLING Before Encryption",userDetail);
+    // if(!localStorage.getItem("accessToken"))
+    //   {
+    //     return; 
+    //   }
+    // const ID=await fetchID(token);
 
-    if(!ID)
-    {
-      return ;
-    }
+    // if(!ID)
+    // {
+    //   return ;
+    // }
 
-    setID(ID);
+    setID(UserID);
     
-    console.log("this is ID CALLING",ID);
-    const totalCart=await showTotalFuncHeader(ID);
+    // console.log("this is ID CALLING",ID);
+    const totalCart=await showTotalFuncHeader(UserID);
     console.log("i am callinggggggggggggggg",totalCart)
   
     setTotal(totalCart);
@@ -127,39 +155,14 @@ function Header() {
 
       showTotalFunc();
 
-    },[]);
+    },[UserID]);
 
-    // useEffect( () => {
-     
-    //   // if (!userId) {
-    //   //   console.error("userId is missing or undefined in Redux.");
-    //   //   return;
-    //   // } 
-   
-    //   const fetchUserItemsData = async () => {
-
-    //     try {
-
-    //       const ID=await fetchID(detail);
-    //       const response = await axios.post(`http://localhost:1000/users/showtotal`,{ID});
-    //       localStorage.setItem("data",response.data.totalQuantity);
-    //       console.log(response.data.totalQuantity);
-    //       setDataComing(localStorage.getItem("data"));
-
-    //     } catch (error) {
-    //       console.error("Error fetching total items:", error);
-    //     }
-    //   };
-    
-    //   fetchUserItemsData();
-
-    // }, [numberItem]);
     
 
 
   if(userN)
   {
-      localStorage.setItem("status",status);
+      localStorage.setItem("status",status2);
       localStorage.setItem("username",userN);
   }
    
@@ -173,8 +176,8 @@ function Header() {
   const handleSubmit=async (req,res)=>
   {
 
-    navigate("/users/login")
-   
+    navigate("/users/login");
+
   }
 
   const handleMouseEnter=()=>    
@@ -209,7 +212,7 @@ function Header() {
       sethideSearchBar("flex");
       setHideNavbar(1);
 
-    }
+    
 
    const searchedQuery = await fetchSearchItems(inputValue)
 
@@ -222,22 +225,46 @@ function Header() {
     return;
     
    }
-  
+   
+   console.log("this is SearchQuery SEARCH",searchQuery);
    setSearchedQuery(searchedQuery.data.searchedItems);
    dispatch(setProducts(searchQuery));
 
   }
+}
 
 
-  const handleLogout=()=>
+  const handleLogout=async()=>
   {
     // console.log(userId);
     // dispatch(increment(0));
     // dispatch(setStatusCode(false));
     localStorage.clear();
+
+    try{
+
+      // const ID=await fetchID(token);
+
+      const logout_res=await axios.post("http://localhost:1000/users/logout", {}, { withCredentials: true });
+ document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      console.log("successMessage",logout_res);
+      dispatch(logout());
+      dispatch(logoutAccessTK());
+      dispatch(clearBag())
+      dispatch(setTotalBagNull())
+      dispatch(userIDNULL())
+
+      navigate("/users/login");
+      
+
+    }catch(err){
+console.log(err);
+
+    }
+
     // sessionStorage.clear();
     // location.reload();
-    navigate("/users/login");
+   
 
     
 
@@ -253,7 +280,7 @@ function Header() {
       // const userId= await fetchID(detail);
       try{
 
-      if(!localStorage.getItem("accessToken"))
+      if(!token)
         {
           setBlur(true);
           return;
@@ -262,7 +289,7 @@ function Header() {
 
       // console.log("this is UID MY",UID);
     
-      const bagData=await axios.post('http://localhost:1000/users/fetchbag',{UID:UID});
+      const bagData=await axios.post('http://localhost:1000/users/fetchbag',{UID:UserID});
    
       
       console.log("this is bag data bro",bagData.data.bagItems);
@@ -374,9 +401,7 @@ function Header() {
       const handleRoute=async(UID)=>{
 
         try{
-          
-
-          
+        
           const resp= await axios.post("http://localhost:1000/users/track-search",{UID:UID});
           console.log("success here")
 
@@ -390,8 +415,8 @@ function Header() {
           { return console.log("id is showing undefined");}
         
       console.log(UID);
-      dispatch(fetchData(UID));
-      return navigate(`/product`);
+      // dispatch(fetchData(UID));
+      return navigate(`/product/${UID}`);
 
 
       }
@@ -511,8 +536,8 @@ h-72  flex justify-center">
 <li className='listProfile pt-1 text-xl'>Orders</li>
 <li className='listProfile pt-1 text-xl'>Wishlist</li>
 <li className='listProfile pt-1 text-xl'>Gifts</li>
-<li className='listProfile pt-1 text-xl flex' onClick={handleLogout}> Logout <img src={logout} className="h-6 pl-1"></img>
-</li>
+{/* <li className='listProfile pt-1 text-xl flex' onClick={handleLogout}> Logout <img src={logoutPNG} className="h-6 pl-1"></img> */}
+<Logout></Logout>
 
 </ul>
 </div>
@@ -539,10 +564,7 @@ h-72  flex justify-center">
 
    Items.map((item)=>( 
     
-    
-    
-    <div className='Items2 flex relative items-center w-max h-full  lg:pl-4 pr-4 cursor-pointer' onMouseEnter={()=>handleBottomHeader(item.id)} onMouseLeave={handleMouseleave}>
-               
+    <div key={item.id}  className='Items2 flex relative items-center w-max h-full  lg:pl-4 pr-4 cursor-pointer' onMouseEnter={()=>handleBottomHeader(item.id)} onMouseLeave={handleMouseleave}>
     <p className='headerText pl-2 tracking-tight text-sm'>{item.label}</p>
     <div className='arrowContainer flex justify-center items-center ml-1 '>
     <img src={arrayDown} className={`${item.showDropDown?"block" : 'hidden'} arrayDownHeader h-4 ${item.showDropDown&& dropdownBottom===item.id ? 'rotate-180' : 'rotate-0' }  hover:transition-transform duration-500 ease-in-out`} ></img>

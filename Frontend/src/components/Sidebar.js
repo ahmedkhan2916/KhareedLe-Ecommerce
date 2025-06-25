@@ -107,6 +107,7 @@
 
 
 import { useState } from 'react';
+import Logout from "../components/Logout.js";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -159,11 +160,12 @@ const Sidebar = () => {
         </div>
 
 
-        <ul className="space-y-3 mt-7">
+        <ul className="space-y-3 mt-7 items-center flex flex-col">
           <li className="cursor-pointer hover:bg-gray-300">Home</li>
           <li className="cursor-pointer hover:bg-gray-300">Products</li>
           <li className="cursor-pointer hover:bg-gray-300">About</li>
           <li className="cursor-pointer hover:bg-gray-300">Contact</li>
+          <Logout></Logout>
         </ul>
       </div>
 

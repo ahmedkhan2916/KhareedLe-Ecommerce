@@ -5,41 +5,129 @@ import { useSelector,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import cart from "../assets/images/HeaderLogos/cart.png";
 import { showTotalFuncHeader } from "../Services/apiService.js";
-import { increment } from '../store/dataSlice.js';
+import { increment, fetchBagData,refreshToken,fetchUserID} from '../store/dataSlice.js';
+import { use } from "react";
+
 
 const Cart = () => {
+
     const [showLoginModal, setShowLoginModal] = useState(false);
-    const [access,setAccess]=useState(localStorage.getItem("accessToken"));
     const numberItem=useSelector(state=>state.counter.value);
     const [numberCartTotal,setNumberCartTotal]=useState(0);
     const [UID,setID]=useState("");
     const [total,setTotal]=useState(null);
     const navigate=useNavigate();
     const dispatch=useDispatch();
+    const bag = useSelector(state => state.bag.data);
+    const loading = useSelector(state => state.bag.loading);
+     const errorBagFetch = useSelector(state => state.bag.error);
+    
+    const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
+    const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
+    const { totalBag,statusTotalBag,errorBagTotal,}=useSelector((state)=>state.fetchBagTotalStore);
+
+    
+    console.log("UserID from redux",UserID);
+
+
+    console.log("this is total bag data",totalBag);
+
+
+
+    //   useEffect(()=>{
+    
+    //  if(token===null)
+    //  {
+    
+    //   dispatch(refreshToken());
+    //   // dispatch(fetchBagData(UserID));
+    
+    //  }
+
+    //  console.log("token coming here",token)
+    
+      
+    
+    
+    //     },[])
+
+
+      
+
+        
+  //    useEffect(() => {
+  //   if (token) {
+  //     dispatch(fetchUserID(token));
+  //   }
+  // }, [token]);
+
+
+
+
+    
+
+
+   useEffect(() => {
+    const updateCartTotal = async () => {
+      if (!bag || bag.length === 0 || !UserID) {
+        setNumberCartTotal(0);
+        return;
+      }
+
+      try {
+        const response = await axios.post("http://localhost:1000/users/showtotal", { userId: UserID });
+        console.log("this is response from show total",UserID);
+        setNumberCartTotal(response.data.totalQuantity);
+      } catch (error) {
+        console.error("Error fetching cart total:", error);
+      }
+    };
+
+    updateCartTotal();
+  }, [bag, UserID]);
+
+
+  
+
+  // useEffect(()=>{
+
+  //   const totalCartFetch=async()=>{
+  //      let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:UserID});
+  //       // console.log("this is total cart items",totalCart.data.totalQuantity);
+  //       //  alert("updated")
+  //       setNumberCartTotal(totalCart.data.totalQuantity);
+  //   }
+
+  //   totalCartFetch();
+
+  // },[numberCartTotal])
+    
 
     useEffect(()=>{
 
- 
 
         const InitialCartSetup=async()=>{
-      
-          if(!localStorage.getItem("accessToken"))return;
+
+          console.log("this is token",token);
+          if(!token || !UserID)return "yes i am returning from here";
 
       
-        const ID=await fetchID(localStorage.getItem("accessToken"));
+        // const ID=await fetchID(token);
       
-        const Ids={userId:ID,productId:localStorage.getItem("productID")};
+        // const Ids={userId:ID,productId:localStorage.getItem("productID")};
       
-        let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:Ids.userId});
+        let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:UserID});
         // console.log("this is total cart items",totalCart.data.totalQuantity);
         //  alert("updated")
-         setNumberCartTotal(totalCart.data.totalQuantity);
+        setNumberCartTotal(totalCart.data.totalQuantity);
         dispatch(increment(totalCart.data.totalQuantity));
+        
         }
       
         InitialCartSetup();
-      },[numberItem])
+      },[numberItem , token , bag,UserID])
 
+    
 
       useEffect(()=>{
   
@@ -47,11 +135,11 @@ const Cart = () => {
       const showTotalFunc=async()=>{
   
         // console.log("this is ID CALLING Before Encryption",userDetail);
-      if(!localStorage.getItem("accessToken"))
+      if(!token || !UserID)
         {
           return; 
         }
-      const ID=await fetchID(access);
+      const ID=UserID
   
       if(!ID)
       {
@@ -74,20 +162,33 @@ const Cart = () => {
   
         showTotalFunc();
   
-      },[]);
+      },[UserID]);
 
+// Function to proceed to buy
 
   const proceedToBuy = async() => {
     // Your normal buying logic
     console.log("Proceeding to buy...");
     try{
-    const bagData=await axios.post('http://localhost:1000/users/fetchbag',{UID:UID});
-     
-        
-    console.log("this is bag data bro",bagData.data.bagItems);
-    localStorage.setItem("bagItem",JSON.stringify(bagData.data.bagItems));
+    // const bagData=await axios.post('http://localhost:1000/users/fetchbag',{UID:UID});
+    
+    console.log("UIDz")
+    // const ID = await fetchID(token);
+    // await dispatch(fetchBagData(UserID));
+   
+    
+    //    if(Object.keys(bag).length===0)
+    // {
 
-    navigate("/users/shipping");
+    //   console.log("Bag is empty, fetching data...");
+    //   alert("empty bag")
+
+    // }
+        
+    // console.log("this is bag data bro",bag.data.bagItems);
+    // localStorage.setItem("bagItem",JSON.stringify(bag.bagItems));
+
+    navigate("/users/Cart");
     }
     catch(error)
     {
@@ -95,6 +196,7 @@ const Cart = () => {
     }
   };
 
+ console.log("token coming here",token)
 
      const handleCartRoute=async()=>{
   
@@ -102,16 +204,21 @@ const Cart = () => {
         // console.log("userID here in cart",userId)
         // const userId= await fetchID(detail);
         try{
-  
-            const token = localStorage.getItem('accessToken');
-
+    //   if(!token)
+    // {
+    //   dispatch(refreshToken());
+    // }
+            //FIX TOKEN LOGIC:- TOKEN IS ERASING WHILE REFRESHING THE PAGE
             if (!token) {
                 setShowLoginModal(true); // Show the modal
                 return
-              } else {
-                // Proceed to buying logic
-              
+              } 
+              else
+               
+              {
+                
                 proceedToBuy();
+
               }
   
         // console.log("this is UID MY",UID);
@@ -134,6 +241,9 @@ const Cart = () => {
       };
       // Redirect to login
 
+      console.log("token in Cart",token,totalBag);
+
+
 
   return (
     <>
@@ -142,7 +252,7 @@ const Cart = () => {
                     <h2 className="text-white text-xs">
                      
                     {
-  numberCartTotal || 0
+  totalBag || 0
 }
 
                      
@@ -160,6 +270,7 @@ const Cart = () => {
   transition-all ease-in-out duration-400 bg-black bg-opacity-50 backdrop-blur-sm
   ${showLoginModal ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'} 
 `}>
+
   <div className="bg-white p-6 rounded-lg text-center space-y-4">
     <h2 className="text-xl font-bold">Login Required</h2>
     <p>Please login to continue shopping.</p>

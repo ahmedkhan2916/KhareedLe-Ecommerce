@@ -11,9 +11,11 @@ import {Router} from "express";
 import review from "../models/user.review.js";
 import dialogflow from '@google-cloud/dialogflow';
 import classErrorHandling from "../middlewares/classErrorHandle.js";
+import {Gift_Store_DB} from "../models/Gifts.user.redeem.js";
+import {Gift_Schema} from "../models/Gifts.Quantity.js";
 import crypto from "crypto"
 import { v4 as uuidv4 } from 'uuid';  // Correct import
-
+import Razorpay from "razorpay";
 
 const router=Router();
 
@@ -76,7 +78,6 @@ const generateRefreshToken=(user)=>{
       return res.status(400).json({ error: "All fields are required." });
     }
  
-  
     try {
       // Check for existing user
       console.log("im here");
@@ -87,14 +88,14 @@ const generateRefreshToken=(user)=>{
       }
   
       // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
+      // const hashedPassword = await bcrypt.hash(password, 10);
   
       // Create user
       const user = await User.create({
         firstname,
         lastname,
         username,
-        password: hashedPassword,
+        password,
         email,
       });
   
@@ -147,12 +148,14 @@ console.log("password",password)
     const isPasswordValid = await bcrypt.compare(password, user.password);
    
     console.log("hashed password",isPasswordValid)
-    if (!isPasswordValid) {
+    if (!isPasswordValid) 
+    {
       
       return res.status(401).json({ error: "Invalid password." });
-
+;
     }
-  
+
+
     console.log("passwordvalid",isPasswordValid);
     const ID=user._id.toString();
     const encrypt=encryptIDS(ID)
@@ -175,16 +178,16 @@ console.log("password",password)
     // Set refresh token as an HTTP-only cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true, // Ensure HTTPS
-      sameSite:"None",
+      secure: false, // Ensure HTTPS
+      sameSite:"Lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,//7 days
     });
 
-    
+  
     res.status(200).json({
       message: "Login successful!",
       accessToken,
-      refreshToken,
+     
 
       user: {
         id: encrypt,
@@ -199,6 +202,30 @@ console.log("password",password)
   }
 
 };
+
+
+const Logout = async(req, res) => {
+
+ 
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: false,       // must match what you used when setting the cookie
+    sameSite: "Lax",     // must match
+    path: "/",           // default path; add explicitly to be safe
+  });
+
+  res.clearCookie("accessToken", {
+  httpOnly: true,
+  sameSite: "Lax",
+  secure: false, // true in production with HTTPS
+});
+
+  return res.status(200).json({ message: "Logged out successfully" });
+};
+
+
+
 
 const handleUserIDFetch=(req,res)=>{
 
@@ -284,6 +311,48 @@ const refreshTokenHandler = async (req, res) => {
 };
 
 
+const Only_refresh_Token_Access_Token_Handler = async (req, res) => {
+
+
+  try {
+    console.log("hello baby");
+    const refreshToken = req.cookies.refreshToken;
+
+    console.log("cookies coming>>>>>>hurrrayyyy",refreshToken);
+
+    if (!refreshToken) {
+      return res.status(401).json({ error: "Refresh token missing. Please log in again." });
+    }
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
+      if (err) {
+        if (err.name === "TokenExpiredError") {
+          return res.status(403).json({ error: "Refresh token expired. Please log in again." });
+        }
+        return res.status(403).json({ error: "Invalid refresh token." });
+      }
+      
+      const userId = decoded.id;
+
+      const newAccessToken = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "15m",
+      });
+
+      console.log("it is my new accessToken here",newAccessToken)
+
+      return res.status(200).json({
+        message: "Token refreshed successfully.",
+        accessToken: newAccessToken,
+      
+      });
+
+    });
+  } catch (error) {
+    console.error("Error in refresh token handler:", error.message);
+    res.status(500).json({ error: "Server error. Please try again later." });
+  }
+};
+
 
 const UploadPost=async (req,res)=>{
 
@@ -357,8 +426,8 @@ console.log("this is my payload",payload);
 
  res.cookie("productID",userProduct._id.toString(),{
   httpOnly: true,
-  secure: true, // Ensure HTTPS
-  sameSite:"none",
+  secure: false, // Ensure HTTPS
+  sameSite:"Lax",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 1 day
 })
 return res.json(userProduct);  //productID coming here fix here store productId in cookies..!!
@@ -698,7 +767,7 @@ const chatbotResponse=async(req,res)=>{
 
  const addCountItems=async(req,res)=>{
 
-  const {userId,productId} = req.body;
+  const {userId,productId,Signal} = req.body;
   console.log("this is userId",userId);
 
   // if(userId.length>0 && productId.length<=0)
@@ -706,6 +775,13 @@ const chatbotResponse=async(req,res)=>{
   //   const user = await User.findById(userId);
   // }
   // console.log("ServerSide",userId,productId);
+    if(Signal)
+  {
+    const Empty_Call=await User.findByIdAndUpdate(userId, { $set: { bag: [] } });
+    return res.status(200).json({ message: "Order has been placed successfully and bag emptied." });
+
+  }
+
 
    const user = await User.findById(userId);
    const recieve=user.bag.findIndex((item) => item.productId?.toString() === productId?.toString());
@@ -719,6 +795,8 @@ const chatbotResponse=async(req,res)=>{
 
     // return res.json({"Message":"Product already Exist in Bag...!!"});
   }
+
+
 
   else{
   user.bag.push({productId,quantity:1});
@@ -766,15 +844,16 @@ const chatbotResponse=async(req,res)=>{
           user.bag[productIndex].quantity -= 1;
 
           // Remove item if quantity reaches 0
-          if (user.bag[productIndex].quantity <= 0) {
-              console.log(`Removing product ${productId} from cart as quantity is zero.`);
-              user.bag.splice(productIndex, 1);
-          } else {
-              console.log(`Decrementing quantity of product ${productId}. New quantity: ${user.bag[productIndex].quantity}`);
-          }
+          // if (user.bag[productIndex].quantity <= 0) {
+          //     console.log(`Removing product ${productId} from cart as quantity is zero.`);
+          //     user.bag.splice(productIndex, 1);
+          // } else {
+          //     console.log(`Decrementing quantity of product ${productId}. New quantity: ${user.bag[productIndex].quantity}`);
+          // }
 
+          user.bag.splice(productIndex, 1);
           await user.save();
-          return res.status(200).json({ bag: user.bag });
+          return res.status(200).json({ bagItems: user.bag });
       } else {
           console.warn(`Product ${productId} not found in the cart for user ${userId}.`);
           return res.status(404).json({ message: "Product not found in the cart." });
@@ -785,28 +864,45 @@ const chatbotResponse=async(req,res)=>{
   }
 };
 
- const showTotalItemsCount=async (req,res)=>{
+const showTotalItemsCount = async (req, res) => {
+  try {
+    const { userId } = req.body;
 
+    console.log("here is the userID of user",userId);
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
 
-  const {userId}=req.body;
+    const user = await User.findById(userId);
 
-  console.log("here is your id of user",userId);
-  const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
-  if(!user)
-  {
-    return res.status(404).send("user not found baby...!");
+    // Filter out items with null productId
+    user.bag = user.bag.filter(item => item.productId !== null);
+
+    // Save the updated user
+    await user.save();
+
+    // const totalQuantity = user.bag.reduce((total, item) => {
+    //   return total + (item.quantity || 0);
+    // }, 0);
+
+    const totalQuantity= user.bag.length;
+
+    console.log("Total quantity after cleaning:", totalQuantity);
+
+    return res.status(200).json({ totalQuantity });
+  } catch (error) {
+    console.error("Error fetching total items count:", error);
+    return res.status(500).json({ error: "Server error" });
   }
+};
 
-  let totalQuantity = user.bag.reduce((total, item) => total + item.quantity, 0);
-  console.log("yes here is your data",totalQuantity);
-  totalQuantity=totalQuantity;
-  res.json({totalQuantity});
-
-
- }
 
  const fetchBagItems = async (req, res) => {
+  
     const { UID } = req.body;
 
     console.log("userId:", UID);
@@ -853,7 +949,7 @@ const chatbotResponse=async(req,res)=>{
  console.log("this is data",req.body);
   if(!userId || !name || !street || !phone || !city || !state || !pincode || !landmark || !alternate)
   {
-
+   console.log("error occuring>>>>>>>>>>>>>>>>!!!!!!!!!!!!!!!!!!!")
    return res.json({"error":"please fill the data correctly...!"});
 
   }
@@ -940,9 +1036,9 @@ return res.status(201).json({"Exist":"product is not Exist in Bag"});
 
 const totalItemsPrice = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { UserID} = req.body;
     
-    const user=await User.findById(userId).populate({
+    const user=await User.findById(UserID).populate({
 
       path:"bag.productId",
       select:"price",
@@ -980,6 +1076,8 @@ const totalItemsPrice = async (req, res) => {
  const searchHistory = async (req, res) => {
   try {
     const { UID } = req.body;
+
+    console.log("hello searchData is here..>>>")
 
     const productSchemaData=await ProductD.findById(UID);
 
@@ -1045,7 +1143,7 @@ const totalItemsPrice = async (req, res) => {
 
       return res.status(201).json({
         message: "New search record created!",
-        data: newProduct,
+      
       });
   } catch (error){
     console.error("Error updating search count:", error);
@@ -1072,4 +1170,166 @@ const totalItemsPrice = async (req, res) => {
     }
   };
 
-export {SignUp,Login,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice,refreshTokenHandler,handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP};
+
+  const Gift_Redeem_User = async (req,res)=>{
+
+
+
+
+
+
+
+
+
+
+  }
+  const Gifts_DB = async (req, res) => {
+    try {
+      const gift = await Gift_Schema.create({
+        name: "Neckband",
+        quantity: 20,
+        active: true,
+      });
+  
+      if (!gift) {
+        return res.status(500).send("Error in gift schema");
+      }
+  
+      console.log("This is gift schema:", gift);
+  
+      return res.json({ success: "Gifts stored in DB >>>>>>" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+
+  const User_Gift= new Gift_Store_DB({
+
+    // const  {userId,GiftId}=req.body
+
+
+
+
+
+
+  });
+  
+
+  const AddAndRemoveQuantity=async(req,res)=>{
+
+    const {UserID,Signal,productId}=req.body;
+
+    console.log("UserID,Signal,productId",UserID,Signal,productId)
+
+    if(!UserID)
+    {
+      res.json({message:"UserId NULL"});
+    }
+
+    const user=await User.findById(UserID);
+
+    if(!user)
+    {
+       res.json({message:"User not found in DB"});
+    }
+
+  
+
+    if(Signal==="min")
+    {
+
+      const productFound= user.bag.find((item)=>item.productId.toString()===productId.toString())
+
+      // const resp=await user.updateOne({$inc:{quantity:-1}},{new:true});
+
+      if(!productFound)
+      {
+
+        return res.json({message:"Product not found in bag"});
+
+      }
+
+      else if(productFound.quantity===0)
+      {
+        return res.json({message:"Quantity is already zero, cannot decrement further."});
+      }
+        
+
+      productFound.quantity -=1;
+
+      await user.save();
+      
+      return res.json({message:"Quantity decreament successfully",Data:productFound.quantity});  
+
+    }
+
+    else if(Signal==="add")    
+    {
+
+      
+      const productFound= user.bag.find((item)=>item.productId.toString()===productId.toString())
+
+      // const resp=await user.updateOne({$inc:{quantity:-1}},{new:true});
+      if(!productFound)
+      {
+        return res.json({message:"Product not found in bag"});
+      }
+
+      else if(productFound.quantity==10)
+      {
+        return res.json({message:"Quantity already reached to their limit 10, cannot Increament further."});
+      }
+    
+      productFound.quantity +=1;
+
+      await user.save();
+    return res.json({message:"Quantity incremented successfully",Data:productFound.quantity});  
+
+    }
+
+  }
+
+
+  const RazorPay_Gateway_Integration=async(req,res)=>{
+
+
+    console.log("this is amount coming from frontend",req.body);
+    const {amount}=req.body;
+
+    const options={
+
+      amount:amount*100,
+      currency:"INR",
+      receipt:`order_rcptid_${Date.now()}`
+
+
+    }
+
+
+       const instance = new Razorpay({
+
+        key_id:'rzp_test_bEM9BDCRfFjxoi',
+        key_secret:'IMjUictoI1mLWwajrcZ7ub8z',
+
+      });
+
+    try{
+
+
+   const order= await instance.orders.create(options);
+   res.json(order);
+
+    }catch(err){
+
+
+      res.status(500).send("Order Creation failed");
+
+    }
+  
+  }
+
+
+
+
+export {SignUp,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice,refreshTokenHandler,handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration};

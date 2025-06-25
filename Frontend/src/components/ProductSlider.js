@@ -2,21 +2,26 @@ import React from 'react'
 import "../assets/Style/productSlider.css"
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchData } from '../store/dataSlice.js';
+import { fetchData ,fetchProducts} from '../store/dataSlice.js';
 import { useEffect,useState } from 'react';
-import axios from "axios";
+
 
 
 function ProductSlider() {
 
-    const [data,setData]=useState([])
+    
     const dispatch = useDispatch();
+    const { data: products, loading, error } = useSelector(state => state.slideproducts);
+     
    
     
 const handleClick = async (event) => {
 
         const id = event.currentTarget.getAttribute('data-id');
         dispatch(fetchData(id));
+
+
+        
           
 };
     
@@ -24,37 +29,37 @@ const handleClick = async (event) => {
 
     const fetchData = async () => {
 
-        const jsonData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/getData`).then((res) => setData(res.data));
-        
-        // const jsonData = await axios.get('http://localhost:1000/users/getData').then((res) => setData(res.data));
+      
        
+        dispatch(fetchProducts())
+
+        
         
       };
 
     
-      console.log(Array.isArray(data));
+    
       fetchData();
      
     },[])
 
+   
+    if (loading) return <div className='pl-16 text-xl'>Loading...</div>;
+    if (error) return <div className='pl-16 text-xl text-red-500'>Error: {error}</div>;
+
   return (
+
+
     <div className='productDetailsCont mt-12 flex'>
-
-
-{/* <div className='headingCont pl-16 '>
-    <h2 className='text-3xl'>Powerful Smartphones</h2>
-</div> */}
-
-
 {
-    data.map((item)=>(
+    products.map((item)=>(
 <div className='productContainer  ml-16 border-t-2 border-l-2 border-r-2 border-b-2' key={item._id} data-id={item._id} onClick={handleClick}>
-<Link to="/product">
-    <div className='image w-[50vw]  sm:w-[9vw]'>
-{/* <img className='imageProduct w-full' style={{backgroundImage:`url('/images/ferrari.jpg')`}}></img> */}
+<Link to={`/product/${item._id}`}>
+
+<div className='image w-[50vw]  sm:w-[9vw]'>
 
 <div className='phDiv  h-[15vh]' style={{backgroundImage:`url(${item.product_image})`}}>
-
+    
     </div>
     </div>
     <div className='productName w-full flex flex-col items-center'>
