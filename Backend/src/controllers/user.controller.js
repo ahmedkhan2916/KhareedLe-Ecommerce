@@ -33,16 +33,19 @@ return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
 }
 
 //encrypt function encrypting IDS here:- 
-const encryptIDS=(ID)=>{
+const crypto = require("crypto");
 
-  const algorithm = 'aes-256-ctr'
-  const secretKey = process.env.ENCRYPTION_KEY;
+const algorithm = 'aes-256-cbc';
+const secretKey = process.env.SECRET_KEY || 'your-secret-key'; // Must be 32 bytes for aes-256
+const iv = crypto.randomBytes(16); // Initialization vector
 
-  const cipher = crypto.createCipher(algorithm, secretKey);
+function encryptIDS(ID) {
+  const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey, 'utf8'), iv);
   let encrypted = cipher.update(ID, 'utf8', 'hex');
   encrypted += cipher.final('hex');
-  return encrypted;
 
+  // Return iv + encrypted text (you'll need the iv for decryption later)
+  return iv.toString('hex') + ':' + encrypted;
 }
 
 //dcrypt function dcrypting IDS here:- 
