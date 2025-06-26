@@ -33,7 +33,7 @@ return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
 }
 
 //encrypt function encrypting IDS here:- 
-const crypto = require("crypto");
+
 
 const algorithm = 'aes-256-cbc';
 const secretKey = process.env.SECRET_KEY || 'your-secret-key'; // Must be 32 bytes for aes-256
