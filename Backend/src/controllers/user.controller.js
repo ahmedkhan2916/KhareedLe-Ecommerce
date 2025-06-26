@@ -36,7 +36,7 @@ return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
 
 
 const algorithm = 'aes-256-cbc';
-const secretKey = process.env.SECRET_KEY || 'your-secret-key'; // Must be 32 bytes for aes-256
+const secretKey = process.env.ENCRYPTION_KEY || 'your-secret-key'; // Must be 32 bytes for aes-256
 const iv = crypto.randomBytes(16); // Initialization vector
 
 function encryptIDS(ID) {
