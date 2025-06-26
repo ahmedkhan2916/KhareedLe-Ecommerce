@@ -182,6 +182,7 @@ console.log("password",password)
       httpOnly: true,
     secure: true, // ✅ Important on Render/Vercel (HTTPS)
   sameSite: 'none', // ✅ Must be 'none' for cross-site cookies
+   domain: '.vercel.app',
       maxAge: 7 * 24 * 60 * 60 * 1000,//7 days
     });
 
