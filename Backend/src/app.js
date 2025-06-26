@@ -65,7 +65,7 @@ dotenv.config();
 
 // ✅ Enable CORS
 app.use(cors({
-  origin: ['http://localhost:3000'],
+  origin: ['http://localhost:3000','https://khareedle-ecommerce.onrender.com'],
   credentials: true,
 }));
 

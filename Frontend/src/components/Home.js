@@ -60,8 +60,8 @@ function Home() {
 
   
 
-    <div className='smartphoneContainer pt-40'>
-      <div className="smartphoneHeading flex justify-center">
+    <div className='smartphoneContainer pt-40 z-0'>
+      <div className="smartphoneHeading flex justify-center z-0">
 
     <h1 className='text-3xl HeadingPlayFair sm:text-4xl'>PowerFull Smartphones</h1>
     
