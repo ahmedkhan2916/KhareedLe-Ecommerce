@@ -98,11 +98,7 @@ useEffect(()=>{
 // },UserID)
 
 
-useEffect(() => {
-  axios.get('https://khareedle-ecommerce.onrender.com/users/test-cookies', {
-    withCredentials: true,
-  }).then(res => console.log("Cookies from backend:", res.data.cookies));
-}, []);
+
 
 
 
@@ -116,7 +112,9 @@ useEffect(() => {
     // dispatch(fetchBagData(users.user.id));
     dispatch(refreshToken())
     
- 
+   axios.get('https://khareedle-ecommerce.onrender.com/users/test-cookies', {
+    withCredentials: true,
+  }).then(res => console.log("Cookies from backend:", res.data.cookies));
     // dispatch(fetchBagTotal2(users.user.id));
   
    
