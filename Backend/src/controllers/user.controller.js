@@ -355,6 +355,19 @@ const Only_refresh_Token_Access_Token_Handler = async (req, res) => {
   }
 };
 
+const testManuallyCookies=async(req,res)=>{
+
+
+    console.log("🍪 cookies in test route:", req.cookies);
+  res.json({ cookies: req.cookies });
+
+
+
+}
+
+
+
+
 
 const UploadPost=async (req,res)=>{
 
@@ -1334,4 +1347,4 @@ const totalItemsPrice = async (req, res) => {
 
 
 
-export {SignUp,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice,refreshTokenHandler,handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration};
+export {SignUp,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice,refreshTokenHandler,handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies};

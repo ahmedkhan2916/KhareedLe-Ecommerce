@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { SignUp ,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration} from "../controllers/user.controller.js";
+import { SignUp ,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies} from "../controllers/user.controller.js";
 // import runSample from "../controllers/chatbotmodel.js"
 import verifyToken from "../middlewares/verifyToken.js"
 const router=Router();
@@ -33,5 +33,6 @@ router.route("/Gifts-Storage-Inventory").post(Gifts_DB);
 router.route("/refresh-token-handler-access-token").post(Only_refresh_Token_Access_Token_Handler);
 router.route("/inc-dec-items").post(AddAndRemoveQuantity);
 router.route("/create-order").post(RazorPay_Gateway_Integration);
+router.route("/test-cookies").post(testManuallyCookies);
 
 export {router}

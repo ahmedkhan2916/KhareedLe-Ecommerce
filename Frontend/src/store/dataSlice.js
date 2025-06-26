@@ -78,7 +78,9 @@ export const refreshToken = createAsyncThunk("auth/refreshToken", async (_, thun
     const response = await axios.post(
       'https://khareedle-ecommerce.onrender.com/users/refresh-token-handler-access-token',
       {}, // No body needed
-      { withCredentials: true } // Send cookies
+       {
+        withCredentials: true, // ✅✅✅ IMPORTANT!!!
+      }// Send cookies
     );
     return response.data.accessToken;
   } catch (error) {
