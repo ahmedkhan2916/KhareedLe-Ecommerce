@@ -212,15 +212,15 @@ const Logout = async(req, res) => {
 
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: false,       // must match what you used when setting the cookie
-    sameSite: "Lax",     // must match
+    secure: true, // ✅ Important on Render/Vercel (HTTPS)
+  sameSite: 'none', // ✅    // must match
     path: "/",           // default path; add explicitly to be safe
   });
 
   res.clearCookie("accessToken", {
   httpOnly: true,
-  sameSite: "Lax",
-  secure: false, // true in production with HTTPS
+    secure: true, // ✅ Important on Render/Vercel (HTTPS)
+  sameSite: 'none', // ✅// true in production with HTTPS
 });
 
   return res.status(200).json({ message: "Logged out successfully" });

@@ -21,7 +21,7 @@ function Logout() {
       try{
  
           // const ID=await fetchID(token);
-          const logout_res=await axios.post("http://localhost:1000/users/logout", {}, { withCredentials: true });
+          const logout_res=await axios.post("https://khareedle-ecommerce.onrender.com/users/logout", {}, { withCredentials: true });
           document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           console.log("successMessage",logout_res);
           dispatch(logout());
