@@ -65,7 +65,7 @@ dotenv.config();
 
 // ✅ Enable CORS
 app.use(cors({
-  origin: ['http://localhost:3000','https://khareed-le-ecommerce.vercel.app'],
+  origin: ['http://localhost:3000','https://khareed-le-ecommerce.vercel.app','https://khareed-le-ecommerce-git-main-ahmedkhan2916s-projects.vercel.app'],
   credentials: true,
 }));
 
