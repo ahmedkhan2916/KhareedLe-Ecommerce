@@ -36,11 +36,12 @@ return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
 
 
 const algorithm = 'aes-256-cbc';
-const secretKey = process.env.ENCRYPTION_KEY || 'your-secret-key'; // Must be 32 bytes for aes-256
+const secretKey =  Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
+// Must be 32 bytes for aes-256
 const iv = crypto.randomBytes(16); // Initialization vector
 
 function encryptIDS(ID) {
-  const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey, 'utf8'), iv);
+  const cipher = crypto.createCipheriv(algorithm, secretKey , iv);
   let encrypted = cipher.update(ID, 'utf8', 'hex');
   encrypted += cipher.final('hex');
 
@@ -49,17 +50,15 @@ function encryptIDS(ID) {
 }
 
 //dcrypt function dcrypting IDS here:- 
-const decryptIDS=(ID)=>{
+function decryptIDS(encryptedString) {
+  const [ivHex, encryptedData] = encryptedString.split(':'); // Extract IV and encrypted text
+  const iv = Buffer.from(ivHex, 'hex');
 
-  const algorithm = 'aes-256-ctr'
-  const secretKey = process.env.ENCRYPTION_KEY;
-
-  const decipher = crypto.createDecipher(algorithm, secretKey);
-  let decrypted = decipher.update(ID, 'hex', 'utf8');
+  const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);
+  let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
+
   return decrypted;
-
-
 }
 
 
