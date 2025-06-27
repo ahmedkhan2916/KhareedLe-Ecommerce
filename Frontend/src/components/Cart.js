@@ -75,7 +75,7 @@ const Cart = () => {
       }
 
       try {
-        const response = await axios.post("http://localhost:1000/users/showtotal", { userId: UserID });
+        const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/showtotal", { userId: UserID });
         console.log("this is response from show total",UserID);
         setNumberCartTotal(response.data.totalQuantity);
       } catch (error) {
@@ -116,7 +116,7 @@ const Cart = () => {
       
         // const Ids={userId:ID,productId:localStorage.getItem("productID")};
       
-        let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:UserID});
+        let totalCart=await axios.post("https://khareedle-ecommerce.onrender.com/users/showtotal",{userId:UserID});
         // console.log("this is total cart items",totalCart.data.totalQuantity);
         //  alert("updated")
         setNumberCartTotal(totalCart.data.totalQuantity);
