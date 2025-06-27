@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import {BASE_URL} from "../config/config.js";
 // import { User } from '../../../Backend/src/models/user.signup';
 
 // Async thunk for fetching data from an API
 export const fetchData = createAsyncThunk('data/fetchData', async (payload) => {
   console.log(payload)
-  const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/postdetails",{payload} , {
+  const response = await axios.post(`${BASE_URL}/users/postdetails`,{payload} , {
 
     headers: {
       'Content-Type': 'application/json',// Set content type to JSON
@@ -26,17 +27,19 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(`https://khareedle-ecommerce.onrender.com/users/getData`);
+      const response = await axios.get(`${BASE_URL}/users/getData`);
       return response.data;
     } catch (error) {
+
       return thunkAPI.rejectWithValue(error.response?.data || 'Fetch failed');
+      
     }
   }
 );
 
 export const fetchBagData = createAsyncThunk('bag/fetchBagData', async (ID, thunkAPI) => {
   try {
-    const response = await axios.post('https://khareedle-ecommerce.onrender.com/users/fetchbag', { UID:ID});
+    const response = await axios.post(`${BASE_URL}/users/fetchbag`, { UID:ID});
     return response.data; // Return the fetched bag data
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data || 'Failed to fetch bag data');
@@ -49,7 +52,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (bodyData, { rejectWithValue }) => {
     try {
-      const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/login", bodyData, {
+      const response = await axios.post(`${BASE_URL}/users/login`, bodyData, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true, // for cookies
       });
@@ -65,7 +68,7 @@ export const fetchReviewData = createAsyncThunk(
   'review/fetchReviewData',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get('https://khareedle-ecommerce.onrender.com/users/fetchuser');
+      const response = await axios.get(`${BASE_URL}/users/fetchuser`);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || 'Something went wrong');
@@ -76,7 +79,7 @@ export const fetchReviewData = createAsyncThunk(
 export const refreshToken = createAsyncThunk("auth/refreshToken", async (_, thunkAPI) => {
   try {
     const response = await axios.post(
-      'https://khareedle-ecommerce.onrender.com/users/refresh-token-handler-access-token',
+      `${BASE_URL}/users/refresh-token-handler-access-token`,
       {}, // No body needed
        {
         withCredentials: true, // ✅✅✅ IMPORTANT!!!
@@ -96,7 +99,7 @@ export const fetchUserID=createAsyncThunk("auth/fetchUserID",async (accessToken,
     {
       return;
     }
-    const response = await axios.get("https://khareedle-ecommerce.onrender.com/users/userid-fetch", {
+    const response = await axios.get(`${BASE_URL}/users/userid-fetch`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -114,7 +117,7 @@ export const fetchProductQuantity = createAsyncThunk(
   async ({UserID,productId,value}, thunkAPI) => {
     try {
       console.log("i am in store",UserID,productId,value);
-      const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/inc-dec-items", {UserID,productId,Signal:value});
+      const response = await axios.post(`${BASE_URL}/users/inc-dec-items`, {UserID,productId,Signal:value});
       return response.data.Data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.Data || 'Something went wrong');
@@ -128,7 +131,7 @@ export const fetchBagTotal2 = createAsyncThunk(
   async ({ID}, thunkAPI) => {
     try {
       // console.log("i am in store",UserID,productId,value);
-      const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/showtotal", {userId:ID});
+      const response = await axios.post(`${BASE_URL}/users/showtotal`, {userId:ID});
       console.log("here is responsive data",response);
       return response.data.totalQuantity;
     } catch (error) {
@@ -143,7 +146,7 @@ export const fetchAddToBag = createAsyncThunk(
   async (Ids, thunkAPI) => {
     try {
       // console.log("i am in store",UserID,productId,value);
-      const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/addbag", Ids);
+      const response = await axios.post(`${BASE_URL}/users/addbag`, Ids);
       console.log("here is responsive data",response);
       return response.status; //here is responsive data coming create a redux store for it:----
     } catch (error) {
@@ -158,7 +161,7 @@ export const changeButtonText= createAsyncThunk('quantityItemBag/changeButtonTex
 
 
 
-    const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/changetext", Ids);
+    const response = await axios.post(`${BASE_URL}users/changetext`, Ids);
     console.log("here is responsive data",response);
     return response.status; // Return the updated text
 

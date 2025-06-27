@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {BASE_URL} from "../config/config.js";
 
 
 function Logout() {
@@ -21,7 +22,7 @@ function Logout() {
       try{
  
           // const ID=await fetchID(token);
-          const logout_res=await axios.post("https://khareedle-ecommerce.onrender.com/users/logout", {}, { withCredentials: true });
+          const logout_res=await axios.post(`${BASE_URL}/users/logout`, {}, { withCredentials: true });
           document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           console.log("successMessage",logout_res);
           dispatch(logout());

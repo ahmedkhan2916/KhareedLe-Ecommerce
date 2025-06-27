@@ -34,6 +34,7 @@ import {setAccessTK, setStatusCode,setUserId,setUsername,access_Tok_Store,fetchB
 import loginImage from "../assets/SignupImage/loginImage.jpg"
 import "../assets/Style/Headings.css"
 import { showTotalFuncHeader } from "../Services/apiService.js";
+import {BASE_URL} from "../config/config.js";
 
 
  
@@ -112,9 +113,7 @@ useEffect(() => {
     // dispatch(fetchBagData(users.user.id));
     dispatch(refreshToken())
     
-   axios.get('https://khareedle-ecommerce.onrender.com/users/test-cookies', {
-    withCredentials: true,
-  }).then(res => console.log("Cookies from backend:", res.data.cookies));
+
     // dispatch(fetchBagTotal2(users.user.id));
   
    

@@ -7,6 +7,7 @@ import DeleteIcon from "../assets/Brandlogo/trash.png"
 
 import { fetchUserID,refreshToken,fetchProductQuantity,fetchBagData } from '../store/dataSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
+import {BASE_URL} from "../config/config.js";
 
 const CartPage = () => {
 
@@ -77,7 +78,7 @@ else if(loading===false)
             }
             // console.log("User ID:", userId);
             console.log("iD User is here",UserID);
-            const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/totalprice", {
+            const response = await axios.post(`${BASE_URL}/users/totalprice`, {
               UserID
             });
       
@@ -104,7 +105,7 @@ useEffect(() => {
             }
             // console.log("User ID:", userId);
             console.log("iD User is here",UserID);
-            const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/totalprice", {
+            const response = await axios.post(`${BASE_URL}/users/totalprice`, {
               UserID
             });
       
@@ -146,7 +147,7 @@ useEffect(() => {
         
                 console.log("this is ids",IDS);
                 // const userId=localStorage.getItem("userID");
-                const dataDeleted= await axios.post("https://khareedle-ecommerce.onrender.com/users/deletequantity",{ userId: ID,
+                const dataDeleted= await axios.post(`${BASE_URL}/users/deletequantity`,{ userId: ID,
                   
                 productId: productId})
         
@@ -217,22 +218,22 @@ useEffect(() => {
                 <span className="font-medium text-lg">{item.productName}</span>
                 {/* <span className="text-sm text-gray-500">{item.variant}</span> */}
                 <span className="font-semibold text-black mt-1">₹ {item.price.toLocaleString()}</span>
-                <div className="mt-2 flex items-center gap-2">
-                  <button className="px-2 py-1 bg-gray-200 rounded" value="min" onClick={(e)=> handleRemoveQuantity(e.target.value,item.productId)}>-</button>
-                  {/* <Minus></Minus> */}
-                  {/* <span>{qtyStatus==='succeeded'?qty:qty?.Status}</span> */}
-                  <span>{item.quantity}</span>
-                  <button className="px-2 py-1 bg-gray-200 rounded" value="add" onClick={(e)=> handleRemoveQuantity(e.target.value,item.productId)}>+</button>
-                </div>
+          <div className="flex items-center gap-2 justify-end w-full">
+  <button className="px-2 py-1 bg-gray-200 rounded" value="min" onClick={(e)=> handleRemoveQuantity(e.target.value,item.productId)}>-</button>
+  <span>{item.quantity}</span>
+  <button className="px-2 py-1 bg-gray-200 rounded" value="add" onClick={(e)=> handleRemoveQuantity(e.target.value,item.productId)}>+</button>
+
+<div
+  className="deleteCardButton ml-auto pr-2 md:pr-4 cursor-pointer flex items-center justify-center"
+  onClick={() => deleteQuantity(item.productId)}
+>
+  <img src={DeleteIcon} className="h-5 w-5 md:h-4 md:w-4 object-contain" alt="delete" />
+</div>
+</div>
+
               </div>
 
-   <div className='deleteCardButton flex items-center' onClick={() => deleteQuantity(item.productId)}>
-        
-                    {/* <h1 className='text-sm font-normal'>Delete</h1> */}
-
-                    <img src={DeleteIcon} className='h-4'></img>
-        
-                </div>
+ 
 
             </div>
           )))}

@@ -29,6 +29,7 @@ import BuyButton from "../components/BuyButton.js";
 import Cart from '../components/Cart.js';
 import {logoutAccessTK,logout} from '../store/dataSlice.js'
 import Logout from "../components/Logout.js";
+import {BASE_URL} from "../config/config.js"; 
 
 
 function Header() {
@@ -245,7 +246,7 @@ function Header() {
 
       // const ID=await fetchID(token);
 
-      const logout_res=await axios.post("https://khareedle-ecommerce.onrender.com/logout", {}, { withCredentials: true });
+      const logout_res=await axios.post(`${BASE_URL}/users/logout`, {}, { withCredentials: true });
  document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       console.log("successMessage",logout_res);
       dispatch(logout());
@@ -402,7 +403,7 @@ console.log(err);
 
         try{
         
-          const resp= await axios.post("https://khareedle-ecommerce.onrender.com/users/track-search",{UID:UID});
+          const resp= await axios.post(`${BASE_URL}/users/track-search`,{UID:UID});
           console.log("success here")
 
 
