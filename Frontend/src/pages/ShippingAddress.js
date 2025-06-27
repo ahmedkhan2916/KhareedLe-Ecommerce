@@ -64,7 +64,7 @@ function ShippingAddress() {
             const userId = await fetchID(token);
             console.log("User ID:", userId);
       
-            const response = await axios.post("http://localhost:1000/users/totalprice", {
+            const response = await axios.post("https://khareedle-ecommerce.onrender.com/users/totalprice", {
               userId
             });
       
@@ -102,7 +102,7 @@ function ShippingAddress() {
 
         console.log("this is ids",IDS);
         // const userId=localStorage.getItem("userID");
-        const dataDeleted= await axios.post("http://localhost:1000/users/deletequantity",{ userId: ID,
+        const dataDeleted= await axios.post("https://khareedle-ecommerce.onrender.com/users/deletequantity",{ userId: ID,
           
         productId: productId})
 

@@ -77,7 +77,7 @@ else if(loading===false)
             }
             // console.log("User ID:", userId);
             console.log("iD User is here",UserID);
-            const response = await axios.post("http://localhost:1000/users/totalprice", {
+            const response = await axios.post("https://khareedle-ecommerce.onrender.com/totalprice", {
               UserID
             });
       
@@ -104,7 +104,7 @@ useEffect(() => {
             }
             // console.log("User ID:", userId);
             console.log("iD User is here",UserID);
-            const response = await axios.post("http://localhost:1000/users/totalprice", {
+            const response = await axios.post("https://khareedle-ecommerce.onrender.com/totalprice", {
               UserID
             });
       
@@ -146,7 +146,7 @@ useEffect(() => {
         
                 console.log("this is ids",IDS);
                 // const userId=localStorage.getItem("userID");
-                const dataDeleted= await axios.post("http://localhost:1000/users/deletequantity",{ userId: ID,
+                const dataDeleted= await axios.post("https://khareedle-ecommerce.onrender.com/users/deletequantity",{ userId: ID,
                   
                 productId: productId})
         

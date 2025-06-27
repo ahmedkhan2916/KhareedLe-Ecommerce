@@ -245,7 +245,7 @@ function Header() {
 
       // const ID=await fetchID(token);
 
-      const logout_res=await axios.post("http://localhost:1000/users/logout", {}, { withCredentials: true });
+      const logout_res=await axios.post("https://khareedle-ecommerce.onrender.com/logout", {}, { withCredentials: true });
  document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       console.log("successMessage",logout_res);
       dispatch(logout());
@@ -402,7 +402,7 @@ console.log(err);
 
         try{
         
-          const resp= await axios.post("http://localhost:1000/users/track-search",{UID:UID});
+          const resp= await axios.post("https://khareedle-ecommerce.onrender.com/users/track-search",{UID:UID});
           console.log("success here")
 
 

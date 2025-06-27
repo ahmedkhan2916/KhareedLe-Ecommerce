@@ -42,7 +42,7 @@ export const showTotalFuncHeader=async(ID)=>{
         return;
       }
 
-    let totalCart=await axios.post("http://localhost:1000/users/showtotal",{userId:ID});
+    let totalCart=await axios.post("https://khareedle-ecommerce.onrender.com/users/showtotal",{userId:ID});
     return totalCart.data.totalQuantity
 
   }
@@ -61,7 +61,7 @@ export const fetchSearchItems=async(inputValue)=>{
 try{
 
  
-  const searchedQuery=await axios.get(`http://localhost:1000/users/userSearch?name=${inputValue}`);
+  const searchedQuery=await axios.get(`https://khareedle-ecommerce.onrender.com/users/userSearch?name=${inputValue}`);
 
   return searchedQuery;
 
