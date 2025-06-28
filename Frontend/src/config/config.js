@@ -1,4 +1,4 @@
-const dev = true; // ✅ Switch to false for production
+const dev = false // ✅ Switch to false for production
 
 export const BASE_URL = dev
   ? 'http://localhost:1000'
