@@ -18,7 +18,7 @@ export const fetchData = createAsyncThunk('data/fetchData', async (payload) => {
 
   console.log("dataSlice data>>>>>>>>>",response.data)
   // Replace with your API URL
-  return response.data; // Assumes the response data is an array of objects
+ return response.data ;
 });
 
 
@@ -32,7 +32,7 @@ export const fetchProducts = createAsyncThunk(
     } catch (error) {
 
       return thunkAPI.rejectWithValue(error.response?.data || 'Fetch failed');
-      
+
     }
   }
 );
@@ -160,8 +160,8 @@ export const changeButtonText= createAsyncThunk('quantityItemBag/changeButtonTex
   try{
 
 
-
-    const response = await axios.post(`${BASE_URL}users/changetext`, Ids);
+    
+    const response = await axios.post(`${BASE_URL}/users/changetext`, Ids);
     console.log("here is responsive data",response);
     return response.status; // Return the updated text
 

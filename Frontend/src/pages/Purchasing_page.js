@@ -38,6 +38,7 @@ function Purchasing_page() {
   const UserID = useSelector((state) => state.fetchID.UserID);
   const totalBag = useSelector((state) => state.fetchBagTotalStore.totalBag);
   const buttonText = useSelector((state) => state.changeButtonText.buttonText);
+  const statusButton=useSelector((state)=>state.changeButtonText.statusButtonText);
 
   const [productColors, setProductColors] = useState([]);
   const [color, setColor] = useState('');
@@ -56,6 +57,28 @@ function Purchasing_page() {
   useEffect(() => {
     dispatch(fetchData(id));
   }, [id]);
+
+// 1. Dispatch when ID changes
+useEffect(() => {
+
+ 
+}, [UserID, id, dispatch]);
+
+// When buttonText changes (from Redux), update UI accordingly
+useEffect(() => {
+  // setButtonClick2(false); // Reset button state initially
+   if (!UserID || !id) return;
+  dispatch(changeButtonText({ userId: UserID, productId: id }));
+  // console.log("button text and status text",buttonText,statusButton)
+  if (buttonText === 200 ) {
+    setButtonClick2(true); // product is already in cart
+  } else {
+    setButtonClick2(false);
+  }
+}, [buttonText,dispatch]);
+
+
+
 
   useEffect(() => {
     if (!loading && data) {
@@ -80,10 +103,10 @@ function Purchasing_page() {
     dispatch(increment(totalBag));
   }, [totalBag]);
 
-  useEffect(() => {
-    if (!UserID || !id) return;
-    dispatch(changeButtonText({ userId: UserID, productId: id }));
-  }, [dispatch, UserID, id]);
+  // useEffect(() => {
+  //   if (!UserID || !id) return;
+  //   dispatch(changeButtonText({ userId: UserID, productId: id }));
+  // }, [dispatch, UserID, id]);
 
   useEffect(() => {
     if (data && data.price) {
@@ -113,7 +136,7 @@ function Purchasing_page() {
   const handleAddtoCart = () => {
     if (!token) return navigate('/users/login');
     dispatch(resetButtonText());
-    setButtonClick2(false);
+    // setButtonClick2(false);
     dispatch(fetchAddToBag({ userId: UserID, productId: id, Signal: false }));
     dispatch(changeButtonText({ userId: UserID, productId: id }));
     setButtonClick2(true);
