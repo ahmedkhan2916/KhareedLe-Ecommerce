@@ -227,7 +227,7 @@ useEffect(() => {
             <div className="flex gap-2 w-full">
               <BuyButton />
               {buttonClick2 ? (
-                <button className="flex-1 bg-green-600 text-white rounded-lg py-2" onClick={() => navigate('/users/shipping')}>
+                <button className="flex-1 bg-green-600 text-white rounded-lg py-2" onClick={() => navigate('/users/cart')}>
                   Go to Cart
                 </button>
               ) : (
