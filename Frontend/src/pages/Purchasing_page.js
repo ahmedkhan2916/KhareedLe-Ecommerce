@@ -45,7 +45,11 @@ function Purchasing_page() {
   const [productSlice2, setProductSlice2] = useState({});
   const [buttonClick2, setButtonClick2] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [magnifier, setMagnifier] = useState({});
+  // const [magnifier, setMagnifier] = useState({});
+  const [magnifier, setMagnifier] = useState({
+  visible: false,
+  backgroundPosition: '50% 50%',
+});
   const [picUrl, setPicUrl] = useState('');
 
   useEffect(() => {
@@ -152,25 +156,26 @@ useEffect(() => {
 
   const handleColorClick = (color) => setColor(color);
 
-  const handleMouseMove = (e) => {
-    if (isMobile) return;
-    const { top, left, width, height } = e.target.getBoundingClientRect();
-    setPicUrl(e.target.src);
-    const x = e.clientX - left;
-    const y = e.clientY - top;
-    const backgroundX = (x / width) * 100;
-    const backgroundY = (y / height) * 100;
-    setMagnifier({
-      opacity: 1,
-      top: `${y - 50}px`,
-      left: `${x - 50}px`,
-      backgroundPosition: `${backgroundX}% ${backgroundY}% `
-    });
-  };
+ const handleMouseMove = (e) => {
+  if (isMobile) return;
 
-  const handleMouseLeave = () => {
-    setMagnifier({ opacity: 0 });
-  };
+  const { left, top, width, height } = e.target.getBoundingClientRect();
+  setPicUrl(e.target.src);
+
+  const x = e.clientX - left;
+  const y = e.clientY - top;
+  const backgroundX = (x / width) * 100;
+  const backgroundY = (y / height) * 100;
+
+  setMagnifier({
+    visible: true,
+    backgroundPosition: `${backgroundX}% ${backgroundY}%`,
+  });
+};
+
+const handleMouseLeave = () => {
+  setMagnifier((prev) => ({ ...prev, visible: false }));
+};
 
   if (loading) return <p className="text-center mt-20">Loading...</p>;
   if (error) return <p className="text-center mt-20 text-red-500">Error: {error}</p>;
@@ -178,7 +183,7 @@ useEffect(() => {
   return (
     <div className="bg-white min-h-screen">
       <Header />
-      <div className="pt-28 px-4 md:px-12">
+      <div className="pt-28 px-4 md:px-12 pt-36">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {isMobile ? (
             <ResponsiveImageSection productColors={productColors} selectedColor={color} />
@@ -198,21 +203,26 @@ useEffect(() => {
                     />
                   ))
                 )}
-              <div
-                className="magnifier absolute w-24 h-24 border border-gray-400 rounded hidden md:block pointer-events-none"
-                style={{
-                  ...magnifier,
-                  backgroundImage: `url(${picUrl})`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '200%',
-                  position: 'absolute',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 10,
-                  opacity: magnifier.opacity || 0
-                }}
-              ></div>
+  
+
             </div>
           )}
+
+                    {magnifier.visible && (
+  <div
+    className="fixed top-1/2 left-2/3 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white shadow-lg rounded-lg border overflow-hidden"
+    style={{
+      width: '40vw',
+      height: '55vh',
+      backgroundImage: `url(${picUrl})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: magnifier.backgroundPosition,
+      backgroundSize: '200%',
+      cursor: 'zoom-out',
+    }}
+    onClick={handleMouseLeave}
+  />
+)}
 
           <div className="flex flex-col gap-4">
             <h1 className="text-2xl md:text-3xl font-semibold">{productSlice2.name}</h1>

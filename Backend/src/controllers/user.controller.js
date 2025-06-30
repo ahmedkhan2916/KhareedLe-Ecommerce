@@ -644,7 +644,7 @@ const updateProductImage=async (req,res)=>{
 
   try{
 
-    const product= await ProductD.findById('66cb21b65ded4d82f9def49d');
+    const product= await ProductD.findById('6862c232cd5edf03c44e75e6');
 
     if(product)
     {
@@ -656,11 +656,13 @@ const updateProductImage=async (req,res)=>{
 
           image_urls:[
 
-           "https://cdn.mos.cms.futurecdn.net/Muee5w7KsWfAnLoKsxdq7H.jpg",
+            "https://mobilex.co.in/wp-content/uploads/2024/11/iPhone-16-Pro-Max-Black-Titanium-2.png",
 
-           "https://i.guim.co.uk/img/media/57828dad13e775fd65c7880d8e3be52c0414236d/54_344_5310_3187/master/5310.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=c720e0c8779a1ef3ad2d16aa95dc3a06",
+           "https://images.hindustantimes.com/tech/img/2024/03/26/1600x900/thai-nguyen-fw_KhcwHmlY-unsplash_1694685777617_1711449496577.jpg",
 
-           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoGsEmd6L6OGBMTYBuBkuHHR0b_RVP8HHhLQ&s",
+           "https://i.ytimg.com/vi/I2mZlKQCR2M/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCwr7e5DEtRg8tU7GRinLWLznCZTw",
+
+           
 
 
 
@@ -669,15 +671,15 @@ const updateProductImage=async (req,res)=>{
 
 
         {
-          color:"Blue",
+          color:`Titanium`,
 
           image_urls:[
 
-            "https://m.media-amazon.com/images/I/717JX3femML.jpg",
+            "https://i.ytimg.com/vi/inSnvpLfm_E/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBA7iGcMKndp4yCyz5paMDhaDwlAQ",
 
-            "https://i.gadgets360cdn.com/large/oneplus-12r-review-main_1707301603723.jpg",
+            "https://www.digitaltrends.com/wp-content/uploads/2024/10/iphone-16-pro-max-desert-titanium-review-8.jpg?p=1",
 
-            "https://www.techadvisor.com/wp-content/uploads/2024/02/OnePlus-12_review_5-1.jpg?quality=50&strip=all&w=1024"
+            "https://www.gizmochina.com/wp-content/uploads/2024/09/Caviar-iPhone-16-Pro-Art-and-Gold-Collection.jpg"
 
 
           ]
@@ -685,15 +687,15 @@ const updateProductImage=async (req,res)=>{
         },
 
         {
-          color:"Green",
+          color:"White",
 
           image_urls:[
 
-            "https://static.toiimg.com/thumb/imgsize-20024,msid-107097549/107097549.jpg?width=500&resizemode=4",
+            "https://iplanet.one/cdn/shop/files/iPhone_16_Pro_White_Titanium_PDP_Image_Position_1__en-IN_07d55633-9fdd-41a0-8d37-95767bb7df5a.jpg?v=1727249902",
 
-            "https://preview.redd.it/heres-our-first-official-look-at-the-oneplus-12-green-with-v0-7jvd16uuaq2c1.jpg?auto=webp&s=2292e6283fccd66530b354c49c2e6e1381116bbf",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFd4L2iYPwE7ZUySCgpxX8JySBtaDaL6QvgQ&s",
 
-            "https://www.zdnet.com/a/img/resize/fc45f89aa6281581ff599f33926680abb3dae2ab/2024/01/23/4f0b7ed8-dee6-47c4-8b08-72f2cbe0efa3/dsc01057.jpg?auto=webp&fit=crop&height=1200&width=1200"
+            "https://photos5.appleinsider.com/gallery/61162-126344-iPhone-16-Pro-White-Titanium-xl.jpg"
 
 
           ]
