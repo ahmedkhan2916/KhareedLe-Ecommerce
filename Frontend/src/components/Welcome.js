@@ -2,15 +2,36 @@
 import React, { useEffect, useState } from 'react';
 import { Rocket,ShoppingBag  } from 'lucide-react'; // You can replace this with an actual rocket image or SVG
 import '../assets/Style/welcome.css'; // Add your CSS styles for the welcome screen
+import { useSelector } from 'react-redux';
+
 
 const Welcome = ({ onFinish }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onFinish(); // Callback to hide welcome screen after few seconds
-    }, 4000); // Show for 4 seconds
 
-    return () => clearTimeout(timer);
+  const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
+
+
+  useEffect(() => {
+
+    let count=0;
+
+
+    while(status!=="succeeded" || count<10)
+    {
+      if(count>10 || status==="failed" || status==="succeeded" || token)
+
+        {
+         onFinish();
+        }
+
+        count++;
+
+    }
+
+      
   }, [onFinish]);
+
+
+ 
 
   return (
     <div className="welcome-screen">

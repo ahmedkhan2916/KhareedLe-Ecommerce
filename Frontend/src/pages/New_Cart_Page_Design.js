@@ -5,7 +5,7 @@ import Minus from "../components/Minus.js";
 import Header from "../components/HeaderChange.js";
 import DeleteIcon from "../assets/Brandlogo/trash.png"
 
-import { fetchUserID,refreshToken,fetchProductQuantity,fetchBagData } from '../store/dataSlice.js';
+import { fetchUserID,refreshToken,fetchProductQuantity,fetchBagData,fetchBagTotal2 } from '../store/dataSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
 import {BASE_URL} from "../config/config.js";
 
@@ -155,6 +155,8 @@ useEffect(() => {
               
         
                 dispatch(fetchBagData(ID)); 
+                dispatch(fetchBagTotal2(ID)); 
+        
         
             
               }
