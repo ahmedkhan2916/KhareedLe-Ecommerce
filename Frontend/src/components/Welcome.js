@@ -10,25 +10,19 @@ const Welcome = ({ onFinish }) => {
   const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
 
 
-  useEffect(() => {
+useEffect(() => {
+  let count = 0;
 
-    let count=0;
-
-
-    while(status!=="succeeded" || count<10)
-    {
-      if(count>10 || status==="failed" || status==="succeeded" || token)
-
-        {
-         onFinish();
-        }
-
-        count++;
-
+  const interval = setInterval(() => {
+    if (!token || status === "succeeded" || status === "failed" || count >= 10) {
+      clearInterval(interval);
+      onFinish(); // Call your callback
     }
+    count++;
+  }, 500); // check every 500ms
 
-      
-  }, [onFinish]);
+  return () => clearInterval(interval); // cleanup on unmount
+}, [token, status, onFinish]);
 
 
  
