@@ -3,6 +3,7 @@ import "../assets/Style/signup.css";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import khareed from "../assets/SignupImage/khareed.png"; // Ensure the path is correct
+import {BASE_URL} from '../config/config.js';
 
 function Signup() {
   const [firstname, setFirstName] = useState('');
@@ -37,7 +38,7 @@ function Signup() {
     console.log("this is signup data...>>>>>",bodyData)
 
     try {
-      const apiDat = await axios.post("http://localhost:1000/users/signup", bodyData);
+      const apiDat = await axios.post(`${BASE_URL}/users/signup`, bodyData);
       alert("success")
       console.log("signup successfully");
       navigate('/users/login');
