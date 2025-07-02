@@ -4,6 +4,7 @@ import {useEffect,useState} from "react";
 import Minus from "../components/Minus.js";
 import Header from "../components/HeaderChange.js";
 import DeleteIcon from "../assets/Brandlogo/trash.png"
+import { useNavigate } from 'react-router-dom';
 
 import { fetchUserID,refreshToken,fetchProductQuantity,fetchBagData,fetchBagTotal2 } from '../store/dataSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,6 +23,7 @@ const CartPage = () => {
             const error = useSelector((state) => state.bag.error);
         const [total,setTotal]=useState(0);
         const [signal,setSignal]=useState(false);
+        const navigate=useNavigate()
         //  const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
 
 
@@ -272,7 +274,7 @@ useEffect(() => {
             className="mt-4 w-full px-3 py-2 border rounded-lg text-sm"
           />
 
-          <button className="mt-4 w-full bg-black text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition">
+          <button className="mt-4 w-full bg-black text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition" onClick={()=>navigate("/users/address")}>
             ⚡ Checkout
           </button>
         </div>

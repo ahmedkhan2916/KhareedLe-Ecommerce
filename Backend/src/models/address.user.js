@@ -12,6 +12,8 @@ const address_Schema = new Schema({
     state: { type: String, required: true },
     landmark: { type: String, required: true },
     alternate: { type: String, required: true },
+      latitude: { type: Number, required: false },   // optional — add only if map is used
+  longitude: { type: Number, required: false },
 }, { timestamps: true });
 
 const address_user = mongoose.model('Address', address_Schema);
