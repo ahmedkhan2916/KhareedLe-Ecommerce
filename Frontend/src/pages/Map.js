@@ -244,8 +244,9 @@ useEffect(() => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-100 p-4 md:p-6 w-full md:w-1/2 h-[500px] md:h-screen rounded-xl">
-      <div ref={mapContainer}  className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] xl:h-[700px] rounded-lg shadow-lg"></div>
+  <div className="flex flex-col items-center justify-start bg-gray-100 p-4 w-full h-full">
+
+      <div ref={mapContainer}  className="w-full h-full rounded-lg shadow-lg"></div>
       <div className="mt-4 p-4 bg-white rounded-lg shadow-md w-full md:w-[80%] text-sm md:text-base">
         <strong>Address: {location.lat} || {location.lng}</strong><br />
         {address || "Fetching address..."}

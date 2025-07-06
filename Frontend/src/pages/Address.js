@@ -141,114 +141,85 @@ function Address() {
 
   return (
 
-    <>
+  <>
+  <Header />
 
-<Header></Header>
+  <div className="w-screen min-h-screen bg-red-400">
+    <div className="w-full min-h-screen bg-white flex flex-col lg:flex-row items-center justify-center p-4 gap-6">
 
-    <div className='addressContainer bg-red-400 w-screen h-screen '>
+      {/* Map Section */}
+      <div className="w-full lg:w-1/2 h-[500px] lg:h-[600px]">
+        <Map
+          onLocationSelect={(addressData) => {
+            setFormData((prev) => ({
+              ...prev,
+              street: addressData.street,
+              city: addressData.city,
+              state: addressData.state,
+              pincode: addressData.pincode,
+              locality: addressData.locality,
+              latitude: addressData.latitude,
+              longitude: addressData.longitude,
+            }));
+          }}
+        />
+      </div>
 
-        <div className='addressChildContainer w-full h-full bg-white flex justify-center items-center flex-col lg:flex-row '>
+      {/* Form Section */}
+      <div className="w-full lg:w-2/5 bg-green-100 rounded-xl p-6">
+        <form className="grid grid-cols-1 sm:grid-cols-2 gap-4" onSubmit={handleAddressForm}>
+          <input placeholder="Name" className="h-10 px-3 rounded" name="name" onChange={handleChange} />
+          <input placeholder="Phone Number" className="h-10 px-3 rounded" name="phone" onChange={handleChange} />
 
-            {/* <div className='titleAddress pr-24 HeadingLato'>
+          <input placeholder="Pincode" className="h-10 px-3 rounded" name="pincode" onChange={handleChange} value={formData.pincode} />
+          <input placeholder="Locality" className="h-10 px-3 rounded" name="locality" onChange={handleChange} value={formData.locality} />
 
-                <h1 className='text-6xl'>Add Address</h1>
+          <input placeholder="Street" className="h-10 px-3 rounded" name="street" onChange={handleChange} value={formData.street} />
+          <input placeholder="City/District/Town" className="h-10 px-3 rounded" name="city" onChange={handleChange} value={formData.city} />
 
-            </div> */}
-            <Map   onLocationSelect={(addressData) => {
-    setFormData((prev) => ({
-      ...prev,
-      street: addressData.street,
-      city: addressData.city,
-      state: addressData.state,
-      pincode: addressData.pincode,
-      locality:addressData.locality,
-      latitude: addressData.latitude,
-      longitude: addressData.longitude,
-    }));
-  }}></Map>
+          <input placeholder="State" className="h-10 px-3 rounded" name="state" onChange={handleChange} value={formData.state} />
+          <input placeholder="Landmark" className="h-10 px-3 rounded" name="landmark" onChange={handleChange} />
 
-<div className='AddressFormContainer   h-3/4  bg-green-100 flex flex-col justify-center rounded-xl ml-5  items-center lg:w-2/5  lg:mt-32' >
+          <input placeholder="Alternate Phone" className="h-10 px-3 rounded" name="alternate" onChange={handleChange} />
 
-   <form className='formAddress  lg:ml-20' onSubmit={handleAddressForm} >
+          {/* Radio Buttons */}
+          <div className="col-span-2 flex items-center gap-4 mt-2">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                checked={formData.type === "billing"}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                name="type"
+                value="billing"
+              />
+              Billing
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                checked={formData.type === "shipping"}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                name="type"
+                value="shipping"
+              />
+              Shipping
+            </label>
+          </div>
 
-            <input placeholder='Name' className='h-10 rounded' name="name" onChange={handleChange} ></input>
-            <input placeholder='Phone Number' className='h-10 rounded ml-1' name="phone" onChange={handleChange} ></input>
-
-            <input placeholder='Pincode' className='h-10 mt-3 rounded' name="pincode" onChange={handleChange} value={formData.pincode}></input>
-            <input placeholder='Locality' className='h-10 rounded ml-1' name="locality" onChange={handleChange} value={formData.locality}></input>
-
-            <input placeholder='Street' className='h-10 mt-3 rounded' name="street" onChange={handleChange} value={formData.street}></input>
-            <input placeholder='City/District/Town' className='h-10 rounded ml-1' name="city" onChange={handleChange} value={formData.city}></input>
-
-            <input placeholder='State' className='h-10 mt-3 rounded' name="state" onChange={handleChange} value={formData.state}></input>
-            <input placeholder='Landmark' className='h-10 rounded ml-1' name="landmark" onChange={handleChange} ></input>
-        
-            <input placeholder='Alternate Phone' className='h-10 mt-3 rounded' name="alternate" onChange={handleChange} ></input>
-    
-            <input  type="radio"
-  checked={formData.type === "billing"}
-  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-  className="ml-4"
-  name="type"
-  value="billing"></input>
-            <label className="text-sm">billing</label>
-
-            <input  type="radio"
-  checked={formData.type === "shipping"}
-  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-  className="ml-4"
-  name="type"
-  value="shipping"></input>
-            <label className="text-sm">Shipping</label>
-           
-
-<div className='buttonContainerSubmit'>
-            <button className='submitBtn h-9 w-24 rounded bg-purple-500  text-white mt-6' type="submit"  >Submit</button>
-
-            </div>
-
-   </form>
-
-
-
-   {/* <div className='AddressTypeContainer ml-20 mt-3'>
-
-
-
-    <div className='homeAddressContainer'>
-        <input type="radio" checked={radio.firstRadio} onChange={()=>handleRadio('first')}></input>
-        <label className="text-sm">Home</label>
-
+          {/* Submit Button */}
+          <div className="col-span-2 flex justify-center mt-4">
+            <button className="submitBtn h-10 w-32 rounded bg-purple-500 text-white" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <div className='workingAddressContainer pt-1'>
-        <input type="radio" checked={radio.secondRadio} onChange={()=>handleRadio('second')}></input>
-        <label className="text-sm">Work/Office</label>
+  <Footer />
+</>
 
-    </div>
-
-   </div> */}
-
-   {/* <div className='buttonSubmitAddress ml-20 mt-7'>
-
-    
-
-   </div> */}
-</div>
-</div>
-
-
-
-
-
-
-
-
-    </div>
-
-    <Footer></Footer>
-
-    </>
   )
 }
 
