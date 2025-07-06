@@ -312,6 +312,7 @@ import Upi from "../assets/PaymentPageIcons/upi.png";
 import Emi from "../assets/PaymentPageIcons/emi.png";
 import Visa from "../assets/PaymentPageIcons/visa.png";
 import Wallet from "../assets/PaymentPageIcons/wallet.png";
+import { BASE_URL } from "../config/config.js";
 
 const PaymentGateway = () => {
 
@@ -348,7 +349,7 @@ const PaymentGateway = () => {
     try {
       // ✅ Correct axios POST
     const response = await axios.post(
-    "http://localhost:1000/users/create-order",
+    `${BASE_URL}/users/create-order`,
     { amount: 65000 }, // ✅ This is the actual request body
     {
       headers: {
