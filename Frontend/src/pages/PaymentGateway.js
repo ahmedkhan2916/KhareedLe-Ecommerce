@@ -324,7 +324,11 @@ const PaymentGateway = () => {
   const [paylater,setPaylater]=useState(false);
 
 
+const handleCongrats=()=>{
 
+  navigate("/users/completed");
+
+}
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -382,6 +386,7 @@ const PaymentGateway = () => {
 
         handler: function (response) {
           alert("✅ Payment Successful!\nPayment ID: " + response.razorpay_payment_id);
+          handleCongrats();
           // Optionally verify with backend here
         },
   
