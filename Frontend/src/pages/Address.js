@@ -6,6 +6,7 @@ import axios from "axios"
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import {fetchID} from "../Services/apiService.js"
+import Footer from "../components/Footer.js"
 
 function Address() {
 
@@ -145,7 +146,7 @@ function Address() {
 
     <div className='addressContainer bg-red-400 w-screen h-screen '>
 
-        <div className='addressChildContainer w-full h-full bg-white flex justify-center items-center'>
+        <div className='addressChildContainer w-full h-full bg-white flex justify-center items-center flex-col lg:flex-row '>
 
             {/* <div className='titleAddress pr-24 HeadingLato'>
 
@@ -165,9 +166,9 @@ function Address() {
     }));
   }}></Map>
 
-<div className='AddressFormContainer ml-5 w-2/5 h-3/4  bg-green-100 flex flex-col justify-center rounded-xl mt-32 items-center' >
+<div className='AddressFormContainer   h-3/4  bg-green-100 flex flex-col justify-center rounded-xl ml-5  items-center lg:w-2/5  lg:mt-32' >
 
-   <form className='formAddress ml-20 ' onSubmit={handleAddressForm} >
+   <form className='formAddress  lg:ml-20' onSubmit={handleAddressForm} >
 
             <input placeholder='Name' className='h-10 rounded' name="name" onChange={handleChange} ></input>
             <input placeholder='Phone Number' className='h-10 rounded ml-1' name="phone" onChange={handleChange} ></input>
@@ -243,6 +244,8 @@ function Address() {
 
 
     </div>
+
+    <Footer></Footer>
 
     </>
   )
