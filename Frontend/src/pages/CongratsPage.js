@@ -8,6 +8,7 @@ import {fetchID} from "../Services/apiService.js";
 import { useDispatch } from 'react-redux';
 // import {BooleanSignal} from "../../src/store/dataSlice.js";
 import {setSignal} from "../../src/store/dataSlice.js"
+import { BASE_URL } from '../config/config.js';
 //store a true value here in redux....>>>>
 
 function CongratsPage() {
@@ -42,7 +43,7 @@ Celebrate();
 
             const Ids={userId:ID,productId:product.id,Signal:true}
 
-            const response=await axios.post("http://localhost:1000/users/addbag",Ids); 
+            const response=await axios.post(`${BASE_URL}/users/addbag`,Ids); 
  
             console.log("Response done",response);
 

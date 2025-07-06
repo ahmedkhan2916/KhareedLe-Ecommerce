@@ -313,6 +313,7 @@ import Emi from "../assets/PaymentPageIcons/emi.png";
 import Visa from "../assets/PaymentPageIcons/visa.png";
 import Wallet from "../assets/PaymentPageIcons/wallet.png";
 import { BASE_URL } from "../config/config.js";
+import { useNavigate } from 'react-router-dom'; 
 
 const PaymentGateway = () => {
 
@@ -322,6 +323,7 @@ const PaymentGateway = () => {
   const [upi,setUpi]=useState(false);
   const [emi,setEmi]=useState(false);
   const [paylater,setPaylater]=useState(false);
+  const navigate=useNavigate();
 
 
 const handleCongrats=()=>{
