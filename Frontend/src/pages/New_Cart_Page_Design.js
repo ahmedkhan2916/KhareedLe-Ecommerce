@@ -281,13 +281,13 @@ useEffect(() => {
       </div>
 
       {/* Sticky Bottom Summary for Mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-md p-4 flex justify-between items-center">
+      {/* <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-md p-4 flex justify-between items-center">
         <div>
           <p className="text-sm">{cartItems.length} Items</p>
           <p className="font-semibold">₹ {subtotal.toLocaleString()}</p>
         </div>
         <button className="bg-black text-white px-4 py-2 rounded-lg">Checkout</button>
-      </div>
+      </div> */}
     </div>
 
      </>
