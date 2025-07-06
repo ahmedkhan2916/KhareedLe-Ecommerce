@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { BASE_URL } from "../config/config.js";
 
 
 
@@ -24,7 +25,7 @@ const RazorpayButton = () => {
   try {
     // ✅ Correct axios POST
   const response = await axios.post(
-  "http://localhost:1000/users/create-order",
+  `${BASE_URL}/users/create-order`,
   { amount: 65000 }, // ✅ This is the actual request body
   {
     headers: {
