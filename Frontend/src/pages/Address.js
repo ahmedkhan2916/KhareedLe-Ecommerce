@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import {fetchID} from "../Services/apiService.js"
 import Footer from "../components/Footer.js"
+import { BASE_URL } from '../config/config.js'
 
 function Address() {
 
@@ -99,7 +100,7 @@ function Address() {
 
         const userId=await fetchID(token);
         
-        const dataSent= await axios.post("http://localhost:1000/users/addressadd",{...formData,userId});
+        const dataSent= await axios.post(`${BASE_URL}/users/addressadd`,{...formData,userId});
 
         console.log("this is data",dataSent);
 
