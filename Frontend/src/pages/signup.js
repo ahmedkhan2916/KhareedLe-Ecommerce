@@ -9,7 +9,7 @@ function Signup() {
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
+  const [phonenumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [contact, setContact] = useState('');
   const [confirmpass, setConfirmPass] = useState('');
@@ -29,7 +29,7 @@ function Signup() {
       firstname,
       lastname,
       email,
-      username,
+      phonenumber,
       password,
       
     };
@@ -67,7 +67,7 @@ function Signup() {
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='firstname' type='text' onChange={(e) => setFirstName(e.target.value)} value={firstname} required />
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='lastname' type='text' onChange={(e) => setLastName(e.target.value)} value={lastname} required />
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='email' type='text' onChange={(e) => setEmail(e.target.value)} value={email} required />
-            <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='username' type='text' onChange={(e) => setUsername(e.target.value)} value={username} required />
+            <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='phonenumber' type='number' onChange={(e) => setPhoneNumber(e.target.value)} value={phonenumber} required />
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='password' type='text' onChange={(e) => setPassword(e.target.value)} value={password} required />
             <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='confirmPassword' type='text' onChange={(e) => setConfirmPass(e.target.value)} value={confirmpass} required />
             {/* <input className="inp w-8/12 h-10 rounded-md placeholder-neutral-800 " placeholder='contact no' type='text' onChange={(e) => setContact(e.target.value)} value={contact} required /> */}

@@ -342,6 +342,33 @@ const handleCongrats=()=>{
     });
   };
 
+ const  handleCheckPaymentSuccess=async(RAZR_PAY_ID_)=>
+ {
+
+  try{
+  const response=await axios.post(`${BASE_URL}/users/verify-payment`, { RAZR_PAY_ID_ });
+
+  if(response.data.success)
+  {
+    alert("PAYMENT SUCCESS 200"+response.data.payment);
+    return true;
+  }
+  else{
+
+    alert("PAYMENT NOT CONFIRMED.... STATUS"+response.data.status)
+    return false;
+
+  }
+
+
+
+
+  }catch(err)
+  {
+    alert("ERROR VERYFYING PAYMENT PLEASE CONTACT SUPPORT STAFF!!!!")
+  }
+
+ }
    
 
   
@@ -363,12 +390,15 @@ const handleCongrats=()=>{
       },
     }
   );
+
+
+
   
   const orderData = response.data
   
   console.log("orderData",orderData);
       const options = {
-        key: "rzp_test_bEM9BDCRfFjxoi", // Razorpay Test Key
+        key: "rzp_test_wuFJ7sKk68vkn4", // Razorpay Test Key
         amount: orderData.amount,
         currency: "INR",
         name: "Khareed Lay",
@@ -386,9 +416,18 @@ const handleCongrats=()=>{
 
     },
 
-        handler: function (response) {
+        handler: async function (response) {
           alert("✅ Payment Successful!\nPayment ID: " + response.razorpay_payment_id);
-          handleCongrats();
+        const res= await handleCheckPaymentSuccess(response.razorpay_payment_id);
+
+        if(res==true)
+        {
+
+handleCongrats();
+        }
+      
+
+          
           // Optionally verify with backend here
         },
   

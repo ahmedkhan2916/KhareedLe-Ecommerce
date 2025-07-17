@@ -1,82 +1,69 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
-const OrderSchema=new Schema({
 
-        orderID:{
-
-            type:String,
-            unique:true,
-            required:true,
-
-
-        },
-
-        userId:{
-
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'signupuser',
-            required:true
-        },
-        products:[
-     {
-     
-        productId:{
-
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"productdetail",
-            required:true,
-        },
-
-        quantity:{
-
-            type:Number,
-            required:true,
-
-        }
-
-
-    }
-    ],
-
-    totalAmount:{
-
-        type:Number,
-        required:true,
-
-    },
-
-    paymentId:{
-
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"payment",
-        required:true,
-    
-    },
-
-    orderStatus:{
-
-        type:String,
-        enum:["processing","shipped","delivered",'cancelled'],
-        default:"processing"
-
-    },
-    createdAt:{
-
-        type:Date,
-        default:Date.now,
-
-
-    }
+const OrderSchema = new Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true
+  },
+  totalPrice: {
+    type: Number,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['ordered', 'cancelled', 'delivered', 'returned','pending'],
+    default: 'pending'
+  },
+  orderDate: {
+    type: Date,
+    default: Date.now
+  },
+  deliveryDate: {
+    type: Date
+  },
+  returnDate: {
+    type: Date
+  },
+  returnReason: {
+    type: String
+  },
+  cancelReason: {
+    type: String
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['paid', 'pending', 'failed'],
+    default: 'paid'
+  },
+  payAt:{
+    type:Date,
+    default:null
+},
+  address: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Address',
+    required: true
+  }
 });
 
 
 //generating OrderId randomly using date and math.random mathod
-OrderSchema.pre("save",async (next)=>{
+OrderSchema.pre("save",async function (next){
 
     if(!this.orderID)
     {
-
         const currentDate=new Date();
 
         const datePart=`${currentDate.getFullYear()} ${(currentDate.getMonth()+1).toString().padStart(2,'0')} ${currentDate.getDate().toString().padStart(2,'0')}`
@@ -85,7 +72,6 @@ OrderSchema.pre("save",async (next)=>{
 
         this.orderID=`ORD-${datePart}-${randomPart}`;
     }
-
     next();
     
 });

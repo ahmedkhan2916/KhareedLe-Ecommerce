@@ -4,6 +4,7 @@ import { User } from "../models/user.signup.js";
 import { ProductD } from "../models/productDatabase.js";
 import {ProductInsights} from "../models/ProductInsightsSchema.js"
 import address_user from "../models/address.user.js";
+import {OrderUser} from "../models/order.js";
 import dotenv from "dotenv"
 import bcrypt from "bcrypt"
 import mongoose from "mongoose"
@@ -16,6 +17,7 @@ import {Gift_Schema} from "../models/Gifts.Quantity.js";
 import crypto from "crypto"
 import { v4 as uuidv4 } from 'uuid';  // Correct import
 import Razorpay from "razorpay";
+import axios from "axios";
 
 const router=Router();
 
@@ -70,13 +72,13 @@ const generateRefreshToken=(user)=>{
 
   const SignUp = async (req, res) => {
 
-    const { firstname, lastname, username, password, email } = req.body;
+    const { firstname, lastname, phonenumber, password, email } = req.body;
   
     // Validate input fields
 
-    console.log(firstname,lastname,username,password,email);
+    console.log(firstname,lastname,phonenumber,password,email);
 
-    if ([firstname, lastname,username, password, email].some(field => !field || field.trim() === "")) {
+    if ([firstname, lastname,phonenumber, password, email].some(field => !field || field.trim() === "")) {
       return res.status(400).json({ error: "All fields are required." });
     }
  
@@ -96,7 +98,7 @@ const generateRefreshToken=(user)=>{
       const user = await User.create({
         firstname,
         lastname,
-        username,
+        phonenumber,
         password,
         email,
       });
@@ -108,7 +110,7 @@ const generateRefreshToken=(user)=>{
 
       res.status(201).json({
         message: "Signup successful!",
-        user: { firstname, lastname, email,username },
+        user: { firstname, lastname, email,phonenumber },
       });
     } catch (error) {
       console.error("Signup error:", error);
@@ -121,90 +123,88 @@ const generateRefreshToken=(user)=>{
 // import { generateAccessToken, generateRefreshToken } from './tokenUtils.js';
 // import User from '../models/User.js'; // Adjust the path based on your folder structure
 
-const Login = async (req, res,next) => {
+const Login = async (req, res, next) => {
+  const { EMAILORPHONENO, password } = req.body;
 
-  const { email, password } = req.body;
+  // Separate into email or phone number
+  let email = "";
+  let phonenumber = "";
 
+  if (EMAILORPHONENO) {
+    // If it contains only digits, treat as phone number
+    if (/^\d+$/.test(EMAILORPHONENO)) {
+      phonenumber = EMAILORPHONENO;
+    } else {
+      email = EMAILORPHONENO;
+    }
+  }
 
-console.log("password",password)
+  // Validate presence
+  if (!EMAILORPHONENO || !password) {
+    return res.status(402).json({ error: "Fill proper field(s)." });
+  }
 
-  // Validate input fields
-  if ([email, password].some(field => !field || field.trim() === "")) {
-
-     res.status(400).json({ error: "Email and password are required."});
-     
+  if ([EMAILORPHONENO, password].some(field => !field || field.trim() === "")) {
+    return res.status(400).json({
+      error: "Email or Phone Number and password are required."
+    });
   }
 
   try {
-    // Check if user exists
-    const user = await User.findOne({ email });
- 
-    if (!user) {
+    // Find user based on email or phone
+   let query = {};
 
-      throw new classErrorHandling("User Not Found",402);
-      // return res.status(404).json({ error: "User not found." });
+if (email) query.email = email;// insert email in query array
+
+if (phonenumber) query.phonenumber = phonenumber; // insert phone number in query array
+
+const user = await User.findOne(query); // send query here
+
+    if (!user) {
+      throw new classErrorHandling("User Not Found", 402);
     }
 
-    console.log("password",password,user.password,user.email);
     // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-   
-    console.log("hashed password",isPasswordValid)
-    if (!isPasswordValid) 
-    {
-      
+    if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid password." });
-;
     }
 
-
-    console.log("passwordvalid",isPasswordValid);
-    const ID=user._id.toString();
-    const encrypt=encryptIDS(ID)
+    // Encrypt user ID
+    const ID = user._id.toString();
+    const encrypt = encryptIDS(ID);
 
     // Generate tokens
-    const accessToken = generateAccessToken({ id: encrypt});
-    const refreshToken = generateRefreshToken({ id: encrypt});
-   
-    console.log("encrypted",encryptIDS(ID));
-    // const encrypt=encryptIDS(ID)
-    console.log("decrypted",decryptIDS(encrypt));
+    const accessToken = generateAccessToken({ id: encrypt });
+    const refreshToken = generateRefreshToken({ id: encrypt });
 
-    console.log("this is refreshTokennnn",refreshToken);
-
-      // Save refresh token in database
+    // Store refresh token in DB
     user.refreshToken = refreshToken;
-
     await user.save({ validateBeforeSave: false });
 
-    // Set refresh token as an HTTP-only cookie
+    // Set cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-    secure: true, // ✅ Important on Render/Vercel (HTTPS)
-  sameSite: 'none', // ✅ Must be 'none' for cross-site cookies
-   
-      maxAge: 7 * 24 * 60 * 60 * 1000,//7 days
+      secure: true,
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-  
+    // Success response
     res.status(200).json({
       message: "Login successful!",
       accessToken,
-     
-
       user: {
         id: encrypt,
         name: user.firstname,
-        // email: user.email,
       },
     });
+
   } catch (error) {
-    // console.error("Login error:", error);
-    // res.status(500).json({ error: "Internal server error." });
     next(error);
   }
-
 };
+
 
 
 const Logout = async(req, res) => {
@@ -1328,8 +1328,8 @@ const totalItemsPrice = async (req, res) => {
 
        const instance = new Razorpay({
 
-        key_id:'rzp_test_bEM9BDCRfFjxoi',
-        key_secret:'IMjUictoI1mLWwajrcZ7ub8z',
+        key_id:'rzp_test_wuFJ7sKk68vkn4',
+        key_secret:'bRnAC5G6JbHXknmWj8GDq0lz',
 
       });
 
@@ -1349,6 +1349,88 @@ const totalItemsPrice = async (req, res) => {
   }
 
 
+  const handle_Users_Order=async (req,res)=>{
 
 
-export {SignUp,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice,refreshTokenHandler,handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies};
+    const {userId,productId,totalPrice,status,orderDate,address,quantity}=req.body;
+
+
+    try{
+      
+    if(!userId || !productId || !totalPrice || !status || !orderDate || !address || !quantity)
+{
+
+  return res.status(405).json({"message":"Fields not Filled Properly"})
+
+}
+
+const order=await OrderUser.create({   
+
+
+  userId,
+  productId,
+  totalPrice,
+  status,
+  orderDate,
+  address,
+  quantity,
+
+  });
+
+  if(!order)
+  {
+    return res.status(400).json({"message":"here is here to create Document"});
+  }
+
+  console.log("Order created successfully", order);
+
+  const only_Order_ID=order.orderID;
+
+  return res.status(200).json({ message: "Order placed successfully", orderID: only_Order_ID });
+
+    }
+    catch(err)
+    {
+       console.error("🔥 Error while placing order:", err); // See detailed error in console
+  return res.status(500).json({ message: "Something went wrong", error: err.message });
+    }
+}
+
+
+
+const verify_user_payment = async (req, res) => {
+  const { RAZR_PAY_ID_ } = req.body;
+
+  try {
+    if (!RAZR_PAY_ID_) {
+      return res.status(406).json({ message: "Payment ID not found" });
+    }
+
+    const auth = {
+      username: "rzp_test_wuFJ7sKk68vkn4",
+      password: "bRnAC5G6JbHXknmWj8GDq0lz",
+    };
+
+    let response = await axios.get(`https://api.razorpay.com/v1/payments/${RAZR_PAY_ID_}`, { auth });
+
+    // Wait and retry if payment is not captured yet
+    if (response.data.status !== "captured") {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      response = await axios.get(`https://api.razorpay.com/v1/payments/${RAZR_PAY_ID_}`, { auth });
+    }
+
+    const paymentStatus = response.data.status;
+
+    if (paymentStatus === "captured") {
+      return res.status(200).json({ success: true, payment: response.data });
+    } else {
+      return res.status(400).json({ success: false, status: paymentStatus });
+    }
+  } catch (error) {
+    console.error("Error verifying Razorpay payment:", error.response?.data || error.message);
+    return res.status(500).json({ success: false, message: "Failed to verify payment." });
+  }
+};
+
+
+export {SignUp,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice,refreshTokenHandler,handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment};

@@ -21,6 +21,7 @@ import Confetti from "./pages/Confetti.js";
 import CartPage from "./pages/New_Cart_Page_Design.js";
 import RazorpayButton from "./components/RazorpayButton.js";
 import GsapAnimation from './pages/GsapAnimation.js';
+import OrdersPage from "./pages/Orders.js";
 import { increment, fetchBagData,refreshToken,fetchUserID} from './store/dataSlice.js';
 
 function App() {
@@ -30,8 +31,7 @@ function App() {
   const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
   const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
   // const { totalBag,statusTotalBag,errorBagTotal,}=useSelector((state)=>
-    // const [signal,setSignal]=useState(false);
-
+ // const [signal,setSignal]=useState(false);
 
 
   const dispatch = useDispatch();
@@ -76,13 +76,12 @@ function App() {
     
     <div className="App">
 
-{/* { log ? (
+                {/* { log ? (
                    <Signup></Signup>
                 ) : (
 
-                    <Navbar></Navbar>
-                )
-} */}
+                   <Navbar></Navbar>
+          )} */}
 
 <Router>
   
@@ -105,6 +104,7 @@ function App() {
          <Route path="users/Cart" element={<CartPage/>}> </Route>
           <Route path="users/Razorpay" element={<RazorpayButton/>}> </Route>
           <Route path="users/Gsap" element={<GsapAnimation/>}> </Route>
+           <Route path="users/my-orders" element={<OrdersPage/>}> </Route>
       </Routes>
       
 </Router>

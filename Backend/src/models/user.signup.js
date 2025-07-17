@@ -10,15 +10,7 @@ import bcrypt from "bcrypt"
 
     // phone:String,
 
-    username:{
-
-    type:String,
-    required:true,
-    unique:true,
-    trim:true,
-    index:true,
-
-    },
+    phonenumber:Number,
 
     password:{
 

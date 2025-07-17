@@ -225,7 +225,7 @@ const FerrisWheel = () => {
   return (
    <div className="ferrisWheelParentContainer flex flex-col  justify-center min-h-screen px-4 relative font-[Poppins] bg-gradient-to-br from-blue-100 to-purple-200">
 
-      <div className="ferrisWheelContainer w-full mt-14 md:w-1/2 flex flex-col items-center justify-center">
+      <div className={`ferrisWheelContainer w-full mt-14 md:w-1/2 ${winningPrize?'hidden': 'flex'} flex-col items-center justify-center`}>
         {/* Pointer */}
        <img src={Downarrow} alt="Pointer" className="w-10 h-10 z-10 mb-4 drop-shadow-lg" />
 

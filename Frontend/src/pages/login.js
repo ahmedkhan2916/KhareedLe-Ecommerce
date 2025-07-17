@@ -45,6 +45,8 @@ function Login() {
   const navigate=useNavigate();
   const [currentIndex,setCurrentIndex]=useState(0);
   const [email,setEmail]=useState('');
+  const [phNO,setPHNO]=useState();
+  const [typeSet,setTypeSet]=useState(false);
   const [password,setPassword]=useState('');
   const [status2,setStatus]=useState(false);
  const dispatch= useDispatch();
@@ -131,9 +133,11 @@ useEffect(() => {
 
     console.log("this is my email and password",email,password);
 
+    const EMAILORPHONENO=email || phNO
+
     const bodyData={
       
-        email:email,
+        EMAILORPHONENO:EMAILORPHONENO,
         password:password,
 
     }
@@ -158,6 +162,30 @@ useEffect(() => {
     },1500)
 
 },[])
+
+
+const handleSetPHOREMAIL=(e)=>{
+
+  const value = e.target.value;
+
+
+  if (value === "") {
+    setEmail("");
+    setPHNO("");
+    setTypeSet(false); // Reset typeSet if input is empty
+    return;
+  }
+
+
+  if (/^\d+$/.test(value)) {
+    setTypeSet(true); // Set typeSet to true if input is numeric
+    setPHNO(value); // Set as phone number if input is numeric
+  } else {
+    setTypeSet(false);
+    setEmail(value); // Set as email if input is not numeric
+  }
+
+}
 
   return (
     <div className="w-full min-h-screen bg-white flex flex-col md:flex-row overflow-hidden">
@@ -201,10 +229,10 @@ useEffect(() => {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <input
-              type="text"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type={`${ typeSet ? "number" : "text"}`}
+              placeholder="Email or Phonenumber"
+              value={email || phNO}
+              onChange={(e) => handleSetPHOREMAIL(e)}
               required
               className="w-full h-11 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-lime-500"
             />
@@ -218,9 +246,11 @@ useEffect(() => {
             />
             <button
               type="submit"
-              className="w-full h-11 bg-black text-white rounded-md hover:bg-lime-400 hover:text-black font-semibold transition"
-            >
+              className="w-full h-11 bg-black text-white rounded-md hover:bg-lime-400 hover:text-black font-semibold transition">
+
               Login
+
+
             </button>
           </form>
 
