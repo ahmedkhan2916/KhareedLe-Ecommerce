@@ -42,6 +42,18 @@ const ProductDetails=new Schema({
     ]
 }],
 
+//  isTrending: {
+//     type: Boolean,
+//     default: false,
+//   },
+
+//   trendingCategory: {
+//     type: String,
+//     enum: ['Hot Right Now', 'Best Offers', 'Just Launched', 'None'],
+//     default: 'None',
+//   },
+
+
     rating: {
         type: Number,
         default: 0, // Default value if not provided

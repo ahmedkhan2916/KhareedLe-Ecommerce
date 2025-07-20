@@ -239,22 +239,29 @@ export const quantityItemBagSlice = createSlice({
 
 
 export const fetchBagTotalReduxStore = createSlice({
+
+  
   name: 'fetchBagTotalStore',
+
   initialState: {
+
     totalBag: 0,
     statusTotalBag: 'idle',
     errorBagTotal: null,
+
   },
+
   reducers: {
 
 
     setTotalBagNull:(state)=>
-    {
+      
+      {
+    
+        state.totalBag=0; // Reset totalBag to 0
+        state.statusTotalBag = 'idle'; // Reset status to idle
 
-    state.totalBag=0; // Reset totalBag to 0
-    state.statusTotalBag = 'idle'; // Reset status to idle
-
-    }
+      }
 
 
   },

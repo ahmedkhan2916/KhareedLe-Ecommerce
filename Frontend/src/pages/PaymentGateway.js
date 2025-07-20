@@ -302,7 +302,8 @@
 
 import React from "react";
 import axios from "axios";
-import {useState} from "react";
+import {useState,useEffect} from "react";
+import {useSelector} from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart,faCreditCard, faMobileAlt,faMoneyCheckAlt ,faClock} from '@fortawesome/free-solid-svg-icons';
 // For brand icons
@@ -317,13 +318,86 @@ import { useNavigate } from 'react-router-dom';
 
 const PaymentGateway = () => {
 
+ const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
+ const { totalBag,statusTotalBag,errorBagTotal,}=useSelector((state)=>state.fetchBagTotalStore);
 
   const [selectedOption,setSelectedOption]=useState(null);
   const [visa,setVisa]=useState(false);
   const [upi,setUpi]=useState(false);
   const [emi,setEmi]=useState(false);
   const [paylater,setPaylater]=useState(false);
+  const [total,setTotal]=useState(0);
   const navigate=useNavigate();
+
+
+
+  useEffect(()=>{
+
+
+    const fetchTotalData=async()=>{
+  try {
+                
+                if(!UserID)
+                {
+                  setTotal(0);
+                  return;
+                }
+                // console.log("User ID:", userId);
+                console.log("iD User is here",UserID);
+                const response = await axios.post(`${BASE_URL}/users/totalprice`, {
+                  UserID
+                });
+          
+                console.log("Total Price:", response.data.Price);
+                setTotal(response.data.Price);
+              } catch (error) {
+                console.error("Error fetching total price:", error);
+              }
+    }
+            
+
+
+fetchTotalData();
+
+
+
+  },[UserID])
+
+
+
+  const handle_Order_Confirm_Data_Store_Db=async()=>{
+
+
+    try{
+
+// write logic here
+
+const response=await axios.post(`${BASE_URL}/users/order-placed`,{UserID,totalPrice:total,status:"ordered",orderDate:new Date()});
+
+console.log(response);
+
+// return true;
+
+
+
+
+
+
+
+    }catch(error)
+    {
+      console.log("data not stored in db something error....",error);
+      // return false;
+    }
+
+
+
+
+
+
+
+  }
+
 
 
 const handleCongrats=()=>{
@@ -383,7 +457,7 @@ const handleCongrats=()=>{
       // ✅ Correct axios POST
     const response = await axios.post(
     `${BASE_URL}/users/create-order`,
-    { amount: 65000 }, // ✅ This is the actual request body
+    { amount: `${total}` }, // ✅ This is the actual request body
     {
       headers: {
         "Content-Type": "application/json",
@@ -422,7 +496,7 @@ const handleCongrats=()=>{
 
         if(res==true)
         {
-
+handle_Order_Confirm_Data_Store_Db();
 handleCongrats();
         }
       
@@ -518,7 +592,7 @@ handleCongrats();
           <div className="border-t my-2"></div>
           <div className="flex justify-between font-bold text-lg text-gray-800">
             <span>Total</span>
-            <span>₹70,000</span>
+            <span>₹{total}</span>
           </div>
         </div>
 
@@ -588,7 +662,7 @@ handleCongrats();
           onClick={handlePayment}
           className="w-full  bg-green-600 hover:bg-gradient-to-r from-green-500 to-purple-600 text-white text-lg font-bold py-3 rounded-xl transition duration-200"
         >
-          Proceed to Pay ₹70,000.00
+          Proceed to Pay ₹{total}
         </button>
 
 

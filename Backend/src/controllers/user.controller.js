@@ -1352,28 +1352,41 @@ const totalItemsPrice = async (req, res) => {
   const handle_Users_Order=async (req,res)=>{
 
 
-    const {userId,productId,totalPrice,status,orderDate,address,quantity}=req.body;
+    const {UserID,totalPrice,status,orderDate}=req.body;
 
 
     try{
       
-    if(!userId || !productId || !totalPrice || !status || !orderDate || !address || !quantity)
+    if( !UserID || !totalPrice || !status || !orderDate )
 {
 
   return res.status(405).json({"message":"Fields not Filled Properly"})
 
 }
 
+
+const user = await User.findById(UserID);
+
+if(!user)
+{
+
+  return res.json({"message":"error user not found"});
+
+}
+
+const products =  user.bag.map((item)=>({ productId:item.productId,quantity:item.quantity  }) );
+const address =  user.addresses[user.addresses.length-1];
+
 const order=await OrderUser.create({   
 
 
-  userId,
-  productId,
+  UserID,
+  products,
   totalPrice,
   status,
   orderDate,
   address,
-  quantity,
+
 
   });
 
