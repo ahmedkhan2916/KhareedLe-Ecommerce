@@ -1375,7 +1375,10 @@ if(!user)
 }
 
 const products =  user.bag.map((item)=>({ productId:item.productId,quantity:item.quantity  }) );
-const address =  user.addresses[user.addresses.length-1];
+
+
+
+const address =  user.addresses[0]; // Get the last address added by the user
 
 const order=await OrderUser.create({   
 
@@ -1446,4 +1449,51 @@ const verify_user_payment = async (req, res) => {
 };
 
 
-export {SignUp,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse,addCountItems,showTotalItemsCount,fetchBagItems,deleteCountItems,address,changeText,totalItemsPrice,refreshTokenHandler,handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment};
+const handle_My_Ordered_Data=async (req,res)=>{
+
+
+  const {UserID}=req.body;
+
+  
+try{
+
+ if (!UserID) {
+  return res.status(400).json({ message: "UserID not found in body..." });
+}
+
+ const userOrders = await OrderUser.find({
+
+  UserID: UserID,
+  status: "ordered"
+}).select('orderID orderDate status') // Optional: include only these fields.
+  .populate('products.productId', 'product_name product_image price '); 
+
+
+  if(!userOrders)
+    {
+
+    return res.status(404).json({"message": "No orders Found for this user." });
+
+    }
+
+  return res.status(200).json({ orders: userOrders });
+
+
+
+}catch(error)
+{
+
+    return res.status(402).json({"message":"something error..."});
+
+
+}
+
+
+
+
+
+
+}
+
+
+export { SignUp , Login , Logout , UploadPost , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch ,getProductIdFromCookies , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data };
