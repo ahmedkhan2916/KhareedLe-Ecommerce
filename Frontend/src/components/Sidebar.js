@@ -127,6 +127,12 @@ const Sidebar = () => {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
+   const handleOrders=()=>{
+  
+        navigate("/users/my-orders");
+  
+      }
+
   return (
     <div className="relative z-50 ">
       {/* Hamburger Button */}
@@ -192,7 +198,7 @@ const Sidebar = () => {
             <Heart className="w-5 h-5" />
             Wishlist
           </li>
-          <li className="flex items-center gap-3 hover:text-blue-600 cursor-pointer transition">
+          <li className="flex items-center gap-3 hover:text-blue-600 cursor-pointer transition" onClick={handleOrders}>
             <Package className="w-5 h-5" />
             My Orders
           </li>

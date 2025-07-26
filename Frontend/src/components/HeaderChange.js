@@ -379,6 +379,12 @@ console.log(err);
 
     }
 
+    const handleOrders=()=>{
+
+      navigate("/users/my-orders");
+
+    }
+
     const handleSidebar=()=>{
 
         setSidebar(!sideBar);
@@ -534,7 +540,7 @@ Username&&isDropDownOpen&&(
 h-72  flex justify-center">
 <ul className='listProfile pt-3'>
 
-<li className='listProfile pt-1 text-xl'>Orders</li>
+<li className='listProfile pt-1 text-xl' onClick={handleOrders}>Orders</li>
 <li className='listProfile pt-1 text-xl'>Wishlist</li>
 <li className='listProfile pt-1 text-xl'>Gifts</li>
 {/* <li className='listProfile pt-1 text-xl flex' onClick={handleLogout}> Logout <img src={logoutPNG} className="h-6 pl-1"></img> */}
