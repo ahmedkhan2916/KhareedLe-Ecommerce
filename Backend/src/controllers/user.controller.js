@@ -140,9 +140,10 @@ const Login = async (req, res, next) => {
   }
 
   // Validate presence
-  if (!EMAILORPHONENO || !password) {
-    return res.status(402).json({ error: "Fill proper field(s)." });
-  }
+ if (!EMAILORPHONENO || !password) {
+  return res.status(400).json({ error: "Email or phone and password are required." });
+}
+
 
   if ([EMAILORPHONENO, password].some(field => !field || field.trim() === "")) {
     return res.status(400).json({
@@ -160,9 +161,9 @@ if (phonenumber) query.phonenumber = phonenumber; // insert phone number in quer
 
 const user = await User.findOne(query); // send query here
 
-    if (!user) {
-      throw new classErrorHandling("User Not Found", 402);
-    }
+   if (!user) {
+  throw new classErrorHandling("User Not Found", 404); // Or 401
+}
 
     // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
