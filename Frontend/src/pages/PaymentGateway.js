@@ -370,6 +370,7 @@ fetchTotalData();
 
     try{
 
+
 // write logic here
 
 const response=await axios.post(`${BASE_URL}/users/order-placed`,{UserID,totalPrice:total,status:"ordered",orderDate:new Date()});

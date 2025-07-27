@@ -7,6 +7,7 @@ import Inhand from "../assets/AI Images/inhand3.jpg";
 import "../assets/Style/Headings.css"
 import "../assets/Style/why.css"
 
+
 function Why() {
   return (
     <div className='whyContainerMain'>
