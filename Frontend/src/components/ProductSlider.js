@@ -68,7 +68,7 @@ function ProductSlider() {
   return (
 <div className="mt-10 overflow-x-auto scrollbar-hide relative z-0">
   <div className="flex space-x-4 px-4 py-2 snap-x snap-mandatory w-fit overflow-visible gap-16">
-    {products.map((item, index) => (
+    {Array.isArray(products) && products.map((item, index) => (
       <div
         key={item._id}
         data-id={item._id}
