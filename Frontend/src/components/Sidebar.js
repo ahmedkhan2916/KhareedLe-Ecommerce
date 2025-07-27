@@ -121,17 +121,22 @@ import {
   Gift,
 } from 'lucide-react';
 
+import {useNavigate} from "react-router-dom";
+
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const Username = localStorage.getItem("username");
+  const navigate=useNavigate();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
    const handleOrders=()=>{
   
-        // navigate("/users/my-orders");
+        navigate("/users/my-orders");
   
       }
+
+     
 
   return (
     <div className="relative z-50 ">
