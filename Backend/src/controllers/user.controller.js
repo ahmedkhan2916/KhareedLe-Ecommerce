@@ -1489,12 +1489,34 @@ try{
 
 }
 
+}
 
 
+const changeOrderStatus = async (req, res) => {
+  
+  const { orderID, status } = req.body;
 
+  console.log(orderID,status);
+
+  if (!orderID || !status ) {
+
+    return res.status(400).json({ message: "Order ID and new status are required." });
+
+  }
+
+
+  const changeDone=await OrderUser.findOneAndUpdate(
+      { orderID },
+      { $set: { status } },
+      { new: true } // returns the updated document
+    );
+  if (!changeDone) {
+    return res.status(500).json({ message: "Failed to update order status." });
+  }
+  return res.status(200).json({ message: "Order status updated successfully.", order: changeDone });
 
 
 }
 
 
-export { SignUp , Login , Logout , UploadPost , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch ,getProductIdFromCookies , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data };
+export { SignUp , Login , Logout , UploadPost , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch ,getProductIdFromCookies , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus };
