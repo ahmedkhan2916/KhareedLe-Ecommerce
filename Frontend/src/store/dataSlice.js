@@ -82,7 +82,7 @@ export const refreshToken = createAsyncThunk("auth/refreshToken", async (_, thun
       `${BASE_URL}/users/refresh-token-handler-access-token`,
       {}, // No body needed
        {
-        withCredentials: true, // ✅✅✅ IMPORTANT!!!
+        withCredentials: true, 
       }// Send cookies
     );
     return response.data.accessToken;

@@ -1465,7 +1465,7 @@ try{
  const userOrders = await OrderUser.find({
 
   UserID: UserID,
-  status: "ordered"
+  
 }).select('orderID orderDate status') // Optional: include only these fields.
   .populate('products.productId', 'product_name product_image price '); 
 
