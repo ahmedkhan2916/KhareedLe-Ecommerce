@@ -68,10 +68,10 @@ useEffect(()=>{
 
   if(token)
   {
-    
-
+  
 dispatch(fetchUserID(token)) //setting up accessToken in Redux
 setSignal(true);
+
   }
 
 

@@ -18,14 +18,18 @@ const verifyToken=async(req,res,next)=>{
   
 
     const token=authToken.split(" ")[1];
-  
+    
   console.log("splitttttttttttttt",token);
     try{
     
       const decoded=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+    
       
       console.log("decodeddddddddddddddd",decoded);
       req.user=decoded;
+      
+      console.log("before payment verification............................",decoded)
+
       next();
   
   

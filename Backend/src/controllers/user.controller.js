@@ -1408,7 +1408,7 @@ const order=await OrderUser.create({
     }
     catch(err)
     {
-       console.error("🔥 Error while placing order:", err); // See detailed error in console
+       console.error(" Error while placing order:", err); // See detailed error in console
   return res.status(500).json({ message: "Something went wrong", error: err.message });
     }
 }
@@ -1417,6 +1417,8 @@ const order=await OrderUser.create({
 
 const verify_user_payment = async (req, res) => {
   const { RAZR_PAY_ID_ } = req.body;
+
+  console.log("after varify token.........................................");
 
   try {
     if (!RAZR_PAY_ID_) {
@@ -1428,7 +1430,7 @@ const verify_user_payment = async (req, res) => {
       password: "bRnAC5G6JbHXknmWj8GDq0lz",
     };
 
-    let response = await axios.get(`https://api.razorpay.com/v1/payments/${RAZR_PAY_ID_}`, { auth });
+    let response = await axios.get(`https://api.razorpay.com/v1/payments/${ RAZR_PAY_ID_ }`, { auth });
 
     // Wait and retry if payment is not captured yet
     if (response.data.status !== "captured") {
@@ -1436,6 +1438,7 @@ const verify_user_payment = async (req, res) => {
       response = await axios.get(`https://api.razorpay.com/v1/payments/${RAZR_PAY_ID_}`, { auth });
     }
 
+    
     const paymentStatus = response.data.status;
 
     if (paymentStatus === "captured") {
@@ -1519,4 +1522,73 @@ const changeOrderStatus = async (req, res) => {
 }
 
 
-export { SignUp , Login , Logout , UploadPost , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch ,getProductIdFromCookies , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus };
+// const verify_User=async(req,res)=>{
+
+//   const authorization= req.headers.authorization?.split(" ")[1];
+
+//   if(!authorization)
+//   {
+//     res.send(400).json({message:"authorization not succeeded"});
+//   }
+
+//   const success=jwt.verify(authorization,process.env.ACCESS_TOKEN_SECRET)
+  
+
+
+
+
+
+
+
+// }
+
+
+const handle_Filter_Search=async (req,res) => {
+
+  const { Item_Name,Range_min,Range_max } = req.body;
+
+  console.log(Item_Name,Range_min,Range_max);
+
+try{
+
+  const filter={};
+
+ if (Item_Name) {
+  
+  filter.company_name = { $regex: Item_Name, $options: "i" };
+  // filter.product_name =  { $regex: Item_Name, $options: "i" };
+  console.log(filter);
+
+}
+
+
+
+if (Range_min && Range_max) {
+  filter.price = { 
+    $gte: Number(Range_min), 
+    $lte: Number(Range_max) 
+  }
+}
+
+   
+    const products = await ProductD.find(filter);
+
+    if(!products)
+    {
+      res.send(403).json({"message":"Sorry something error"});
+    }
+
+    res.json(products);
+
+  
+}
+
+    catch(error)
+    {
+       return res.json({"message":"something error in catch block"});
+    }
+
+}
+
+
+export { SignUp , Login , Logout , UploadPost , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch ,getProductIdFromCookies , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus , handle_Filter_Search};

@@ -320,6 +320,7 @@ const PaymentGateway = () => {
 
  const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
  const { totalBag,statusTotalBag,errorBagTotal,}=useSelector((state)=>state.fetchBagTotalStore);
+ const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
 
   const [selectedOption,setSelectedOption]=useState(null);
   const [visa,setVisa]=useState(false);
@@ -421,7 +422,16 @@ const handleCongrats=()=>{
  {
 
   try{
-  const response=await axios.post(`${BASE_URL}/users/verify-payment`, { RAZR_PAY_ID_ });
+const response = await axios.post(
+  `${BASE_URL}/users/verify-payment`,
+  { RAZR_PAY_ID_ }, 
+  {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}` 
+    }
+  }
+);
 
   if(response.data.success)
   {

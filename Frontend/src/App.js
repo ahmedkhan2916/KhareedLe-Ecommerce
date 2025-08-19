@@ -22,7 +22,10 @@ import CartPage from "./pages/New_Cart_Page_Design.js";
 import RazorpayButton from "./components/RazorpayButton.js";
 import GsapAnimation from './pages/GsapAnimation.js';
 import OrdersPage from "./pages/Orders.js";
+import ProtectedRoute from "../src/ProtectedRoute.js";
 import { increment, fetchBagData,refreshToken,fetchUserID} from './store/dataSlice.js';
+import FilterSearch from './components/FilterSearch.js';
+
 
 function App() {
 
@@ -90,14 +93,14 @@ function App() {
  <Route path="/" element={ <Home />} />
       <Route path="/users/login" element={<Login />} />
         {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/product/:id" element={<Purchasing_page />}/>
+        <Route path="/product/:id" element={<ProtectedRoute><Purchasing_page/></ProtectedRoute>}/>
         {/* <Route path="users/login" element={<Login/>}/> */}
         <Route path='users/signup' element={<Signup/>}></Route>
         <Route path='users/chatbot' element={<Chatbot/>}></Route>
         <Route path="users/customerreview" element={<CustomerReviews/>}></Route>
         <Route path="users/shipping" element={<ShippingAddress/>}></Route>
         <Route path="users/ferris" element={<FerrisWheel/>}></Route>
-        <Route path="users/address" element={<Address/>}></Route>
+        <Route path="users/address" element={<ProtectedRoute><Address/></ProtectedRoute>}></Route>
         <Route path="users/payment" element={<PaymentGateway/>}></Route>
         <Route path="users/completed" element={<CongratsPage/>}></Route>
         <Route path="users/confetti" element={<Confetti/>}> </Route>
@@ -105,6 +108,7 @@ function App() {
           <Route path="users/Razorpay" element={<RazorpayButton/>}> </Route>
           <Route path="users/Gsap" element={<GsapAnimation/>}> </Route>
            <Route path="users/my-orders" element={<OrdersPage/>}> </Route>
+           <Route path="users/filter" element={<FilterSearch/>}> </Route>
       </Routes>
       
 </Router>

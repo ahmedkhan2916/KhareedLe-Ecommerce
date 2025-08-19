@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { SignUp ,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment,handle_My_Ordered_Data,changeOrderStatus} from "../controllers/user.controller.js";
+import { SignUp ,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment,handle_My_Ordered_Data,changeOrderStatus, handle_Filter_Search} from "../controllers/user.controller.js";
 // import runSample from "../controllers/chatbotmodel.js"
 import verifyToken from "../middlewares/verifyToken.js"
 const router=Router();
@@ -36,8 +36,9 @@ router.route("/inc-dec-items").post(AddAndRemoveQuantity);
 router.route("/order-placed").post(handle_Users_Order);
 router.route("/create-order").post(RazorPay_Gateway_Integration);
 
-router.route("/verify-payment").post(verify_user_payment);
+router.route("/verify-payment").post(verifyToken,verify_user_payment);
 router.route("/fetch-Ordered-data").post(handle_My_Ordered_Data)
 router.route("/change-order-status").put(changeOrderStatus);
+router.route("/filter").post(handle_Filter_Search);
 
 export {router}
