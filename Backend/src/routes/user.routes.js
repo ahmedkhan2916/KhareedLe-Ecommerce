@@ -39,6 +39,6 @@ router.route("/create-order").post(RazorPay_Gateway_Integration);
 router.route("/verify-payment").post(verifyToken,verify_user_payment);
 router.route("/fetch-Ordered-data").post(handle_My_Ordered_Data)
 router.route("/change-order-status").put(changeOrderStatus);
-router.route("/filter").post(handle_Filter_Search);
+router.route("/filter").get(handle_Filter_Search);
 
 export {router}

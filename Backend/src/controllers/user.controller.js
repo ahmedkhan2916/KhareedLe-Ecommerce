@@ -38,6 +38,10 @@ return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn:"1d"});
 
 
 const algorithm = 'aes-256-cbc';
+
+if (!process.env.ENCRYPTION_KEY) {
+  throw new Error("ENCRYPTION_KEY is missing from environment variables");
+}
 const secretKey =  Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
 // Must be 32 bytes for aes-256
 const iv = crypto.randomBytes(16); // Initialization vector
@@ -1542,10 +1546,11 @@ const changeOrderStatus = async (req, res) => {
 
 // }
 
+//Filter Seearch Api to Search Data Which user want to search:
 
 const handle_Filter_Search=async (req,res) => {
 
-  const { Item_Name,Range_min,Range_max } = req.body;
+  const { Item_Name,Range_min,Range_max } = req.query;
 
   console.log(Item_Name,Range_min,Range_max);
 
@@ -1555,8 +1560,15 @@ try{
 
  if (Item_Name) {
   
-  filter.company_name = { $regex: Item_Name, $options: "i" };
+  // filter.company_name = { $regex: Item_Name, $options: "i" };
   // filter.product_name =  { $regex: Item_Name, $options: "i" };
+
+    filter.$or = [
+    { company_name: { $regex: Item_Name, $options: "i" } },
+    { product_name: { $regex: Item_Name, $options: "i" } }
+  ];
+
+
   console.log(filter);
 
 }
