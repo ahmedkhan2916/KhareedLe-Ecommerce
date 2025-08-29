@@ -91,8 +91,12 @@ const generateRefreshToken=(user)=>{
       console.log("im here");
       const existingUser = await User.findOne({ email });
 
+      console.log("user created....",existingUser)
+
       if (existingUser) {
+
         return res.status(409).json({ error: "Email already registered." });
+
       }
   
       // Hash the password
@@ -106,6 +110,8 @@ const generateRefreshToken=(user)=>{
         password,
         email,
       });
+
+      console.log("user created....",user)
   
       const createdUser = await User.findById(user._id).select("-password");
       if (!createdUser) {
@@ -114,7 +120,7 @@ const generateRefreshToken=(user)=>{
 
       res.status(201).json({
         message: "Signup successful!",
-        user: { firstname, lastname, email,phonenumber },
+        user: { firstname, lastname, email,phonenumber,password },
       });
     } catch (error) {
       console.error("Signup error:", error);
