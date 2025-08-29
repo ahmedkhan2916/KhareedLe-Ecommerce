@@ -321,6 +321,7 @@ const PaymentGateway = () => {
  const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
  const { totalBag,statusTotalBag,errorBagTotal,}=useSelector((state)=>state.fetchBagTotalStore);
  const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
+ const { filteredData, filterStatus,filterError  } = useSelector((state) => state.filteredData);
 
   const [selectedOption,setSelectedOption]=useState(null);
   const [visa,setVisa]=useState(false);
@@ -363,6 +364,9 @@ fetchTotalData();
 
 
   },[UserID])
+
+
+  
 
 
 
@@ -482,8 +486,10 @@ const response = await axios.post(
   const orderData = response.data
   
   console.log("orderData",orderData);
+
       const options = {
-        key: "rzp_test_wuFJ7sKk68vkn4", // Razorpay Test Key
+
+        key: "rzp_test_wuFJ7sKk68vkn4", //Razorpay Test Key
         amount: orderData.amount,
         currency: "INR",
         name: "Khareed Lay",
@@ -577,6 +583,7 @@ handleCongrats();
   }
 
 
+console.log("filtered dataaaaa>>>>",filteredData.data)
 
   return (
     <>

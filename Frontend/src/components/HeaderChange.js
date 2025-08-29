@@ -15,7 +15,7 @@ import cart from "../assets/images/HeaderLogos/cart.png";
 import user from "../assets/images/HeaderLogos/user.png";
 import arrayDown from "../assets/images/HeaderLogos/down.png"
 import menu from "../assets/images/HeaderLogos/menu-burger.png"
-import KhareedLeLogo from "../assets/BrandHeaderLogo/khareedlecanva2.png";
+import KhareedLeLogo from "../assets/images/HeaderLogos/khareedlay.png";
 // import MobileSidebar from '../layout/MobileSidebar.js';
 import axios from 'axios';
 import logoutPNG from "../assets/LoginLogos/logout.png"

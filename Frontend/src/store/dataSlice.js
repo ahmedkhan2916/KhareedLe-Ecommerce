@@ -172,6 +172,85 @@ export const changeButtonText= createAsyncThunk('quantityItemBag/changeButtonTex
   });
 
 
+  export const filteredDataFromFilterComp = createAsyncThunk('userFilterSearch/filteredDataFromFilterComp', async (params, thunkAPI) => {    
+
+  try{
+
+    const response = await axios.get(`${BASE_URL}/users/filter`, {params:params});
+    console.log("here is responsive data",response);
+    return response; // Return the updated text
+
+
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.status || 'Something went wrong');
+  }
+  });
+
+
+
+
+  export const filteredData=createSlice({
+
+
+  name:"filteredData",
+
+  initialState:{
+
+    filteredData:[],
+    filterStatus:"idle",
+    filterError:null
+
+  },
+
+  reducers:{
+
+    resetFilterData : (state)=>{
+
+      state.filteredData=null;
+      state.filterStatus="idle";
+      state.filterError=null;
+
+    },
+    
+
+
+  },
+
+  extraReducers:(builder)=>{
+
+    builder.addCase(filteredDataFromFilterComp.pending,(state)=>{
+
+
+      state.filterStatus="loading";
+      state.filterError=null;
+
+    })
+
+     .addCase(filteredDataFromFilterComp.fulfilled,(state,action)=>{
+
+      state.filterStatus="success";
+      state.filteredData=action.payload;
+
+
+
+
+
+    })
+    .addCase(filteredDataFromFilterComp.rejected,(state,action)=>{
+
+      state.filterStatus="failed";
+      state.filterError=action.payload;
+
+    });
+
+  },
+
+});
+
+
+
+
+
   export const changeButtonSlice = createSlice({
   name: 'changeButtonText',
   initialState: {
@@ -745,6 +824,9 @@ export const SignalBoolean = createSlice({
     }
   }
 });
+
+
+
 
 
 

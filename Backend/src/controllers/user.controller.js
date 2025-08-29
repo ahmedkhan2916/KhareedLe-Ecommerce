@@ -1552,7 +1552,7 @@ const handle_Filter_Search=async (req,res) => {
 
   const { Item_Name,Range_min,Range_max } = req.query;
 
-  console.log(Item_Name,Range_min,Range_max);
+  console.log("here is the dataaaaa",Item_Name,Range_min,Range_max);
 
 try{
 

@@ -17,7 +17,8 @@ import {
   fetchIDStoreReducer,
   fetchCartQty,
   fetchBagDataStore,
-  changeButtonTextStore
+  changeButtonTextStore,
+  filteredData,
 
 
 } from './dataSlice';
@@ -42,7 +43,8 @@ const store = configureStore({
     fetchProductQty: fetchCartQty,
     fetchBagTotalStore: fetchBagDataStore,
     quantityItemBag:quantityItemBagStore,
-    changeButtonText:changeButtonTextStore
+    changeButtonText:changeButtonTextStore,
+    filteredData:filteredData.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

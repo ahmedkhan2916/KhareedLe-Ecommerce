@@ -1,12 +1,18 @@
 import React,{useState} from 'react'
 import { Slider, Typography } from "@mui/material";
 import axios from "axios"
+import { filteredDataFromFilterComp } from '../store/dataSlice';
+import { useSelector,useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 function FilterSearch() {
 
 
   const [priceRange, setPriceRange] = useState([0, 50000]); // default range
   const [Item_Name,setName]=useState("");
+
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
 
   const handleChange = (event, newValue) => {
     setPriceRange(newValue);
@@ -28,15 +34,19 @@ function FilterSearch() {
     try{
 
 
-        const response = await axios.get("http://localhost:1000/users/filter", {
-      params: {
-        Item_Name,
-        Range_min,
-        Range_max,
-      },
-    });
+    //     const response = await axios.get("http://localhost:1000/users/filter", {
+    //   params: {
+    //     Item_Name,
+    //     Range_min,
+    //     Range_max,
+    //   },
+    // });
+const params={Item_Name,Range_min,Range_max};
 
-console.log("here is the params filtered  dataaaa>>>",response);
+dispatch(filteredDataFromFilterComp(params));
+navigate("/users/payment")
+
+// console.log("here is the params filtered  dataaaa>>>",response);
 
 
     }
@@ -53,7 +63,7 @@ console.log("here is the params filtered  dataaaa>>>",response);
 
   return (
     
-    <div>
+    <div className='FilterSearchComponentContainer w-1/4 '>
 
     <div className="searchByNameItem">
 
@@ -61,7 +71,7 @@ console.log("here is the params filtered  dataaaa>>>",response);
 
     </div>
 
-    <div style={{ padding: "20px" }} className="w-1/5 bg-gray-100">
+    <div style={{ padding: "20px" }} className="w-full bg-gray-100">
 
       <Typography variant="h6">Price Range</Typography>
       <Slider

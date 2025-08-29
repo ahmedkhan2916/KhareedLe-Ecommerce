@@ -25,6 +25,7 @@ import OrdersPage from "./pages/Orders.js";
 import ProtectedRoute from "../src/ProtectedRoute.js";
 import { increment, fetchBagData,refreshToken,fetchUserID} from './store/dataSlice.js';
 import FilterSearch from './components/FilterSearch.js';
+import FilteredByUserSearch from './pages/FilteredByUserSearch.js';
 
 
 function App() {
@@ -93,7 +94,7 @@ function App() {
  <Route path="/" element={ <Home />} />
       <Route path="/users/login" element={<Login />} />
         {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/product/:id" element={<ProtectedRoute><Purchasing_page/></ProtectedRoute>}/>
+        <Route path="/product/:id" element={<Purchasing_page/>}/>
         {/* <Route path="users/login" element={<Login/>}/> */}
         <Route path='users/signup' element={<Signup/>}></Route>
         <Route path='users/chatbot' element={<Chatbot/>}></Route>
@@ -109,6 +110,7 @@ function App() {
           <Route path="users/Gsap" element={<GsapAnimation/>}> </Route>
            <Route path="users/my-orders" element={<OrdersPage/>}> </Route>
            <Route path="users/filter" element={<FilterSearch/>}> </Route>
+           <Route path="users/filteredSearch" element={<FilteredByUserSearch/>}> </Route>
       </Routes>
       
 </Router>
