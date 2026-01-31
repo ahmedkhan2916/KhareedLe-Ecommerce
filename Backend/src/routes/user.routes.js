@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { SignUp ,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment,handle_My_Ordered_Data,changeOrderStatus, handle_Filter_Search} from "../controllers/user.controller.js";
+import { SignUp ,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment,handle_My_Ordered_Data,changeOrderStatus, handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin, SignUpAdmin, LoginAdmin} from "../controllers/user.controller.js";
 // import runSample from "../controllers/chatbotmodel.js"
 import verifyToken from "../middlewares/verifyToken.js"
 const router=Router();
@@ -9,6 +9,7 @@ router.route("/login").post(Login)
 router.route("/logout").post(Logout)
 router.route("/uploadpost").post(UploadPost);
 router.route("/getdata").get(getData);
+router.route("/getdataByCategory").get(getDataByItemCategory); //tommorow i will work on it create a route for it and create a good one use component for it.
 router.route("/postdetails").post(sendDataById);
 router.route("/update").get(update);
 router.route("/userreview").post(user_review);
@@ -40,5 +41,17 @@ router.route("/verify-payment").post(verifyToken,verify_user_payment);
 router.route("/fetch-Ordered-data").post(handle_My_Ordered_Data)
 router.route("/change-order-status").put(changeOrderStatus);
 router.route("/filter").get(handle_Filter_Search);
+
+
+
+
+
+
+//Admin Routes
+router.route("/DashboardData").get(DashboardDataAdmin);
+router.route("/signup-admin").post(SignUpAdmin);
+router.route("/login-admin").post(LoginAdmin);
+
+
 
 export {router}

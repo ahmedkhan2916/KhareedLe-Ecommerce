@@ -9,6 +9,7 @@ const ProtectedRoute = ({ children }) => {
   //accessing Token From Redux
   const token = useSelector((state) => state.userAuth.token);
  const navigate=useNavigate();
+ console.log("children is here",token);
 
  if (!token) {
     return <Navigate to="/users/login" replace />;
@@ -21,4 +22,4 @@ return children;
 
 
 
-export default ProtectedRoute;// export default ProtectedRoute;
+export default ProtectedRoute; // export default ProtectedRoute;

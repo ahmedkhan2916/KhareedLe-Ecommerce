@@ -18,6 +18,7 @@ import crypto from "crypto"
 import { v4 as uuidv4 } from 'uuid';  // Correct import
 import Razorpay from "razorpay";
 import axios from "axios";
+import { Admin } from "../models/admin.signup.js";
 
 const router=Router();
 
@@ -127,6 +128,158 @@ const generateRefreshToken=(user)=>{
       res.status(500).json({ error: "Internal server error." });
     }
   };
+
+
+
+  
+  const SignUpAdmin = async (req, res) => {
+
+    const { firstname, lastname, phonenumber, password, email } = req.body;
+  
+    // Validate input fields
+
+    console.log(firstname,lastname,phonenumber,password,email);
+
+  if (
+  !firstname?.trim() ||
+  !lastname?.trim() ||
+  !email?.trim() ||
+  !password?.trim() ||
+  !phonenumber
+) {
+  return res.status(400).json({ error: "All fields are required." });
+}
+
+ 
+    try {
+      // Check for existing user
+      console.log("im here");
+      const existingUser = await Admin.findOne({ email });
+
+      console.log("user created....",existingUser)
+
+      if (existingUser) {
+
+        return res.status(409).json({ error: "Email already registered." });
+
+      }
+  
+      // Hash the password
+      // const hashedPassword = await bcrypt.hash(password, 10);
+  
+      // Create user
+      const user = await Admin.create({
+        firstname,
+        lastname,
+        phonenumber,
+        password,
+        email,
+      });
+
+      console.log("user created....",user)
+  
+      const createdUser = await Admin.findById(user._id).select("-password");
+      if (!createdUser) {
+        return res.status(500).json({ error: "Error saving user data." });
+      }
+
+      res.status(201).json({
+        message: "Signup successful!",
+        user: { firstname, lastname, email,phonenumber,password },
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  };
+
+
+
+  const LoginAdmin= async (req, res, next) => {
+  const { EMAILORPHONENO, password } = req.body;
+
+  // Separate into email or phone number
+  let email = "";
+  let phonenumber = "";
+
+  if (EMAILORPHONENO) {
+    // If it contains only digits, treat as phone number
+    if (/^\d+$/.test(EMAILORPHONENO)) {
+      phonenumber = EMAILORPHONENO;
+    } else {
+      email = EMAILORPHONENO;
+    }
+  }
+
+  // Validate presence
+ if (!EMAILORPHONENO || !password) {
+  return res.status(400).json({ error: "Email or phone and password are required." });
+}
+
+
+  if ([EMAILORPHONENO, password].some(field => !field || field.trim() === "")) {
+    return res.status(400).json({
+      error: "Email or Phone Number and password are required."
+    });
+  }
+
+  try {
+    // Find user based on email or phone
+   let query = {};
+
+if (email) query.email = email;// insert email in query array
+
+if (phonenumber) query.phonenumber = phonenumber; // insert phone number in query array
+
+const user = await Admin.findOne(query); // send query here
+
+   if (!user) {
+  throw new classErrorHandling("User Not Found", 404); // Or 401
+}
+
+    // Validate password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid password." });
+    }
+
+    // Encrypt user ID
+    const ID = user._id.toString();
+    const encrypt = encryptIDS(ID);
+
+    // Generate tokens
+    const accessToken = generateAccessToken({ id: encrypt });
+    const refreshToken = generateRefreshToken({ id: encrypt });
+
+    // Store refresh token in DB
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    // Set cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // Success response
+    res.status(200).json({
+      message: "Login successful!",
+      accessToken,
+      user: {
+        id: encrypt,
+        name: user.firstname,
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
 
 
 // import bcrypt from 'bcrypt';
@@ -381,12 +534,13 @@ const testManuallyCookies=async(req,res)=>{
 
 
 
-const UploadPost=async (req,res)=>{
+const UploadPost= async(req,res) => {
 
-  const {company_name,product_name,price,product_details,product_image,rating,description}=req.body;
+  const {category,company_name,product_name,price,product_details,product_image,rating,description,quantity,inStock,mrp,sku}=req.body;
 
   const user=await ProductD.create({
 
+    category,
     company_name,
     product_name,
     price,
@@ -394,6 +548,11 @@ const UploadPost=async (req,res)=>{
     product_image,
     rating,
     description,
+    quantity,
+    inStock,
+    sku,
+    mrp,
+
 
   });
 
@@ -427,6 +586,21 @@ console.log("this is dataProduct",data);
 
 }
 
+const getDataByItemCategory=async(req,res)=>{
+
+  const {category_item}=req.query;
+
+  console.log("here is my dataaaaaa category",category_item);
+
+  const data=await ProductD.find({category:category_item});
+
+   if (!data || data.length === 0) {
+    return res.status(404).send("no data found sorry...!!!");
+  }
+console.log("this is dataProduct",data);
+  return res.json(data);
+
+}   //backend has ready tommorow component i will create...!!
 
 const sendDataById=async(req,res)=>{
 
@@ -1609,4 +1783,45 @@ if (Range_min && Range_max) {
 }
 
 
-export { SignUp , Login , Logout , UploadPost , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch ,getProductIdFromCookies , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus , handle_Filter_Search};
+// Admin Dashboard Backend Services
+
+
+
+const DashboardDataAdmin=async(req,res)=>{
+
+
+      const dashBoardData=await ProductD.find({},"product_name price quantity inStock");
+
+      if(!dashBoardData)
+      {
+        return "emptyy data";
+      }
+
+      return res.json(dashBoardData);
+ 
+
+}
+
+
+// under development
+const AdminLoginPage=async (req,res)=>{
+
+
+
+
+  const {AdminEmail,Password}=req.body;
+
+
+  if(!AdminEmail||!Password)
+  {
+    console.log("Error Data Insufficient Email or Password Empty");
+    return;
+  }
+
+}
+
+
+
+
+
+export { SignUp , Login , Logout , UploadPost , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch ,getProductIdFromCookies , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus , handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin,SignUpAdmin,LoginAdmin};

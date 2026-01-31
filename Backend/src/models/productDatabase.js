@@ -2,14 +2,32 @@ import  mongoose,{ Schema } from "mongoose"
 
 const ProductDetails=new Schema({
 
-    company_name:{
+    category:{
+        
         type:String,
         require:true,
+
+    },
+
+    company_name:{
+
+        type:String,
+        require:true,
+
     },
 
     product_name:{
+
         type:String,
         require:true,
+
+    },
+
+    mrp:{
+
+        type:Number,
+        require:true,
+
     },
 
     price:{
@@ -23,11 +41,14 @@ const ProductDetails=new Schema({
 
         type:String,
         require:true,
+
     },
 
     product_image:{
+
         type:String,
         require:true,
+
     },
 
     product_color:[
@@ -42,6 +63,13 @@ const ProductDetails=new Schema({
     ]
 }],
 
+sku:{
+
+    type:String,
+
+},
+
+
 //  isTrending: {
 //     type: Boolean,
 //     default: false,
@@ -55,15 +83,29 @@ const ProductDetails=new Schema({
 
 
     rating: {
+
         type: Number,
         default: 0, // Default value if not provided
+
       },
 
       description:{
 
         type:String,
 
-      }
+      },
+
+      quantity: {
+  type: Number,
+  required: true,
+  default: 0,
+  },
+
+  inStock: {
+  type: Boolean,
+  default: true,
+},
+
 
 },{ timestamps : true });
 

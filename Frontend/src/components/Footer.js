@@ -8,6 +8,7 @@ import upi from "../assets/Socialicons/upi.png";
 import visa from "../assets/Socialicons/visa.png";
 import master from "../assets/Socialicons/card.png";
 import ssl from "../assets/Socialicons/ssl2.png";
+import KhareedLeLogo from "../assets/images/HeaderLogos/arena3.png"; 
 
 function Footer() {
   return (
@@ -80,7 +81,7 @@ function Footer() {
       {/* Brand Logo + Social Icons */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 flex flex-col sm:flex-row justify-between items-center">
         <h1 className="text-3xl font-bold text-green-500">
-          KHAREEDLAY<span className="text-base align-top ml-1">®</span>
+          X <span className='text-white'>ARENA</span><span className="text-base align-top ml-1 text-white">®</span>
         </h1>
         <div className="flex gap-4 mt-4 sm:mt-0">
           <img src={Facebook} alt="Facebook" className="h-6" />
@@ -92,7 +93,7 @@ function Footer() {
 
       {/* Copyright */}
       <div className="text-center text-sm text-gray-400 py-4 border-t border-gray-700">
-        © 2024 KhareedLay Hub. All Rights Reserved.
+        © 2024 X-ARENA Hub. All Rights Reserved.
       </div>
     </footer>
   );

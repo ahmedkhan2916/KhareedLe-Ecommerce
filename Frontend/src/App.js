@@ -26,7 +26,14 @@ import ProtectedRoute from "../src/ProtectedRoute.js";
 import { increment, fetchBagData,refreshToken,fetchUserID} from './store/dataSlice.js';
 import FilterSearch from './components/FilterSearch.js';
 import FilteredByUserSearch from './pages/FilteredByUserSearch.js';
-
+import ProductCategoryClicked from './components/ProductCategoryClicked.js';
+import AdminDashboard from "./pages/Admin/AdminDashboard.js";
+import AdminProducts from "./pages/Admin/products.js"
+import SideBarAdDashboard from './pages/Admin/SideBarAdDashboard.js';
+import AddProductAdmin from "./pages/Admin/AddProductAdmin.js"
+import AdminAddProduct from './pages/Admin/AddProductAdmin.js';
+import VRSHOWROOM from "./pages/VirtualStore.js";
+import AdminLoginPage from './pages/Admin/AdminLoginPage.js';
 
 function App() {
 
@@ -111,6 +118,13 @@ function App() {
            <Route path="users/my-orders" element={<OrdersPage/>}> </Route>
            <Route path="users/filter" element={<FilterSearch/>}> </Route>
            <Route path="users/filteredSearch" element={<FilteredByUserSearch/>}> </Route>
+           <Route path="users/ProductByCategory" element={<ProductCategoryClicked/>}> </Route>
+            <Route path="users/admin-d" element={<SideBarAdDashboard/>}> </Route>
+            <Route path="users/adminproducts" element={<AdminProducts/>}> </Route>
+               <Route path="users/admindash" element={<AdminDashboard/>}> </Route>
+               <Route path="users/adminadd" element={<AdminAddProduct/>}> </Route>
+                <Route path="users/VR" element={<VRSHOWROOM/>}> </Route>
+                 <Route path="users/admin-login" element={<AdminLoginPage/>}> </Route>
       </Routes>
       
 </Router>

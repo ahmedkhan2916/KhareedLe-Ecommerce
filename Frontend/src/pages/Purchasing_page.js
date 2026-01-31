@@ -39,7 +39,6 @@ function Purchasing_page() {
   const totalBag = useSelector((state) => state.fetchBagTotalStore.totalBag);
   const buttonText = useSelector((state) => state.changeButtonText.buttonText);
   const statusButton=useSelector((state)=>state.changeButtonText.statusButtonText);
-
   const [productColors, setProductColors] = useState([]);
   const [color, setColor] = useState('');
   const [productSlice2, setProductSlice2] = useState({});
@@ -183,7 +182,7 @@ const handleMouseLeave = () => {
   return (
     <div className="bg-white min-h-screen">
       <Header />
-      <div className="pt-28 px-4 md:px-12 pt-36">
+      <div className="px-4 md:px-12 pt-36">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {isMobile ? (
             <ResponsiveImageSection productColors={productColors} selectedColor={color} />
@@ -204,7 +203,7 @@ const handleMouseLeave = () => {
                   ))
                 )}
   
-
+ 
             </div>
           )}
 

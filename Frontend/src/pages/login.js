@@ -35,7 +35,8 @@ import loginImage from "../assets/SignupImage/loginImage.jpg"
 import "../assets/Style/Headings.css"
 import { showTotalFuncHeader } from "../Services/apiService.js";
 import {BASE_URL} from "../config/config.js";
-
+import GELOGO from "../assets/images/HeaderLogos/geLogo.png"
+import GELOGO2 from "../assets/images/HeaderLogos/arena3.png"
 
 
  
@@ -193,9 +194,13 @@ const handleSetPHOREMAIL=(e)=>{
 
       {/* Left Section */}
       <div className="md:w-1/2 w-full flex flex-col items-center justify-center px-6 py-10 bg-gray-50">
-        <div className="flex items-center gap-2 mb-6">
-          <h1 className="text-3xl md:text-5xl font-bold HeadingPlayFair">KHAREED LAY</h1>
-          <img src={shoppingBag} alt="logo" className="h-10 md:h-14" />
+        <div className="flex items-center gap-2 mb-6 flex-col">
+          {/* <img src={GELOGO} alt="company logo" className='GELOGO h-24'></img> */}
+          <div className='GETEXTCONTAINER flex '>
+          {/* <h1 className="text-3xl md:text-5xl font-bold HeadingPlayFair">TechArena</h1> */}
+          <img src={GELOGO2}  className='GELOGO2 h-64'></img>
+          {/* <img src={shoppingBag} alt="logo" className="h-10 md:h-14" /> */}
+          </div>
         </div>
 
         <div className="w-24 h-24 overflow-hidden rounded-xl mb-4">
@@ -206,7 +211,7 @@ const handleSetPHOREMAIL=(e)=>{
           </div>
         </div>
 
-        <p className="text-center text-sm md:text-lg max-w-xs mb-4 text-gray-700">
+        <p className="text-center text-sm md:text-lg max-w-xs mb-4 bitcount-single-Nothing  text-gray-700">
           WELCOME TO OUR STORE – EXPLORE AMAZING PRODUCTS AT AMAZING PRICES. PLEASE LOGIN!
         </p>
 
@@ -225,8 +230,8 @@ const handleSetPHOREMAIL=(e)=>{
       {/* Right Section (Form) */}
       <div className="md:w-1/2 w-full flex items-center justify-center px-6 py-10">
         <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-xl">
-          <h2 className="text-3xl font-bold HeadingPlayFair mb-1 text-black text-center">Login</h2>
-          <p className="text-center text-gray-600 mb-6">Please enter your credentials to log in</p>
+          <h2 className="text-3xl font-bold HeadingPlayFair mb-1 text-black text-center bitcount-single-Nothing ">Login</h2>
+          <p className="text-center text-gray-600 mb-6 ">Please enter your credentials to log in</p>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <input
@@ -247,7 +252,7 @@ const handleSetPHOREMAIL=(e)=>{
             />
             <button
               type="submit"
-              className="w-full h-11 bg-black text-white rounded-md hover:bg-lime-400 hover:text-black font-semibold transition">
+              className="w-full h-11 bg-black text-white rounded-md  hover:bg-lime-400 hover:text-black font-semibold transition">
 
               Login
 
@@ -255,7 +260,7 @@ const handleSetPHOREMAIL=(e)=>{
             </button>
           </form>
 
-          <p className="text-center mt-6 text-green-600 underline cursor-pointer hover:text-red-500" onClick={() => navigate("/users/signup")}>
+          <p className="text-center mt-6 text-green-600 underline cursor-pointer bitcount-single-Nothing  hover:text-red-500 " onClick={() => navigate("/users/signup")}>
             Back to Signup Page
           </p>
         </div>

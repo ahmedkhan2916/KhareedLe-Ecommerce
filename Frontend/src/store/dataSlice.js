@@ -64,6 +64,26 @@ export const loginUser = createAsyncThunk(
 );
 
 
+
+
+export const loginAdmin = createAsyncThunk(
+  'auth/loginAdmin',
+  async (bodyData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/users/login-admin`, bodyData, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true, // for cookies
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+
+
 export const fetchReviewData = createAsyncThunk(
   'review/fetchReviewData',
   async (_, thunkAPI) => {
@@ -185,6 +205,52 @@ export const changeButtonText= createAsyncThunk('quantityItemBag/changeButtonTex
     return thunkAPI.rejectWithValue(error.response?.status || 'Something went wrong');
   }
   });
+
+
+   export const getDataAccCategory = createAsyncThunk('getDataAccordingly/getDataAccCategory', async ({ category }, thunkAPI) => {    
+
+  try{
+
+    const response = await axios.get(`${BASE_URL}/users/getdataByCategory`, {params: { category_item: category }});
+    console.log("here is responsive data",response);
+    return response; // Return the updated text
+
+
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.status || 'Something went wrong');
+  }
+  });
+
+
+  export const categorySlice = createSlice({
+  name: "category",
+  initialState: {
+    CategoryText:"",
+    CategoryData: [],
+    CategoryLoading: true,
+    CategoryrError: null,
+  },
+  reducers: {},
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(getDataAccCategory.pending, (state) => {
+        state.CategoryData = true;
+        state.CategoryrError = null;
+      })
+      .addCase(getDataAccCategory.fulfilled, (state, action) => {
+        state.CategoryLoading = false;
+        // `response.data` has the actual API data (axios wraps it inside `.data`)
+        state.CategoryData = action.payload.data;
+      })
+      .addCase(getDataAccCategory.rejected, (state, action) => {
+        state.CategoryLoading = false;
+        state.CategoryrError = action.payload || "Something went wrong";
+      });
+  },
+});
+
+
 
 
 
@@ -576,10 +642,11 @@ const dataSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchData.fulfilled, (state, action) => {
+
         state.loading = false;
         state.data =action.payload; // Set the array of objects from the API
         localStorage.setItem('apiData', JSON.stringify(action.payload));
-
+      
       })
       .addCase(fetchData.rejected, (state, action) => {
         state.loading = false;
@@ -674,6 +741,39 @@ const authSlice = createSlice({
         state.users = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Login failed";
+      });
+  },
+});
+
+
+
+
+const authLoginAdmin = createSlice({
+  name: 'authAdmin',
+  initialState: {
+    admin:null,
+    loadingadmin: false,
+    erroradmin: null,
+  },
+  reducers: {
+    logout: (state) => {
+      state.users = null;
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.admin = action.payload;
+      })
+      .addCase(loginAdmin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Login failed";
       });
@@ -830,6 +930,8 @@ export const SignalBoolean = createSlice({
 
 
 
+
+
 export default dataSlice.reducer;
 export const {setStatusCode}=statusCode.actions;
 export const {setUsername,setUserId}=setUser.actions;
@@ -857,3 +959,5 @@ export const quantityItemBagStore=quantityItemBagSlice.reducer;
 export const { resetButtonText } = changeButtonSlice.actions;
 export const changeButtonTextStore = changeButtonSlice.reducer;
 export const {logoutAccessTK}=access_Tok_Store.actions;//refreshToken dipatch logout function
+export const authAdminReducer= authLoginAdmin.reducer;
+

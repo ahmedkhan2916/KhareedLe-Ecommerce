@@ -252,7 +252,7 @@ const Cart = () => {
                     <h2 className="text-white text-xs">
                      
                     {
-  totalBag || 0
+  totalBag || 0 
 }
 
                      

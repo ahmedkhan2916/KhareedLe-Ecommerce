@@ -1,8 +1,54 @@
 import React from 'react'
 import "../assets/Style/shopbycat.css"
 import "../assets/Style/Headings.css"
+import { useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import {getDataAccCategory} from '../store/dataSlice.js';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function ShopByCategory() {
+
+    const dispatch=useDispatch();
+
+    const savedText = useSelector((state) => state.category);
+    const navigate = useNavigate();
+    
+
+
+   const handleCategory=(Category)=>{
+
+
+    alert("yesss")
+
+
+    if(Category==="Smartphone")
+    {
+        alert("yes i am inside")
+        dispatch(getDataAccCategory({ category: "Smartphone" }));
+        navigate("/users/ProductByCategory")
+
+        
+    }
+
+      else if(Category==="Gaming")
+    {
+        alert("yes i am inside")
+        dispatch(getDataAccCategory({ category: "Gaming" }));
+        navigate("/users/ProductByCategory")
+
+        
+    }
+
+
+
+
+   }
+
+
+   console.log("here is the savedDataaaaa",savedText)
+
+
   return (
     <>
     
@@ -24,9 +70,9 @@ function ShopByCategory() {
 
     <div className="cardsShop  flex flex-col items-center h-full w-full shadow-2xl rounded-xl justify-between ">
 
-        <div className="cardsHeading  pb-2">
+        <div className="cardsHeading  pb-2" >
 
-            <h2 className="text-xl  ">Smartphones</h2>
+            <h2 className="text-xl" >Smartphones</h2>
 
         </div>
 
@@ -38,7 +84,7 @@ function ShopByCategory() {
 
         <div className="cardsButton bg-red-500 hover:bg-green-500 rounded p-2 ">
 
-<button className="text-white">Explore Now</button>
+<button className="text-white" onClick={() => handleCategory("Smartphone")}>Explore Now</button>
 
         </div>
 
@@ -77,19 +123,19 @@ function ShopByCategory() {
 
 <div className="cardsHeading  pb-2">
 
-    <h2 className="text-xl  "> Gifts </h2>
+    <h2 className="text-xl  "> Gaming </h2>
 
 </div>
 
 <div className="cardsImage ">
 
-    <img  src="https://images.unsplash.com/photo-1734370590723-683dfcb13137?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGdpZnRzJTIwZWxlY3Ryb25pY3N8ZW58MHx8MHx8fDA%3D"></img>
+    <img  src="https://variety.com/wp-content/uploads/2024/09/Sony-PlayStation-Pro-5.png?w=1000&h=667&crop=1"></img>
 
 </div>
 
 <div className="cardsButton bg-red-500 hover:bg-green-500 rounded p-2">
 
-<button className="text-white">Explore Now</button>
+<button className="text-white" onClick={() => handleCategory("Gaming")}>Explore Now</button>
 
 </div>
 

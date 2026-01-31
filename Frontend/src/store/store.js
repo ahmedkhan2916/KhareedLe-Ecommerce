@@ -19,6 +19,8 @@ import {
   fetchBagDataStore,
   changeButtonTextStore,
   filteredData,
+  categorySlice,
+  authAdminReducer,
 
 
 } from './dataSlice';
@@ -45,6 +47,9 @@ const store = configureStore({
     quantityItemBag:quantityItemBagStore,
     changeButtonText:changeButtonTextStore,
     filteredData:filteredData.reducer,
+    category:categorySlice.reducer,
+    authAdmin:authAdminReducer,
+
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

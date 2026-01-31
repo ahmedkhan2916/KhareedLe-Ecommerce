@@ -76,17 +76,9 @@
 
 //     fetchOrderedData();
 
-
-
-
 //   }, [UserID]);
 
-
-
 // console.log("here is my Ordered Data",orderData);
-
-
-
 
 //   return (
 
@@ -139,14 +131,6 @@
 // }
 
 // export default Orders;
-
-
-
-
-
-
-
-
 
 import React, { useEffect, useState } from 'react';
 import Footer from "../components/Footer.js";

@@ -44,7 +44,7 @@ function FilterSearch() {
 const params={Item_Name,Range_min,Range_max};
 
 dispatch(filteredDataFromFilterComp(params));
-navigate("/users/payment")
+navigate("/users/filteredSearch")
 
 // console.log("here is the params filtered  dataaaa>>>",response);
 
@@ -66,8 +66,8 @@ navigate("/users/payment")
     <div className='FilterSearchComponentContainer w-1/4 '>
 
     <div className="searchByNameItem">
-
-    <input name="Search By Name"  placeholder="Search by Name"  value={Item_Name}  onChange={(e)=>setName(e.target.value)}/>
+    
+    <input className='h-10 w-10/12' name="Search By Name"  placeholder="Search by Name"  value={Item_Name}  onChange={(e)=>setName(e.target.value)}/>
 
     </div>
 
@@ -87,7 +87,7 @@ navigate("/users/payment")
       </Typography>
     </div>
 
-<button className='bg-red-400' onClick={handleSendFilterQuery}>Search</button>
+<button className='bg-green-400 h-10 w-10/12 rounded-xl hover:bg-purple-300' onClick={handleSendFilterQuery}>Search</button>
 
     </div>
   )

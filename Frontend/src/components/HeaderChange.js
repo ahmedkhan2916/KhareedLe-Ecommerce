@@ -15,7 +15,7 @@ import cart from "../assets/images/HeaderLogos/cart.png";
 import user from "../assets/images/HeaderLogos/user.png";
 import arrayDown from "../assets/images/HeaderLogos/down.png"
 import menu from "../assets/images/HeaderLogos/menu-burger.png"
-import KhareedLeLogo from "../assets/images/HeaderLogos/khareedlay.png";
+import KhareedLeLogo from "../assets/images/HeaderLogos/arena3.png";
 // import MobileSidebar from '../layout/MobileSidebar.js';
 import axios from 'axios';
 import logoutPNG from "../assets/LoginLogos/logout.png"
@@ -452,7 +452,7 @@ console.log(err);
 
 
 
-            <img src={KhareedLeLogo} className='logoHeader h-24 -mt-4 cursor-pointer sm:h-44' onClick={()=>navigate("/")}></img>
+            <img src={KhareedLeLogo} className='logoHeader h-20 -mt-4 cursor-pointer sm:h-24' onClick={()=>navigate("/")}></img>
 
         </div>
 
