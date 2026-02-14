@@ -34,7 +34,7 @@ import ProductPanel from "./productpanel/ProductPanel";
 
 
 
-function Store({ collidablesRef }) {
+function Store({ collidablesRef, maxAnisotropy }) {
 
 
 
@@ -103,6 +103,23 @@ function Store({ collidablesRef }) {
 
 
       child.userData.originalMaterial = child.material.clone();
+      if (maxAnisotropy && child.material) {
+        const texKeys = [
+          "map",
+          "normalMap",
+          "roughnessMap",
+          "metalnessMap",
+          "aoMap",
+          "emissiveMap",
+        ];
+        texKeys.forEach((key) => {
+          const tex = child.material[key];
+          if (tex) {
+            tex.anisotropy = maxAnisotropy;
+            tex.needsUpdate = true;
+          }
+        });
+      }
 
 
 
@@ -166,7 +183,7 @@ function Store({ collidablesRef }) {
 
 
 
-  }, [store, collidablesRef]);
+  }, [store, collidablesRef, maxAnisotropy]);
 
 
 
@@ -186,7 +203,14 @@ function Store({ collidablesRef }) {
 
 
 
-function Phone({ isActive, setIsActive, phoneRef, onToggle }) {
+function Phone({
+  isActive,
+  setIsActive,
+  phoneRef,
+  onToggle,
+  isMobileViewport,
+  maxAnisotropy,
+}) {
 
 
 
@@ -198,11 +222,18 @@ function Phone({ isActive, setIsActive, phoneRef, onToggle }) {
 
 
 
-  const basePosition = useMemo(() => new THREE.Vector3(16, 0.8, -16.5), []);
+  const basePosition = useMemo(
+    () => new THREE.Vector3(16, isMobileViewport ? 1.05 : 0.8, -16.5),
+    [isMobileViewport]
+  );
 
 
 
-  const baseScale = useMemo(() => new THREE.Vector3(1, 1, 1), []);
+  const baseScale = useMemo(
+    () =>
+      new THREE.Vector3(1, 1, 1).multiplyScalar(isMobileViewport ? 1.15 : 1),
+    [isMobileViewport]
+  );
 
 
 
@@ -263,6 +294,23 @@ function Phone({ isActive, setIsActive, phoneRef, onToggle }) {
 
 
       child.userData.productKey = "SamsungGalaxyS25";
+      if (maxAnisotropy && child.material) {
+        const texKeys = [
+          "map",
+          "normalMap",
+          "roughnessMap",
+          "metalnessMap",
+          "aoMap",
+          "emissiveMap",
+        ];
+        texKeys.forEach((key) => {
+          const tex = child.material[key];
+          if (tex) {
+            tex.anisotropy = maxAnisotropy;
+            tex.needsUpdate = true;
+          }
+        });
+      }
       if (!child.userData._origEmissive && child.material) {
         const mat = child.material;
         child.userData._origEmissive = mat.emissive ? mat.emissive.clone() : null;
@@ -275,7 +323,7 @@ function Phone({ isActive, setIsActive, phoneRef, onToggle }) {
 
 
 
-  }, [phone]);
+  }, [phone, maxAnisotropy]);
 
 
 
@@ -1057,6 +1105,27 @@ export default function VirtualShowroom() {
 
   const [isActive, setIsActive] = useState(false);
 
+  const [isMobileViewport, setIsMobileViewport] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth <= 768;
+  });
+
+  const [maxAnisotropy, setMaxAnisotropy] = useState(0);
+
+  const dpr = useMemo(() => {
+    if (typeof window === "undefined") return 1;
+    const cap = isMobileViewport ? 2.5 : 2;
+    return Math.min(window.devicePixelRatio || 1, cap);
+  }, [isMobileViewport]);
+
+  useEffect(() => {
+    const onResize = () => {
+      setIsMobileViewport(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
 
 
   const keysRef = useRef({ w: false, a: false, s: false, d: false });
@@ -1332,10 +1401,8 @@ export default function VirtualShowroom() {
 
 
           shadows
-
-
-
-          gl={{ antialias: true }}
+          dpr={dpr}
+          gl={{ antialias: true, powerPreference: "high-performance" }}
 
 
 
@@ -1364,6 +1431,7 @@ export default function VirtualShowroom() {
 
 
             gl.shadowMap.type = THREE.PCFSoftShadowMap;
+            setMaxAnisotropy(gl.capabilities.getMaxAnisotropy());
 
 
 
@@ -1599,7 +1667,10 @@ export default function VirtualShowroom() {
 
 
 
-            <Store collidablesRef={collidablesRef} />
+            <Store
+              collidablesRef={collidablesRef}
+              maxAnisotropy={maxAnisotropy}
+            />
 
 
 
@@ -1616,6 +1687,8 @@ export default function VirtualShowroom() {
 
 
               phoneRef={phoneRef}
+              isMobileViewport={isMobileViewport}
+              maxAnisotropy={maxAnisotropy}
 
 
 
