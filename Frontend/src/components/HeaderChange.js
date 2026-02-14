@@ -211,7 +211,10 @@ function Header() {
     }
     else{
       sethideSearchBar("flex");
-      setHideNavbar(1);
+      // Only collapse navbar on small screens
+      if (window.innerWidth < 640) {
+        setHideNavbar(1);
+      }
 
     
 
@@ -429,7 +432,7 @@ console.log(err);
       }
 
   return (
-    <div className={` headerContainer h-20 `} >
+    <div className={` headerContainer `} >
 
 <div
         className={`  fixed inset-y-0 left-0  bg-red-500 sm:bg-green-500 transform transition-transform duration-300 ease-in-out z-20 ${
@@ -439,24 +442,23 @@ console.log(err);
         {/* <MobileSidebar handleSidebar={handleSidebar} /> */}
       </div>
 
-    <div className='headerItemsContainer flex  justify-around h-full items-center  ' >
+    <div className='headerItemsContainer headerLayout flex justify-around h-full items-center' >
 
-<div className={`sideBarComponentContainer ${hideNavbar?'hidden':'block'} sm:hidden`}>
+<div className={`sideBarComponentContainer headerLeft ${hideNavbar?'hidden':'block'} sm:hidden`}>
 
 <Sidebar></Sidebar>
 
 </div>
 
 
-        <div className={`imageContainer ${hideNavbar?'hidden':'block'}  flex items-center rounded-full`} >
-
-
-
+        <div className={`imageContainer headerLogoWrap headerCenter ${hideNavbar?'hidden':'block'} flex items-center rounded-full`} >
+          <div className="headerLogoRow">
             <img src={KhareedLeLogo} className='logoHeader h-20 -mt-4 cursor-pointer sm:h-24' onClick={()=>navigate("/")}></img>
-
+         
+          </div>
         </div>
 
-        <div className='rightItemContainer text-sm flex w-fit  '>
+        <div className='rightItemContainer headerRight text-sm flex w-fit'>
             <div className={`Items2 rounded-full items-center w-max lg:pl-4 pr-4 cursor-pointer hidden hover:bg-green-100 sm:flex`}>
                 <img className='rightHeaderLogo h-5' src={headset}></img>
                 <p className='headerText pl-2 tracking-tight text-sm'>Contact us</p>
@@ -475,36 +477,33 @@ console.log(err);
                 </div>
             </div>
 
-            <Cart></Cart>
-
-            <div className='searchBar flex items-center w-4/12 '>
+            <div className='searchBar searchBarWrap searchDesktop flex items-center w-4/12 '>
   
-      <input type="text" className={`pl-7 placeholder:italic placeholder:text-base rounded-lg text-lg sm:text-2xl ${hideNavbar ? '' : 'w-0'} border-none sm:!border-2 sm:!border-black sm:w-96`} placeholder="Search...."
+      <input type="text" className={`searchInput pl-7 placeholder:italic placeholder:text-base text-lg sm:text-2xl ${hideNavbar ? '' : 'w-0'} sm:w-96`} placeholder="Search products..."
  onChange={handleSearchInput}></input>
 
-     <div className={`dropdownMenu absolute top-16 bg-gray-50 rounded-md w-56
-      h-72  ${hideSearchBar}  justify-center`}>
+     <div className={`searchResults absolute top-16 ${hideSearchBar} justify-center`}>
 
 <>
   {searchQuery.length > 0 ? (
     
-   
-    <ul className='block listProfile2 pt-3'>
+  
+    <ul className='searchResultsList block listProfile2 pt-3'>
 
       {searchQuery.map((company) =>{
       console.log("Company ID: ", company._id);
       
      return (
-        <li key={company._id} className='text-xl mt-2 border-solid border-red-500 hover:cursor-pointer' onClick={()=>handleRoute(company._id)}  >{company.product_name}</li>
+        <li key={company._id} className='searchResultItem text-xl mt-2 hover:cursor-pointer' onClick={()=>handleRoute(company._id)}  >{company.product_name}</li>
       )})}
     </ul>
   ) : (
-    <div></div>
+    <div className='searchEmpty'>No results</div>
   )}
 </>
 </div>
 
-      <img src={Search} className='w-7 absolute'  onClick={handleHideNavbar}></img>
+      <img src={Search} className='searchIcon w-7 absolute'  onClick={handleHideNavbar}></img>
       
       </div>
 
@@ -512,20 +511,25 @@ console.log(err);
 
         </div>
 
-        <div className="login items-center flex-col justify-center cursor-pointer relative hidden sm:flex"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
+           <div className="cartWrap cartNearLogo">
+              <Cart></Cart>
+            </div>
 
+        <div className="headerRightEnd  pr-10">
+          <div className="login profileWrap items-center flex-col justify-center cursor-pointer relative hidden sm:flex"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
+ 
 { Username ? (
   <>
-<div className='loginLogo'></div>
-<span>{Username}</span>
+<div className='loginLogo profileAvatar'></div>
+<span className="profileName">{Username}</span>
 </>
 )
 :
 (
 <>
 
-   <div className='loginLogo'></div>
-<button className="loginBtnNav bg-yellow-200 w-20 rounded mt-1" onClick={handleSubmit}>Login</button>
+   <div className='loginLogo profileAvatar'></div>
+<button className="loginBtnNav profileCta" onClick={handleSubmit}>Login</button>
 
 </>
 )}    
@@ -536,17 +540,23 @@ console.log(err);
 
 Username&&isDropDownOpen&&(
 
-<div className="dropdownMenu absolute top-16 bg-gray-50 rounded-md w-48
-h-72  flex justify-center">
-<ul className='listProfile pt-3'>
-
-<li className='listProfile pt-1 text-xl' onClick={handleOrders}>Orders</li>
-<li className='listProfile pt-1 text-xl'>Wishlist</li>
-<li className='listProfile pt-1 text-xl'>Gifts</li>
-{/* <li className='listProfile pt-1 text-xl flex' onClick={handleLogout}> Logout <img src={logoutPNG} className="h-6 pl-1"></img> */}
-<Logout></Logout>
-
-</ul>
+<div className="profileDropdown dropdownMenu absolute top-16 bg-gray-50 rounded-md w-56 flex justify-center">
+  <div className="profileDropdownInner">
+    <div className="profileHeader">
+      <div className="profileHeaderAvatar"></div>
+      <div>
+        <div className="profileHeaderName">{Username}</div>
+        <div className="profileHeaderMeta">Welcome back</div>
+      </div>
+    </div>
+    <ul className='listProfile pt-2'>
+      <li className='profileItem listProfile' onClick={handleOrders}>Orders</li>
+      <li className='profileItem listProfile'>Wishlist</li>
+      <li className='profileItem listProfile'>Gifts</li>
+      {/* <li className='listProfile pt-1 text-xl flex' onClick={handleLogout}> Logout <img src={logoutPNG} className="h-6 pl-1"></img> */}
+      <Logout></Logout>
+    </ul>
+  </div>
 </div>
 
 
@@ -555,6 +565,39 @@ h-72  flex justify-center">
 }
 
 </div>
+
+        </div>
+
+        <div className="searchBar searchBarWrap searchMobile sm:hidden">
+          <input
+            type="text"
+            className="searchInput pl-7 placeholder:italic placeholder:text-base text-lg"
+            placeholder="Search products..."
+            onChange={handleSearchInput}
+          ></input>
+          <div className={`searchResults absolute top-12 ${hideSearchBar} justify-center`}>
+            <>
+              {searchQuery.length > 0 ? (
+                <ul className="searchResultsList block listProfile2 pt-3">
+                  {searchQuery.map((company) => {
+                    return (
+                      <li
+                        key={company._id}
+                        className="searchResultItem text-xl mt-2 hover:cursor-pointer"
+                        onClick={() => handleRoute(company._id)}
+                      >
+                        {company.product_name}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <div className="searchEmpty">No results</div>
+              )}
+            </>
+          </div>
+          <img src={Search} className="searchIcon w-7 absolute" onClick={handleHideNavbar}></img>
+        </div>
 
 
     </div>

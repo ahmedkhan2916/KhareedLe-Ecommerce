@@ -829,7 +829,7 @@ const updateProductImage=async (req,res)=>{
 
   try{
 
-    const product= await ProductD.findById('6862c232cd5edf03c44e75e6');
+    const product= await ProductD.findById('69837e00131d969894673482');
 
     if(product)
     {
@@ -837,15 +837,15 @@ const updateProductImage=async (req,res)=>{
       product.product_color=[
 
         {
-          color:"Black",
+          color:"Orange",
 
           image_urls:[
 
-            "https://mobilex.co.in/wp-content/uploads/2024/11/iPhone-16-Pro-Max-Black-Titanium-2.png",
+            "https://www.designinfo.in/wp-content/uploads/2025/09/Apple-iPhone-17-Pro.webp",
 
-           "https://images.hindustantimes.com/tech/img/2024/03/26/1600x900/thai-nguyen-fw_KhcwHmlY-unsplash_1694685777617_1711449496577.jpg",
+           "https://photos5.appleinsider.com/gallery/65450-136950-65239-136382-IMG_3643-xl-xl.jpg",
 
-           "https://i.ytimg.com/vi/I2mZlKQCR2M/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCwr7e5DEtRg8tU7GRinLWLznCZTw",
+           "https://substackcdn.com/image/fetch/$s_!s4E9!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb85847f6-b5fc-4c87-9981-483ea60df09d_2400x1350.jpeg",
 
            
 
@@ -856,36 +856,22 @@ const updateProductImage=async (req,res)=>{
 
 
         {
-          color:`Titanium`,
+          color:`white`,
 
           image_urls:[
 
-            "https://i.ytimg.com/vi/inSnvpLfm_E/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBA7iGcMKndp4yCyz5paMDhaDwlAQ",
+            "https://static0.pocketlintimages.com/wordpress/wp-content/uploads/wm/2025/09/iphone-17-pro-header-final.jpg?w=1600&h=900&fit=crop",
 
-            "https://www.digitaltrends.com/wp-content/uploads/2024/10/iphone-16-pro-max-desert-titanium-review-8.jpg?p=1",
+            "https://i.ytimg.com/vi/cUwyBf8vafE/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAukDy6woDjSvoEZdJsXSCyrKYuLw",
 
-            "https://www.gizmochina.com/wp-content/uploads/2024/09/Caviar-iPhone-16-Pro-Art-and-Gold-Collection.jpg"
+            "https://i.ytimg.com/vi/K4sRf2vwLwc/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBBAwoi8S9FyxmTh52r019o-4wzpQ"
 
 
           ]
 
         },
 
-        {
-          color:"White",
-
-          image_urls:[
-
-            "https://iplanet.one/cdn/shop/files/iPhone_16_Pro_White_Titanium_PDP_Image_Position_1__en-IN_07d55633-9fdd-41a0-8d37-95767bb7df5a.jpg?v=1727249902",
-
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFd4L2iYPwE7ZUySCgpxX8JySBtaDaL6QvgQ&s",
-
-            "https://photos5.appleinsider.com/gallery/61162-126344-iPhone-16-Pro-White-Titanium-xl.jpg"
-
-
-          ]
-
-        }
+  
 
       ]
 
@@ -979,18 +965,23 @@ const chatbotResponse=async(req,res)=>{
   //   const user = await User.findById(userId);
   // }
   // console.log("ServerSide",userId,productId);
+
+  console.log("here is backend userId and productId and Signal",userId,productId,Signal);
+
     if(Signal)
   {
+
     const Empty_Call=await User.findByIdAndUpdate(userId, { $set: { bag: [] } });
     return res.status(200).json({ message: "Order has been placed successfully and bag emptied." });
 
   }
-
+  
 
    const user = await User.findById(userId);
    const recieve=user.bag.findIndex((item) => item.productId?.toString() === productId?.toString());
    console.log("yes this is hrer",recieve);
 
+  
   if( recieve>-1 )
   {
     console.log("yes you inside this function");

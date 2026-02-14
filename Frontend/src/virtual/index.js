@@ -1,4 +1,4 @@
-export { default as VirtualShowroom } from "../virtual/VirtualShowroom.js";
+export { default as VirtualShowroom } from "./VirtualShowroom";
 
 
 

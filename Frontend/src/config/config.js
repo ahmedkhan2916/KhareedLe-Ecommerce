@@ -1,4 +1,4 @@
-const dev = false //Switch to false for production
+const dev = true //Switch to false for production
 
 
 export const BASE_URL = dev

@@ -13,7 +13,7 @@ import MostSearchedSP from "./MostSearchedSP.js";
 import NewArrival from './NewArrival.js';
 import ShopByCategory from './ShopByCategory.js';
 import { useSelector } from 'react-redux';
-import {useLocation} from "react-router-dom"
+import {useLocation,useNavigate} from "react-router-dom"
 import Welcome from "./Welcome.js"
 import "../assets/Style/Headings.css";
 import GamingConsoleSection from './GamingConsoleSection.js';
@@ -21,6 +21,7 @@ import GamingConsoleSection from './GamingConsoleSection.js';
 function Home() {
 
   const location =useLocation();
+  const Navigate= useNavigate();
   
   // const [userS,setUserS]=useState([])
   const dataSearched=useSelector((state)=>state.products.items);
@@ -31,6 +32,17 @@ function Home() {
   //   console.log(dataSearched);
 
   // },dataSearched)
+
+  const handleVr = ()=>{
+
+
+  Navigate("/users/VR")
+
+
+
+
+
+  }
 
   const {user}=location.state || false;
   console.log("this data is user",user);
@@ -43,7 +55,7 @@ function Home() {
 {
   showWelcome ?(<Welcome onFinish={()=>setShowWelcome(false)}></Welcome>):
   (
-    <div className="Home w-screen overflow-hidden">
+    <div className="Home w-screen overflow-x-hidden overflow-y-visible relative isolate">
 
       {/* { log ? (
                        <Signup></Signup>
@@ -60,13 +72,15 @@ function Home() {
 
   
 
-    <div className='smartphoneContainer pt-40 z-0'>
-      <div className="smartphoneHeading flex justify-center z-0">
+    <div className='smartphoneContainer pt-40 relative z-30 overflow-visible'>
+      <div className="smartphoneHeading flex justify-center">
 
     <h1 className='text-3xl bitcount-single-Nothing sm:text-4xl '>PowerFull Smartphones</h1>
     
     </div>
     <ProductSlider></ProductSlider>
+
+    <button className='3dButton' onClick={handleVr}>Click me to Explore 3D shopping</button>
     </div>
 
     
@@ -76,16 +90,18 @@ function Home() {
 
 
     } */}
-    <Specification></Specification>
-    <ExploreContainer></ExploreContainer>
-    <Why></Why>
-    {/* <NewArrival></NewArrival> */}
+    <div className="relative z-0">
+      <Specification></Specification>
+      <ExploreContainer></ExploreContainer>
+      <Why></Why>
+      {/* <NewArrival></NewArrival> */}
 
-    <ShopByCategory></ShopByCategory>
-    <GameConsole></GameConsole>
-    <GamingConsoleSection></GamingConsoleSection>
-    <MostSearchedSP></MostSearchedSP>
-    <Footer></Footer>
+      <ShopByCategory></ShopByCategory>
+      <GameConsole></GameConsole>
+      <GamingConsoleSection></GamingConsoleSection>
+      <MostSearchedSP></MostSearchedSP>
+      <Footer></Footer>
+    </div>
     
   
 

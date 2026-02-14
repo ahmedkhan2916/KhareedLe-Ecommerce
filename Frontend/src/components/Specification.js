@@ -14,7 +14,7 @@ function Specification() {
 
   return (
 
-    <div className='mainCont pl-8 pt-16 '>
+    <div className='mainCont pl-8 pt-16 relative z-0'>
 
         <div className='heading pb-9 flex justify-center'>
             <h2 className='text-4xl HeadingPlayFair'>Popular Brands</h2>

@@ -1,6 +1,7 @@
 import React from 'react'
+import "../../assets/Style/adminSidebar.css";
 import { LayoutDashboard, Package, PlusCircle, Settings, LogOut } from "lucide-react";
-import GELOGO2 from "../../assets/images/HeaderLogos/geLogo4.png"
+import XARENA from "../../assets/images/HeaderLogos/arena3.png"
 import { useNavigate,useLocation } from 'react-router-dom';
 import { useState ,useEffect} from 'react';
 
@@ -75,84 +76,57 @@ navigate("/users/adminadd")
 
 
 
-
   return (
-    <div className=' bg-green-700 h-full w-max'>
-        <div className='mainSidebarContainer bg-cyan-950 h-screen w-full flex flex-col justify-evenly text-center'>
-
-<div className='topTextSideBar text-white flex items-center flex-col'>
-
-  <img src={GELOGO2}  className='GELOGO2 h-28'></img>
-    <h1 className='text-sm bitcount-single-Nothing  '>TECHARENA — Smart Shopping, Fast Living</h1> 
-
-</div>
-
-
-<div className='topDiv flex flex-col justify-evenly  h-60 text-center'>
-
-    <div className='sideItemButtons text-white '>
-      
-        <button className={`btnADashboard p-3 w-3/4  rounded-lg inline-flex hover:bg-green-600 items-center bitcount-single-Nothing ${
-              activeTab === "dashboard" ? "bg-green-400 text-black" : "hover:bg-gray-700"
-            }`} onClick={()=>(handleRoutes("dashboard"))}>   <LayoutDashboard size={20} className='mr-1'/>   Dashboard</button>
-
-    </div>
-
-       <div  className='sideItemButtons text-white'>
-
-            <button className={`btnADashboard p-3 w-3/4  rounded-lg inline-flex hover:bg-green-600 items-center bitcount-single-Nothing ${
-              activeTab === "Products" ? "bg-green-400 text-black" : "hover:bg-gray-700"
-            }`}  onClick={()=>(handleRoutes("Products"))}> <Package size={20} className='mr-1'/>Products</button>
-
-       </div>
-
-
-       <div  className='sideItemButtons text-white'>
-
-<button className={`btnADashboard p-3 w-3/4  rounded-lg inline-flex hover:bg-green-600 items-center bitcount-single-Nothing ${
-              activeTab === "add" ? "bg-green-400 text-black" : "hover:bg-gray-700"
-            }`}  onClick={()=>(handleRoutes("add"))}> <PlusCircle size={20} className='mr-1'/>Add Products</button>
-
-    </div>
-
-
-       <div className='sideItemButtons text-white'>
-
-<button className='btnADashboard p-3 w-3/4  rounded-lg inline-flex hover:bg-green-600 items-center bitcount-single-Nothing'> <Settings size={20} className='mr-1'/>Settings</button>
-
-    </div>
-
-
-
-</div>
-
-
-
-
-{/* bottom item button */}
-
-
-    <div className='bottomDiv'>
-
-           <div className='sideItemButtons text-white'>
-
-                <button className='btnADashboard p-3 w-3/4  rounded-lg inline-flex hover:bg-green-600 bitcount-single-Nothing'> <LogOut size={20} className='mr-1'/>Logout</button>
-
-           </div>
-
-
-
-    </div>
-
-
-
-
-
-
-
+    <aside className="admin-sidebar">
+      <div className="admin-sidebar__glow" />
+      <div className="admin-sidebar__inner">
+        <div className="admin-sidebar__brand">
+          <img src={XARENA} className="admin-sidebar__logo" alt="X Arena" />
+          <div>
+            <p className="admin-sidebar__brand-title">Techarena Admin</p>
+            <p className="admin-sidebar__brand-sub">Smart Shopping, Fast Living</p>
+          </div>
         </div>
 
-    </div>
+        <nav className="admin-sidebar__nav">
+          <button
+            className={`admin-sidebar__item ${activeTab === "dashboard" ? "admin-sidebar__item--active" : ""}`}
+            onClick={() => (handleRoutes("dashboard"))}
+          >
+            <LayoutDashboard size={18} />
+            Dashboard
+          </button>
+
+          <button
+            className={`admin-sidebar__item ${activeTab === "Products" ? "admin-sidebar__item--active" : ""}`}
+            onClick={() => (handleRoutes("Products"))}
+          >
+            <Package size={18} />
+            Products
+          </button>
+
+          <button
+            className={`admin-sidebar__item ${activeTab === "add" ? "admin-sidebar__item--active" : ""}`}
+            onClick={() => (handleRoutes("add"))}
+          >
+            <PlusCircle size={18} />
+            Add Products
+          </button>
+
+          <button className="admin-sidebar__item">
+            <Settings size={18} />
+            Settings
+          </button>
+        </nav>
+
+        <div className="admin-sidebar__footer">
+          <button className="admin-sidebar__item admin-sidebar__item--ghost">
+            <LogOut size={18} />
+            Logout
+          </button>
+        </div>
+      </div>
+    </aside>
   )
 }
 

@@ -139,8 +139,8 @@ useEffect(() => {
   const handleAddtoCart = () => {
     if (!token) return navigate('/users/login');
     dispatch(resetButtonText());
-    // setButtonClick2(false);
-    dispatch(fetchAddToBag({ userId: UserID, productId: id, Signal: false }));
+    // setButtonClick2(false);   
+    dispatch(fetchAddToBag({ userId: UserID, productId: id, Signal: false }));//use this logic same there in VR LOGIC 
     dispatch(changeButtonText({ userId: UserID, productId: id }));
     setButtonClick2(true);
     dispatch(fetchBagTotal2({ ID: UserID }));

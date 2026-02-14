@@ -6,9 +6,212 @@ input{
     text-align: left;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
+
 .formContainer{
     box-shadow: rgb(28, 2, 39) 0px 20px 30px -10px;
     animation: swing 7s ease-in-out infinite;
+}
+
+.loginCard {
+    position: relative;
+    box-shadow: 0 12px 40px rgba(2, 8, 23, 0.18);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.loginCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 60px rgba(2, 8, 23, 0.28);
+    border-color: rgba(16, 185, 129, 0.25);
+}
+
+.loginHeading {
+    background: linear-gradient(90deg, #0f172a 0%, #10b981 45%, #22c55e 60%, #0f172a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 200% 100%;
+    animation: shimmer 3.2s ease-in-out infinite;
+    letter-spacing: 0.4px;
+}
+
+.loginSubheading {
+    opacity: 0.9;
+    animation: fadeUp 700ms ease;
+}
+
+.loginLeftPanel {
+    position: relative;
+    background: linear-gradient(140deg, #f8fafc 0%, #ecfdf5 50%, #f0f9ff 100%);
+    overflow: hidden;
+}
+
+.loginLeftPanel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.18), transparent 42%),
+        radial-gradient(circle at 80% 30%, rgba(56, 189, 248, 0.22), transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(15, 23, 42, 0.10), transparent 45%);
+    pointer-events: none;
+}
+
+.loginLeftPanel > * {
+    position: relative;
+    z-index: 1;
+}
+
+.loginIconTile {
+    background: rgba(255, 255, 255, 0.75);
+    /* box-shadow: 0 10px 30px rgba(2, 8, 23, 0.15); */
+    /* border: 1px solid rgba(15, 23, 42, 0.08); */
+}
+
+.loginLeftHeading {
+    font-family: "Rajdhani", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #0f172a;
+    text-shadow: 0 6px 18px rgba(2, 8, 23, 0.15);
+    animation: fadeUp 700ms ease;
+}
+
+.loginHeadingBadge {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 10px 24px rgba(2, 8, 23, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+
+.loginHeadingText {
+    color: transparent;
+    display: inline-block;
+    white-space: nowrap;
+    background: linear-gradient(
+        120deg,
+        rgba(16, 185, 129, 0.95) 0%,
+        rgba(212, 175, 55, 0.95) 55%,
+        rgba(15, 23, 42, 0.95) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.loginHeadingChar {
+    display: inline-block;
+}
+
+.loginHeadingBadge::before,
+.loginHeadingBadge::after {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Rajdhani", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+.loginHeadingBadge::before {
+    /* content: "X"; */
+    font-size: 18px;
+    color: rgba(16, 185, 129, 0.9);
+    transform: translateX(-18px);
+}
+
+.loginHeadingBadge::after {
+    /* content: "ARENA"; */
+    font-size: 12px;
+    color: rgba(15, 23, 42, 0.9);
+    transform: translateX(10px);
+}
+
+.loginHeadingBadge > * {
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 768px) {
+    .loginHeadingBadge {
+        box-shadow: none;
+        /* border-color: rgba(15, 23, 42, 0.08); */
+        border:none;
+        background: transparent;
+    }
+}
+
+.loginLeftSub {
+    color: rgba(15, 23, 42, 0.78);
+    text-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+}
+
+.loginBadge {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #0f172a;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    box-shadow: 0 8px 18px rgba(2, 8, 23, 0.12);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.loginBadge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(2, 8, 23, 0.18);
+}
+
+.loginSocialRow img {
+    transition: transform 200ms ease, filter 200ms ease;
+    filter: drop-shadow(0 6px 12px rgba(2, 8, 23, 0.2));
+}
+
+.loginSocialRow img:hover {
+    transform: translateY(-2px) scale(1.05);
+    filter: drop-shadow(0 10px 18px rgba(16, 185, 129, 0.3));
+}
+
+.loginButton {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(120deg, #0f172a 0%, #16a34a 45%, #22c55e 55%, #0f172a 100%);
+    background-size: 220% 100%;
+    color: #ffffff;
+    animation: floatGlow 3.5s ease-in-out infinite, buttonFlow 4s ease-in-out infinite;
+}
+
+@keyframes floatGlow {
+    0% { transform: translateY(0); box-shadow: 0 10px 18px rgba(2, 8, 23, 0.18); }
+    50% { transform: translateY(-2px); box-shadow: 0 16px 26px rgba(16, 185, 129, 0.35); }
+    100% { transform: translateY(0); box-shadow: 0 10px 18px rgba(2, 8, 23, 0.18); }
+}
+
+@keyframes buttonFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 .loginContainer::before {
@@ -26,13 +229,12 @@ input{
     position: relative;
     z-index: 2; /* Place child content above the overlay */
   }
-
 @keyframes swing{
 
     0% { transform: translateY(0); }
-    25% { transform: translateY(-10px); } /* Move up */
-    50% { transform: translateY(0); }     /* Back to original position */
-    75% { transform: translateY(10px); }  /* Move down */
-    100% { transform: translateY(0); }    /* Back to original position */
+    25% { transform: translateY(-10px); }
+    50% { transform: translateY(0); }
+    75% { transform: translateY(10px); }
+    100% { transform: translateY(0); }
 
 }

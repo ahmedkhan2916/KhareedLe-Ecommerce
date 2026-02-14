@@ -103,10 +103,6 @@ useEffect(()=>{
 // },UserID)
 
 
-
-
-
-
 useEffect(() => {
   if (users && users.user && users.accessToken) {
 
@@ -117,11 +113,9 @@ useEffect(() => {
     dispatch(setUsername(users.user.name));
     // dispatch(fetchBagData(users.user.id));
     dispatch(refreshToken())
-    
 
     // dispatch(fetchBagTotal2(users.user.id));
   
-   
  
   }
 }, [users]);
@@ -193,34 +187,65 @@ const handleSetPHOREMAIL=(e)=>{
     <div className="w-full min-h-screen bg-white flex flex-col md:flex-row overflow-hidden">
 
       {/* Left Section */}
-      <div className="md:w-1/2 w-full flex flex-col items-center justify-center px-6 py-10 bg-gray-50">
+      <div className="md:w-1/2 w-full flex flex-col items-center justify-center px-6 py-10 loginLeftPanel">
         <div className="flex items-center gap-2 mb-6 flex-col">
           {/* <img src={GELOGO} alt="company logo" className='GELOGO h-24'></img> */}
-          <div className='GETEXTCONTAINER flex '>
+          <div className='GETEXTCONTAINER flex'>
           {/* <h1 className="text-3xl md:text-5xl font-bold HeadingPlayFair">TechArena</h1> */}
           <img src={GELOGO2}  className='GELOGO2 h-64'></img>
           {/* <img src={shoppingBag} alt="logo" className="h-10 md:h-14" /> */}
           </div>
         </div>
 
-        <div className="w-24 h-24 overflow-hidden rounded-xl mb-4">
-          <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-            {imgArray.map((img, i) => (
-              <img key={i} src={img} alt="icon" className="h-24 min-w-full object-contain" />
-            ))}
-          </div>
-        </div>
-
-        <p className="text-center text-sm md:text-lg max-w-xs mb-4 bitcount-single-Nothing  text-gray-700">
-          WELCOME TO OUR STORE – EXPLORE AMAZING PRODUCTS AT AMAZING PRICES. PLEASE LOGIN!
+        <h3 className="text-center text-2xl md:text-3xl font-bold mb-2 loginLeftHeading">
+          <span className="inline-flex items-center gap-2 loginHeadingBadge flex-col md:flex-row">
+            <svg
+              className="w-10 h-10"
+              viewBox="0 0 64 64"
+              fill="none"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="vrGradient" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#00d4ff" />
+                  <stop offset="50%" stopColor="#8b5cf6" />
+                  <stop offset="100%" stopColor="#f59e0b" />
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="26" stroke="url(#vrGradient)" strokeWidth="4" />
+              <path d="M14 32h14l4 12 4-12h14" stroke="url(#vrGradient)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M42 20h8c5 0 8 3 8 8s-3 8-8 8h-8" stroke="url(#vrGradient)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="loginHeadingText" aria-label="Step Into The 3D/VR Storefront">
+              {"Step Into The 3D/VR Storefront".split("").map((ch, i) => (
+                <span
+                  key={i}
+                  className="loginHeadingChar"
+                  style={{ "--i": i }}
+                >
+                  {ch === " " ? "\u00A0" : ch}
+                </span>
+              ))}
+            </span>
+          </span>
+        </h3>
+        <p className="text-center text-sm md:text-lg max-w-md mb-4 font-semibold loginLeftSub">
+          Welcome to X ARENA — Where innovation meets shopping. Dive into our immersive 3D and VR-powered store, explore products from every angle, and enjoy exclusive offers tailored for you. Log in and enter the future of retail.
         </p>
+        
+
+        <div className="flex gap-3 mb-5">
+          <span className="loginBadge">360Â° View</span>
+          <span className="loginBadge">VR Ready</span>
+          <span className="loginBadge">Fast Checkout</span>
+        </div>
 
         {/* <div className="text-center text-sm mb-4 text-black">
           <p className="underline hover:text-green-600 cursor-pointer">+91-8882066763</p>
           <p className="underline hover:text-green-600 cursor-pointer">+91-8882066555</p>
         </div> */}
 
-        <div className="flex gap-5">
+        <div className="flex gap-5 loginSocialRow">
           <img src={Whatsapp} alt="whatsapp" className="h-6 cursor-pointer" />
           <img src={Instagram} alt="instagram" className="h-6 cursor-pointer" />
           <img src={Facebook} alt="facebook" className="h-6 cursor-pointer" />
@@ -229,10 +254,18 @@ const handleSetPHOREMAIL=(e)=>{
 
       {/* Right Section (Form) */}
       <div className="md:w-1/2 w-full flex items-center justify-center px-6 py-10">
-        <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-xl">
-          <h2 className="text-3xl font-bold HeadingPlayFair mb-1 text-black text-center bitcount-single-Nothing ">Login</h2>
-          <p className="text-center text-gray-600 mb-6 ">Please enter your credentials to log in</p>
-
+        <div className="w-full max-w-md bg-white p-6 rounded-xl loginCard">
+          <div className="w-full h-16 overflow-hidden rounded-xl mb-3 mx-auto loginIconTile">
+            <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+              {imgArray.map((img, i) => (
+                <img key={i} src={img} alt="icon" className="h-16 min-w-full object-contain" />
+              ))}
+            </div>
+          </div>
+          <div className='loginText'>
+          <h2 className="text-3xl font-bold HeadingPlayFair mb-1 text-center bitcount-single-Nothing loginHeading">Login</h2>
+          <p className="text-center text-gray-600 mb-6 loginSubheading">Please enter your credentials to log in</p>
+</div>
           <form onSubmit={handleLogin} className="space-y-4">
             <input
               type={`${ typeSet ? "number" : "text"}`}
@@ -252,7 +285,7 @@ const handleSetPHOREMAIL=(e)=>{
             />
             <button
               type="submit"
-              className="w-full h-11 bg-black text-white rounded-md  hover:bg-lime-400 hover:text-black font-semibold transition">
+              className="w-full h-11 bg-black text-white rounded-md font-semibold transition loginButton">
 
               Login
 
