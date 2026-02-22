@@ -95,11 +95,14 @@ sku:{
 
       },
 
+
       quantity: {
-  type: Number,
-  required: true,
-  default: 0,
-  },
+
+   type: Number,
+   required: true,
+   default: 0,
+
+},
 
   inStock: {
   type: Boolean,

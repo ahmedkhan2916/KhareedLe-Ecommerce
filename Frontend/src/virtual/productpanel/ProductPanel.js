@@ -82,7 +82,7 @@ export default function ProductPanel({ shelf, onClose }) {
   // ✅ Conditional rendering AFTER hooks
   if (!shelf) return null;
 
-  const white = data?.product_color?.find(item => item.color === "Orange");
+  const white = data?.product_color?.find(item => item.color === "white");
   console.log("White color product data:", white);
   return (
     <div

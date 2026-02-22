@@ -22,7 +22,7 @@ import storeModel from "../assets/Models/store.glb";
 
 
 
-import PhoneDemo from "../assets/Models/phone_samsung_s25.glb";
+import PhoneDemo from "../assets/Models/iphone17prodemo.glb";
 
 
 
@@ -223,7 +223,7 @@ function Phone({
 
 
   const basePosition = useMemo(
-    () => new THREE.Vector3(16, isMobileViewport ? 1.05 : 0.8, -16.5),
+    () => new THREE.Vector3(16, isMobileViewport ? 1.21 : 0.98, -16.45),
     [isMobileViewport]
   );
 
@@ -237,7 +237,7 @@ function Phone({
 
 
 
-  const baseRotationY = useRef(0);
+  const baseRotationY = useRef(-0.18);
 
 
 
@@ -316,6 +316,19 @@ function Phone({
         child.userData._origEmissive = mat.emissive ? mat.emissive.clone() : null;
         child.userData._origEmissiveIntensity = mat.emissiveIntensity ?? 0;
       }
+      if (child.material) {
+        const mat = child.material;
+        if (typeof mat.roughness === "number") {
+          mat.roughness = Math.max(0.18, mat.roughness * 0.72);
+        }
+        if (typeof mat.metalness === "number") {
+          mat.metalness = Math.min(1, mat.metalness * 0.9);
+        }
+        if (typeof mat.envMapIntensity === "number") {
+          mat.envMapIntensity = Math.max(1.2, mat.envMapIntensity);
+        }
+        mat.needsUpdate = true;
+      }
 
 
 
@@ -351,7 +364,7 @@ function Phone({
 
 
 
-      ? baseScale.clone().multiplyScalar(1.4).toArray()
+      ? baseScale.clone().multiplyScalar(1.18).toArray()
 
 
 
@@ -473,6 +486,7 @@ function Phone({
 
 
       position={position}
+      rotation={[0, baseRotationY.current, 0]}
 
 
 
@@ -660,6 +674,9 @@ function Movement({
 
 
   const tmpDir = useMemo(() => new THREE.Vector3(), []);
+  const focusTarget = useMemo(() => new THREE.Vector3(), []);
+  const focusDistance = 3.4;
+  const focusTargetYOffset = 0.35;
 
 
 
@@ -723,15 +740,16 @@ function Movement({
 
 
 
-          : new THREE.Vector3(16, 0.8, -16.5);
+          : new THREE.Vector3(16, 0.42, -16.5);
 
 
 
-        tmpDir.copy(camera.position).sub(phonePos).normalize();
+        focusTarget.copy(phonePos).setY(phonePos.y + focusTargetYOffset);
+        tmpDir.copy(camera.position).sub(focusTarget).normalize();
 
 
 
-        const closePos = phonePos.clone().add(tmpDir.multiplyScalar(2.2));
+        const closePos = focusTarget.clone().add(tmpDir.multiplyScalar(focusDistance));
 
 
 
@@ -903,7 +921,9 @@ function Movement({
 
 
 
-        controlsRef.current.target.copy(phoneRef.current.position);
+        controlsRef.current.target
+          .copy(phoneRef.current.position)
+          .setY(phoneRef.current.position.y + focusTargetYOffset);
 
 
 
@@ -919,7 +939,9 @@ function Movement({
 
 
 
-        spotTargetRef.current.position.copy(phoneRef.current.position);
+        spotTargetRef.current.position
+          .copy(phoneRef.current.position)
+          .setY(phoneRef.current.position.y + focusTargetYOffset);
 
 
 
@@ -1418,7 +1440,7 @@ export default function VirtualShowroom() {
 
 
 
-            gl.toneMappingExposure = 1.3;
+            gl.toneMappingExposure = 1.85;
 
 
 
@@ -1451,11 +1473,8 @@ export default function VirtualShowroom() {
 
 
 
-          <ambientLight intensity={0.9} />
-
-
-
-          <directionalLight intensity={0.8} position={[5, 10, 5]} castShadow />
+          <ambientLight intensity={0.95} />
+          <hemisphereLight args={["#fbfcff", "#dde2eb", 0.5]} />
 
 
 
@@ -1463,27 +1482,27 @@ export default function VirtualShowroom() {
 
 
 
-            position={[16, 4, -14]}
+            position={[16, 5.8, -16.2]}
 
 
 
-            intensity={isActive ? 10 : 8}
+            intensity={18.8}
 
 
 
-            distance={10}
+            distance={7}
 
 
 
-            angle={Math.PI / 9}
+            angle={Math.PI / 14}
 
 
 
-            penumbra={0.4}
+            penumbra={0.55}
 
 
 
-            decay={1}
+            decay={2}
 
 
 
@@ -1503,23 +1522,63 @@ export default function VirtualShowroom() {
 
 
 
-            position={[16.5, 2.2, -15.2]}
+            position={[15.2, 3.4, -15.3]}
 
 
 
-            intensity={3}
+            intensity={6.4}
 
 
 
-            color="#f5f5ff"
+            color="#f8f9ff"
 
 
 
-            distance={6}
+            distance={6.3}
 
 
 
-            angle={Math.PI / 7}
+            angle={Math.PI / 12}
+
+
+
+            penumbra={0.75}
+
+
+
+            decay={2}
+
+
+
+            target={spotTargetRef.current}
+
+
+
+          />
+
+
+
+          <spotLight
+
+
+
+            position={[16.9, 3.2, -17.2]}
+
+
+
+            intensity={5.2}
+
+
+
+            color="#f1f4ff"
+
+
+
+            distance={6.1}
+
+
+
+            angle={Math.PI / 11}
 
 
 
@@ -1527,87 +1586,7 @@ export default function VirtualShowroom() {
 
 
 
-            decay={1}
-
-
-
-            target={spotTargetRef.current}
-
-
-
-          />
-
-
-
-          <spotLight
-
-
-
-            position={[16, 6, -16.5]}
-
-
-
-            intensity={4}
-
-
-
-            color="#ffffff"
-
-
-
-            distance={12}
-
-
-
-            angle={Math.PI / 10}
-
-
-
-            penumbra={0.5}
-
-
-
-            decay={1}
-
-
-
-            target={spotTargetRef.current}
-
-
-
-          />
-
-
-
-          <spotLight
-
-
-
-            position={[14.5, 3.2, -15.5]}
-
-
-
-            intensity={isActive ? 6 : 0}
-
-
-
-            color="#fff2d6"
-
-
-
-            distance={8}
-
-
-
-            angle={Math.PI / 6}
-
-
-
-            penumbra={0.6}
-
-
-
-            decay={1}
+            decay={2}
 
 
 
@@ -1620,12 +1599,6 @@ export default function VirtualShowroom() {
 
 
           <primitive object={spotTargetRef.current} />
-
-
-
-
-
-
 
           <OrbitControls
 

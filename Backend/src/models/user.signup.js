@@ -63,6 +63,23 @@ import bcrypt from "bcrypt"
             ref:"Address"
     }],
 
+    role:{
+
+        type:String,
+        enum:["user","admin","seller"],
+        default:"user",
+
+
+    },
+
+    isApproved:{
+
+        type:Boolean,
+        default:false,
+
+    },
+    
+
     refreshToken:{
         type:String,
 

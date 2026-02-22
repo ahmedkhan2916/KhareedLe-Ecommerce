@@ -28,14 +28,12 @@ import bcrypt from "bcrypt"
     trim:true,
     },
     
-
-
-
-
     refreshToken:{
+        
         type:String,
 
-    }
+    },
+
 
 },{timestamps:true});
 

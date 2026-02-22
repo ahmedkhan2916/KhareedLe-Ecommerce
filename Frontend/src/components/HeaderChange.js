@@ -515,7 +515,7 @@ console.log(err);
               <Cart></Cart>
             </div>
 
-        <div className="headerRightEnd  pr-10">
+        <div className="headerRightEnd  pr-14">
           <div className="login profileWrap items-center flex-col justify-center cursor-pointer relative hidden sm:flex"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
  
 { Username ? (

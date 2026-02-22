@@ -161,10 +161,10 @@ export default function AdminDashboard() {
                 <table className="w-full table-auto text-sm">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="text-left px-4 py-3">Product</th>
-                      <th className="text-left px-4 py-3">Price</th>
-                      <th className="text-left px-4 py-3">Quantity</th>
-                      <th className="text-left px-4 py-3">Status</th>
+                      <th className="text-left px-4 py-3">Product</th>     
+                      <th className="text-left px-4 py-3">Price</th>        
+                      <th className="text-left px-4 py-3">Quantity</th>    
+                      <th className="text-left px-4 py-3">Status</th>       
                     </tr>
                   </thead>
                   <tbody>
