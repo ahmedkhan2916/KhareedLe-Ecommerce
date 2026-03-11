@@ -1,46 +1,47 @@
-/* WelcomeScreen.css */
 .welcome-screen {
   display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #04111f 0%, #0f172a 55%, #111827 100%);
+  padding: 1.5rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.welcome-screen__card {
+  display: flex;
+  width: min(92vw, 220px);
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: #000000;
-  color: white;
-  font-family: 'Poppins', sans-serif;
+  gap: 0.9rem;
+  border-radius: 1.5rem;
+  background: transparent;
+  padding: 1.5rem;
 }
 
-.brand {
-  color: #51eb15;
+.welcome-loader {
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  border-top-color: #22c55e;
+  border-right-color: #06b6d4;
+  animation: xarena-spin 0.9s linear infinite;
 }
 
-.rocket-loader {
-  margin-top: 20px;
-  position: relative;
-  width: 100px;
-  height: 100px;
+.welcome-screen__logo {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.28));
 }
 
-.orbit {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  margin: auto;
-  width: 100px;
-  height: 100px;
-  border: 2px dashed #51eb15;
-  border-radius: 50%;
-  animation: rotate 2s linear infinite;
-}
-
-.rocket-icon {
-  position: absolute;
-  top: -12px; /* Half of icon size */
-  left: 50%;
-  transform: translateX(-50%);
-  color: #51eb15;
-}
-
-@keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@keyframes xarena-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

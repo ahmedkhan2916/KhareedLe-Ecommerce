@@ -1,678 +1,532 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react';
-
-// import "../assets/styles/mainStyle.css"
-// import { useContext } from 'react';
-// import { BackgroundColorContext } from './BackgroundColorContext.js';
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import {
+  clearBag,
+  fetchBagTotal2,
+  fetchUserID,
+  logout,
+  logoutAccessTK,
+  refreshToken,
+  setProducts,
+  setTotalBagNull,
+  userIDNULL,
+} from "../store/dataSlice.js";
 import Search from "../assets/images/Search.png";
-import "../assets/Style/navbarStyle.css"
-import { useDispatch ,useSelector} from 'react-redux';
-import { clearBag, increment, setStatusCode } from '../store/dataSlice.js';
-import headset from "../assets/images/HeaderLogos/headset.png";
-import web from "../assets/images/HeaderLogos/web.png";
 import cart from "../assets/images/HeaderLogos/cart.png";
-import user from "../assets/images/HeaderLogos/user.png";
-import arrayDown from "../assets/images/HeaderLogos/down.png"
-import menu from "../assets/images/HeaderLogos/menu-burger.png"
 import KhareedLeLogo from "../assets/images/HeaderLogos/arena3.png";
-// import MobileSidebar from '../layout/MobileSidebar.js';
-import axios from 'axios';
-import logoutPNG from "../assets/LoginLogos/logout.png"
-import khareedLe from "../assets/images/HeaderLogos/khareedLe.png";
-import { setProducts } from '../store/dataSlice.js';
-import { fetchData,refreshToken,setSignal ,setBagData,fetchBagData,fetchUserID,fetchBagTotal2,setTotalBagNull,userIDNULL} from '../store/dataSlice.js';
-import Sidebar from "../components/Sidebar.js"
-import Cookies from "universal-cookie";
-import {fetchID,showTotalFuncHeader,fetchSearchItems, accessTokenRefresh} from "../Services/apiService.js";
-import BuyButton from "../components/BuyButton.js";
-import Cart from '../components/Cart.js';
-import {logoutAccessTK,logout} from '../store/dataSlice.js'
-import Logout from "../components/Logout.js";
-import {BASE_URL} from "../config/config.js"; 
+import { fetchSearchItems } from "../Services/apiService.js";
+import { BASE_URL } from "../config/config.js";
 
+const desktopNavItems = [
+  "Products",
+  "Start selling",
+  "Tools and apps",
+  "Pricing",
+  "Resources",
+  "Pro sellers",
+];
 
 function Header() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-// all header content is here:-
+  const { token } = useSelector((state) => state.userAuth);
+  const { UserID } = useSelector((state) => state.fetchID);
+  const { totalBag } = useSelector((state) => state.fetchBagTotalStore);
+  const reduxUsername = useSelector((state) => state.username.username);
+  const authUser = useSelector((state) => state.auth.users?.user);
 
-// const { bgColor, changeBackgroundColor } = useContext(BackgroundColorContext);
-    const cookie=new Cookies();
-    const dispatch = useDispatch();
-    const status2=useSelector((state)=>state.status.status);
-    const [cartItems,setCartItems]=useState(localStorage.getItem("cartItems"))
-     const Signal_Boolean_Response=useSelector(state=>state.signal)
-    // console.log("here is boolean data Signal",Signal_Boolean_Response)
-    const numberItem=useSelector(state=>state.counter.value);
-    console.log("this is total item",numberItem);
+  const username =
+    reduxUsername ||
+    authUser?.name ||
+    localStorage.getItem("username") ||
+    "";
 
-    const [isDropDownOpen,setIsDropDownOpen]=useState(false);
-    const [hideNavbar,setHideNavbar]=useState(0);
-    const userN=useSelector((state)=>state.username.username);
-    // const [inputData,setInputData]=useState("");
-    const [searchQuery,setSearchedQuery]=useState([]);
-    const [blur,setBlur]=useState(false);
-    const [hideSearchBar,sethideSearchBar]=useState("hidden");
-    const [dataComing,setDataComing]=useState(localStorage.getItem("data"));
-    // const [userIdStorage,setUserIdStorage]=useState(localStorage.getItem("userID"));
-    const [total,setTotal]=useState(null);
-    const detail=useSelector((state)=>state.AccessTK.Token)
-    const {UserID,StatusID,ErrorID}=useSelector((state)=>state.fetchID);
-    const Id=useSelector((state)=>state);
-    const { token, status,errorAccess  } = useSelector((state) => state.userAuth);
-    const { totalBag,statusTotalBag,errorBagTotal,}=useSelector((state)=>state.fetchBagTotalStore);
+  const [searchQuery, setSearchQuery] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
-    console.log("THIS IS USER ID FROM REDUX PERSIST",Id.username.userId);
-    const userDetail=useSelector((state)=>state.username.userId);
+  useEffect(() => {
+    dispatch(refreshToken());
+  }, [dispatch]);
 
-    const [UID,setID]=useState("");
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchUserID(token));
+    }
+  }, [dispatch, token]);
 
-    
-     useEffect(() => {
+  useEffect(() => {
     if (UserID && token) {
       dispatch(fetchBagTotal2({ ID: UserID }));
     }
-  }, [UserID, token, totalBag]);
+  }, [dispatch, UserID, token]);
 
+  const hasSearchResults = Array.isArray(searchQuery) && searchQuery.length > 0;
 
-    
-    useEffect(() => {
-    
-      const SignalBoolean=async()=>{
+  const handleSearchInput = async (e) => {
+    const inputValue = e.target.value;
+    setSearchInput(inputValue);
 
-      console.log("Signal Boolean",Signal_Boolean_Response);
-    
-
-      if(Signal_Boolean_Response)
-          {
-            dispatch(setBagData({data:[]}));
-            dispatch(setSignal({signal:false}));
-    
-          }
-    
-    }
-    
-        SignalBoolean();
-    
-    
-        },[])
-
-
-
-    useEffect(()=>{
-
-
-
-  console.log("hello this is my world refreshToken");
-  dispatch(refreshToken());
-
-
-
-  //  return;
-
-
-    },[])
-
-    
-      useEffect(()=>{
-  
-  dispatch(fetchUserID(token));
-  
-  
-      },[token])
-
-
-
-
-    useEffect(()=>{
-
-    const showTotalFunc=async()=>{
-
-    //   console.log("this is ID CALLING Before Encryption",userDetail);
-    // if(!localStorage.getItem("accessToken"))
-    //   {
-    //     return; 
-    //   }
-    // const ID=await fetchID(token);
-
-    // if(!ID)
-    // {
-    //   return ;
-    // }
-
-    setID(UserID);
-    
-    // console.log("this is ID CALLING",ID);
-    const totalCart=await showTotalFuncHeader(UserID);
-    console.log("i am callinggggggggggggggg",totalCart)
-  
-    setTotal(totalCart);
-
-    console.log("this is state calling",total);
-    console.log(numberItem);
-
-     
-      }
-
-      showTotalFunc();
-
-    },[UserID]);
-
-    
-
-
-  if(userN)
-  {
-      localStorage.setItem("status",status2);
-      localStorage.setItem("username",userN);
-  }
-   
-  // const Item=localStorage.getItem("status");
-  const Username=localStorage.getItem("username");
-    
-  console.log("this is username in local storage",Username)
-  
-  const navigate=useNavigate();
-
-  const handleSubmit=async (req,res)=>
-  {
-
-    navigate("/users/login");
-
-  }
-
-  const handleMouseEnter=()=>    
-  {
-
-    setIsDropDownOpen(true);
-
-  }
-
-  const handleMouseExit=()=>
-  {
-
-    setIsDropDownOpen(false);
-
-  }
-
-  const handleSearchInput=async(e)=>{
-
-
-    // e.preventDefault;
-    const inputValue=e.target.value;
-
-    if(inputValue.trim()==0)
-    {
-      setHideNavbar(0)
+    if (!inputValue.trim()) {
       dispatch(setProducts({}));
-      setSearchedQuery([]);
-      sethideSearchBar("hidden");
+      setSearchQuery([]);
       return;
     }
-    else{
-      sethideSearchBar("flex");
-      // Only collapse navbar on small screens
-      if (window.innerWidth < 640) {
-        setHideNavbar(1);
-      }
 
-    
+    const searchedQuery = await fetchSearchItems(inputValue);
+    const searchedItems = searchedQuery?.data?.searchedItems || [];
 
-   const searchedQuery = await fetchSearchItems(inputValue)
+    setSearchQuery(searchedItems);
+    dispatch(setProducts(searchedItems));
+  };
 
-   console.log("this is search query",searchedQuery);
+  const clearSearch = () => {
+    setSearchInput("");
+    setSearchQuery([]);
+    dispatch(setProducts({}));
+  };
 
-   if(searchedQuery.data.length==0)
-   {
+  const handleRoute = async (UID) => {
+    if (!UID) {
+      return;
+    }
 
-    setSearchedQuery({});
-    return;
-    
-   }
-   
-   console.log("this is SearchQuery SEARCH",searchQuery);
-   setSearchedQuery(searchedQuery.data.searchedItems);
-   dispatch(setProducts(searchQuery));
+    clearSearch();
+    navigate(`/product/${UID}`);
+  };
 
-  }
-}
+  const handleLogin = () => {
+    navigate("/users/login");
+  };
 
-
-  const handleLogout=async()=>
-  {
-    // console.log(userId);
-    // dispatch(increment(0));
-    // dispatch(setStatusCode(false));
+  const handleLogout = async () => {
     localStorage.clear();
 
-    try{
+    try {
+      await axios.post(`${BASE_URL}/users/logout`, {}, { withCredentials: true });
+      document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-      // const ID=await fetchID(token);
-
-      const logout_res=await axios.post(`${BASE_URL}/users/logout`, {}, { withCredentials: true });
- document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      console.log("successMessage",logout_res);
       dispatch(logout());
       dispatch(logoutAccessTK());
-      dispatch(clearBag())
-      dispatch(setTotalBagNull())
-      dispatch(userIDNULL())
+      dispatch(clearBag());
+      dispatch(setTotalBagNull());
+      dispatch(userIDNULL());
 
+      setIsProfileOpen(false);
+      setIsMobileMenuOpen(false);
       navigate("/users/login");
-      
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    }catch(err){
-console.log(err);
-
+  const handleCartRoute = () => {
+    if (!token) {
+      setShowLoginModal(true);
+      return;
     }
 
-    // sessionStorage.clear();
-    // location.reload();
-   
+    setIsMobileMenuOpen(false);
+    navigate("/users/Cart");
+  };
 
-    
+  const handleOrders = () => {
+    setIsProfileOpen(false);
+    setIsMobileMenuOpen(false);
+    navigate("/users/my-orders");
+  };
 
-  }
-
-  
-
-
-    const handleCartRoute=async()=>{
-
-      // console.log("hiii baby",userIdStorage);
-      // console.log("userID here in cart",userId)
-      // const userId= await fetchID(detail);
-      try{
-
-      if(!token)
-        {
-          setBlur(true);
-          return;
-        //  return navigate("/users/login");
-        }
-
-      // console.log("this is UID MY",UID);
-    
-      const bagData=await axios.post('http://localhost:1000/users/fetchbag',{UID:UserID});
-   
-      
-      console.log("this is bag data bro",bagData.data.bagItems);
-      localStorage.setItem("bagItem",JSON.stringify(bagData.data.bagItems));
-  
-      navigate("/users/shipping");
-      }
-      catch(error)
-      {
-        return error;
-      }
-  
-  }
-
-
- 
-  
-
-    const Items=[
-
-        {id:1,label:"Products",showDropDown:true},
-        {id:2,label:"Start selling",showDropDown:true},
-        {id:3,label:"Tools and apps",showDropDown:true},
-        {id:4,label:"Pricing",showDropDown:true},
-        {id:5,label:"Resources",showDropDown:true},
-        {id:6,label:"Pro sellers",showDropDown:false},
-        {id:7,label:"GelatoConnect",showDropDown:true}
-
-    ]
-
-
-    const [dropdown,setDropdown]=useState("hidden");
-    const [dropdownBottom,setDropdownBottom]=useState(null);
-    const [sideBar,setSidebar]=useState(false);
-
-    
-
-    const handleDropdown=()=>{
-   
-        console.log("yes");
-
-        if(dropdown=="hidden")
-      {
-
-        setDropdown("flex");
-      // changeBackgroundColor("	#C0C0C0");
-      //   document.body.style.backgroundColor="gray";
-       document.body.style.backgroundColor="rgba(191, 191, 191)";
-       const target= document.getElementById("ZINDEX");
-       target.style.zIndex="2000";
-
-      }
-
-      else
-        {
-            setDropdown("hidden");
-            document.body.style.backgroundColor="white";
-            // changeBackgroundColor("white")
-        }
-    }
-
-    const handleBottomHeader=(id)=>{
-
-      setDropdownBottom(id);
-
-    }
-
-    const handleHideNavbar=()=>{
-
-  if(hideNavbar)
-    {
-        setHideNavbar(0);
-     
-    }
-
-    else{
-      setHideNavbar(1);
-    }
-
-
-    }
-
-    const handleMouseleave=()=>{
-
-        setDropdownBottom(null)
-
-    }
-
-    const handleOrders=()=>{
-
-      navigate("/users/my-orders");
-
-    }
-
-    const handleSidebar=()=>{
-
-        setSidebar(!sideBar);
-      
-        if(sideBar===true)
-        {
-          document.body.style.backgroundColor="white";
-        //   changeBackgroundColor("white")
-          
-        }
-        else{
-          
-          document.body.style.backgroundColor="#C0C0C0";
-          //changeBackgroundColor("#C0C0C0")
-
-        }
-      
-      }
-
-
-      const handleRoute=async(UID)=>{
-
-        try{
-        
-          const resp= await axios.post(`${BASE_URL}/users/track-search`,{UID:UID});
-          console.log("success here")
-
-
-        }catch(err)
-        {
-          console.log("error from server...>>>")
-        }
-        
-          if(!UID)
-          { return console.log("id is showing undefined");}
-        
-      console.log(UID);
-      // dispatch(fetchData(UID));
-      return navigate(`/product/${UID}`);
-
-
-      }
+  const mobileMenuItems = useMemo(
+    () => [
+      { label: "Home", action: () => navigate("/") },
+      { label: "Products", action: () => navigate("/") },
+      { label: "My Orders", action: handleOrders },
+      { label: "Address", action: () => navigate("/users/address") },
+      { label: "Cart", action: handleCartRoute },
+    ],
+    [navigate, handleOrders, handleCartRoute]
+  );
 
   return (
-    <div className={` headerContainer `} >
-
-<div
-        className={`  fixed inset-y-0 left-0  bg-red-500 sm:bg-green-500 transform transition-transform duration-300 ease-in-out z-20 ${
-          sideBar ? 'translate-x-0' : '-translate-x-full'
-        } ` }
-         >
-        {/* <MobileSidebar handleSidebar={handleSidebar} /> */}
-      </div>
-
-    <div className='headerItemsContainer headerLayout flex justify-around h-full items-center' >
-
-<div className={`sideBarComponentContainer headerLeft ${hideNavbar?'hidden':'block'} sm:hidden`}>
-
-<Sidebar></Sidebar>
-
-</div>
-
-
-        <div className={`imageContainer headerLogoWrap headerCenter ${hideNavbar?'hidden':'block'} flex items-center rounded-full`} >
-          <div className="headerLogoRow">
-            <img src={KhareedLeLogo} className='logoHeader h-20 -mt-4 cursor-pointer sm:h-24' onClick={()=>navigate("/")}></img>
-         
-          </div>
-        </div>
-
-        <div className='rightItemContainer headerRight text-sm flex w-fit'>
-            <div className={`Items2 rounded-full items-center w-max lg:pl-4 pr-4 cursor-pointer hidden hover:bg-green-100 sm:flex`}>
-                <img className='rightHeaderLogo h-5' src={headset}></img>
-                <p className='headerText pl-2 tracking-tight text-sm'>Contact us</p>
-            </div>
-
-            <div className={`Items2 hidden rounded-full items-center w-max pl-4 pr-4  relative cursor-pointer   hover:bg-green-100 sm:flex `} onClick={handleDropdown} id="ZINDEX">
-                <img className='rightHeaderLogo h-5' src={web}></img>
-                <p className='headerText pl-2 tracking-tight' >IN/INR</p>
-                <img src={arrayDown} className='h-4 pl-2'></img>
-
-                <div className={`dropdown  absolute top-12 z-10 ${dropdown} flex-col  h-24 bg-white rounded-lg justify-center items-center `} >
-                <div className='arrow-up'></div>
-                    <button className='btndropdown p-2 tracking-tight rounded-lg  w-fit'>Language-IN</button>
-                    <button className='btndropdown p-2 tracking-tight rounded-lg  w-fit'>Currency-INR</button>
-
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/85 text-white backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-20 items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition duration-300 hover:scale-[1.03] hover:bg-white/10 active:scale-95 sm:hidden"
+                onClick={() => setIsMobileMenuOpen(true)}
+              >
+                <span className="sr-only">Open menu</span>
+                <div className="space-y-1.5">
+                  <span className="block h-0.5 w-5 origin-center rounded-full bg-white transition-transform duration-300" />
+                  <span className="block h-0.5 w-5 rounded-full bg-white transition-all duration-300" />
+                  <span className="block h-0.5 w-5 origin-center rounded-full bg-white transition-transform duration-300" />
                 </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                className="flex items-center gap-3"
+              >
+                <img
+                  src={KhareedLeLogo}
+                  alt="KhareedLe"
+                  className="h-12 w-auto sm:h-14"
+                />
+              </button>
             </div>
 
-            <div className='searchBar searchBarWrap searchDesktop flex items-center w-4/12 '>
-  
-      <input type="text" className={`searchInput pl-7 placeholder:italic placeholder:text-base text-lg sm:text-2xl ${hideNavbar ? '' : 'w-0'} sm:w-96`} placeholder="Search products..."
- onChange={handleSearchInput}></input>
+            <div className="hidden flex-1 px-6 lg:block">
+              <div className="relative mx-auto max-w-2xl">
+                <img
+                  src={Search}
+                  alt="Search"
+                  className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 opacity-70"
+                />
+                <input
+                  type="text"
+                  value={searchInput}
+                  onChange={handleSearchInput}
+                  placeholder="Search products..."
+                  className="h-12 w-full rounded-full border border-white/10 bg-white/8 pl-12 pr-4 text-sm text-white outline-none transition placeholder:text-slate-300 focus:border-emerald-400/50 focus:bg-white/10"
+                />
 
-     <div className={`searchResults absolute top-16 ${hideSearchBar} justify-center`}>
-
-<>
-  {searchQuery.length > 0 ? (
-    
-  
-    <ul className='searchResultsList block listProfile2 pt-3'>
-
-      {searchQuery.map((company) =>{
-      console.log("Company ID: ", company._id);
-      
-     return (
-        <li key={company._id} className='searchResultItem text-xl mt-2 hover:cursor-pointer' onClick={()=>handleRoute(company._id)}  >{company.product_name}</li>
-      )})}
-    </ul>
-  ) : (
-    <div className='searchEmpty'>No results</div>
-  )}
-</>
-</div>
-
-      <img src={Search} className='searchIcon w-7 absolute'  onClick={handleHideNavbar}></img>
-      
-      </div>
-
-        {/* <button className='buttonHeader bg-black rounded-full text-white pb-2 pt-2 pl-4 pr-4 ml-3 hover:text-gray-300'>Sign up for free </button> */}
-
-        </div>
-
-           <div className="cartWrap cartNearLogo">
-              <Cart></Cart>
+                {(searchInput || hasSearchResults) && (
+                  <div className="absolute left-0 right-0 top-14 rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+                    {hasSearchResults ? (
+                      <ul className="space-y-1">
+                        {searchQuery.map((company) => (
+                          <li
+                            key={company._id}
+                            className="cursor-pointer rounded-xl px-4 py-3 text-sm text-slate-100 transition hover:bg-white/8"
+                            onClick={() => handleRoute(company._id)}
+                          >
+                            {company.product_name}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="px-4 py-3 text-sm text-slate-400">No results</div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
-        <div className="headerRightEnd  pr-14">
-          <div className="login profileWrap items-center flex-col justify-center cursor-pointer relative hidden sm:flex"  onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit}>
- 
-{ Username ? (
-  <>
-<div className='loginLogo profileAvatar'></div>
-<span className="profileName">{Username}</span>
-</>
-)
-:
-(
-<>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button
+                type="button"
+                onClick={handleCartRoute}
+                className="relative inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                <img src={cart} alt="Cart" className="h-5 w-5" />
+                <span className="hidden sm:inline">Cart</span>
+                <span className="absolute -right-1 -top-1 inline-flex min-h-[22px] min-w-[22px] items-center justify-center rounded-full bg-emerald-500 px-1.5 text-[11px] font-bold text-white">
+                  {totalBag || 0}
+                </span>
+              </button>
 
-   <div className='loginLogo profileAvatar'></div>
-<button className="loginBtnNav profileCta" onClick={handleSubmit}>Login</button>
+              <div
+                className="relative"
+                onMouseEnter={() => setIsProfileOpen(true)}
+                onMouseLeave={() => setIsProfileOpen(false)}
+              >
+                <button
+                  type="button"
+                  onClick={() => setIsProfileOpen((prev) => !prev)}
+                  className="group inline-flex h-11 items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:border-emerald-400/30 hover:bg-white/10 hover:shadow-[0_14px_30px_rgba(16,185,129,0.12)]"
+                >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-xs font-bold text-emerald-100 transition duration-300 group-hover:scale-110 group-hover:bg-emerald-500/30">
+                    {username ? username.charAt(0).toUpperCase() : "L"}
+                  </div>
+                  <span className="hidden md:inline transition duration-300 group-hover:text-emerald-100">
+                    {username || "Login"}
+                  </span>
+                  <span className="hidden text-xs text-emerald-200/80 transition duration-300 group-hover:translate-x-0.5 md:inline">
+                    v
+                  </span>
+                </button>
 
-</>
-)}    
+                {isProfileOpen && (
+                  <div className="absolute right-0 top-full w-64 animate-[profileMenuIn_220ms_cubic-bezier(0.16,1,0.3,1)] rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+                    <div className="rounded-[1.25rem] bg-white/5 px-4 py-4">
+                      <p className="text-sm font-semibold text-white">
+                        {username || "Guest"}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-400">
+                        {username ? "Welcome back" : "Sign in to manage your account"}
+                      </p>
+                    </div>
 
-
-
-{
-
-Username&&isDropDownOpen&&(
-
-<div className="profileDropdown dropdownMenu absolute top-16 bg-gray-50 rounded-md w-56 flex justify-center">
-  <div className="profileDropdownInner">
-    <div className="profileHeader">
-      <div className="profileHeaderAvatar"></div>
-      <div>
-        <div className="profileHeaderName">{Username}</div>
-        <div className="profileHeaderMeta">Welcome back</div>
-      </div>
-    </div>
-    <ul className='listProfile pt-2'>
-      <li className='profileItem listProfile' onClick={handleOrders}>Orders</li>
-      <li className='profileItem listProfile'>Wishlist</li>
-      <li className='profileItem listProfile'>Gifts</li>
-      {/* <li className='listProfile pt-1 text-xl flex' onClick={handleLogout}> Logout <img src={logoutPNG} className="h-6 pl-1"></img> */}
-      <Logout></Logout>
-    </ul>
-  </div>
-</div>
-
-
-)
-
-}
-
-</div>
-
-        </div>
-
-        <div className="searchBar searchBarWrap searchMobile sm:hidden">
-          <input
-            type="text"
-            className="searchInput pl-7 placeholder:italic placeholder:text-base text-lg"
-            placeholder="Search products..."
-            onChange={handleSearchInput}
-          ></input>
-          <div className={`searchResults absolute top-12 ${hideSearchBar} justify-center`}>
-            <>
-              {searchQuery.length > 0 ? (
-                <ul className="searchResultsList block listProfile2 pt-3">
-                  {searchQuery.map((company) => {
-                    return (
-                      <li
-                        key={company._id}
-                        className="searchResultItem text-xl mt-2 hover:cursor-pointer"
-                        onClick={() => handleRoute(company._id)}
-                      >
-                        {company.product_name}
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <div className="searchEmpty">No results</div>
-              )}
-            </>
+                    <div className="mt-2 space-y-1 text-sm">
+                      {username ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={handleOrders}
+                            className="w-full rounded-xl px-4 py-3 text-left text-slate-100 transition duration-300 hover:translate-x-1 hover:bg-white/8"
+                          >
+                            My Orders
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => navigate("/users/address")}
+                            className="w-full rounded-xl px-4 py-3 text-left text-slate-100 transition duration-300 hover:translate-x-1 hover:bg-white/8"
+                          >
+                            My Address
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="w-full rounded-xl px-4 py-3 text-left text-red-200 transition duration-300 hover:translate-x-1 hover:bg-red-500/12"
+                          >
+                            Logout
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleLogin}
+                          className="w-full rounded-xl bg-emerald-600 px-4 py-3 text-left font-semibold text-white transition duration-300 hover:translate-x-1 hover:bg-emerald-700"
+                        >
+                          Login
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-          <img src={Search} className="searchIcon w-7 absolute" onClick={handleHideNavbar}></img>
+
+          <div className="pb-4 lg:hidden">
+            <div className="relative">
+              <img
+                src={Search}
+                alt="Search"
+                className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 opacity-70"
+              />
+              <input
+                type="text"
+                value={searchInput}
+                onChange={handleSearchInput}
+                placeholder="Search products..."
+                className="h-12 w-full rounded-full border border-white/10 bg-white/8 pl-12 pr-4 text-sm text-white outline-none transition placeholder:text-slate-300 focus:border-emerald-400/50 focus:bg-white/10"
+              />
+
+              {(searchInput || hasSearchResults) && (
+                <div className="absolute left-0 right-0 top-14 rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+                  {hasSearchResults ? (
+                    <ul className="space-y-1">
+                      {searchQuery.map((company) => (
+                        <li
+                          key={company._id}
+                          className="cursor-pointer rounded-xl px-4 py-3 text-sm text-slate-100 transition hover:bg-white/8"
+                          onClick={() => handleRoute(company._id)}
+                        >
+                          {company.product_name}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="px-4 py-3 text-sm text-slate-400">No results</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="hidden border-t border-white/10 py-3 xl:block">
+            <div className="flex flex-wrap items-center gap-2">
+              {desktopNavItems.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  className="rounded-full px-4 py-2 text-sm text-slate-200 transition hover:bg-white/8 hover:text-white"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
+      </header>
 
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[60] sm:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-[fadeIn_220ms_ease-out]"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
 
-    </div>
+          <div className="absolute left-0 top-0 h-full w-[84%] max-w-sm border-r border-white/10 bg-slate-950 text-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] animate-[slideInLeft_320ms_cubic-bezier(0.16,1,0.3,1)]">
+            <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
+              <div>
+                <p className="translate-y-0 animate-[fadeUp_320ms_ease-out] text-lg font-black">Menu</p>
+                <p className="animate-[fadeUp_380ms_ease-out] text-sm text-slate-400">
+                  {username || "Browse your account and cart"}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/8 transition duration-300 hover:bg-white/12 active:scale-95"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="text-xl leading-none transition-transform duration-300 hover:rotate-90">x</span>
+              </button>
+            </div>
 
+            <div className="px-5 py-5">
+              <div className="rounded-[1.5rem] bg-white/5 p-4 animate-[fadeUp_420ms_ease-out]">
+                <p className="text-sm font-semibold text-white">
+                  {username || "Guest user"}
+                </p>
+                <p className="mt-1 text-xs text-slate-400">
+                  {username
+                    ? "Manage orders, address, and shopping activity"
+                    : "Login to access orders and checkout"}
+                </p>
+              </div>
 
+              <div className="mt-5 space-y-2">
+                {mobileMenuItems.map((item, index) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={item.action}
+                    className="w-full rounded-[1.25rem] bg-white/5 px-4 py-3 text-left text-sm font-semibold text-slate-100 transition duration-300 hover:translate-x-1 hover:bg-white/10 active:scale-[0.98]"
+                    style={{
+                      animation: `fadeUp 320ms ease-out ${460 + index * 70}ms both`,
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
 
-{/* bottom item header */}
+              <div
+                className="mt-5 rounded-[1.5rem] border border-emerald-400/20 bg-emerald-500/10 p-4"
+                style={{ animation: "fadeUp 320ms ease-out 760ms both" }}
+              >
+                <p className="text-xs uppercase tracking-[0.2em] text-emerald-200">
+                  Cart items
+                </p>
+                <p className="mt-2 text-3xl font-black text-white">{totalBag || 0}</p>
+              </div>
 
-<div className='bottomItemHeaderContainer headerContainer flex justify-center  h-12 xl:flex hidden' >
+              <div
+                className="mt-5 space-y-2"
+                style={{ animation: "fadeUp 320ms ease-out 860ms both" }}
+              >
+                {username ? (
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="w-full rounded-[1.25rem] bg-red-500/12 px-4 py-3 text-left text-sm font-semibold text-red-200 transition duration-300 hover:bg-red-500/18 active:scale-[0.98]"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleLogin}
+                    className="w-full rounded-[1.25rem] bg-emerald-600 px-4 py-3 text-left text-sm font-semibold text-white transition duration-300 hover:bg-emerald-700 active:scale-[0.98]"
+                  >
+                    Login
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-<div className='allItemsContainer w-3/4 h-full flex'>
+      <style>
+        {`
+          @keyframes slideInLeft {
+            from {
+              opacity: 0;
+              transform: translateX(-32px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
 
-{
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
 
-   Items.map((item)=>( 
-    
-    <div key={item.id}  className='Items2 flex relative items-center w-max h-full  lg:pl-4 pr-4 cursor-pointer' onMouseEnter={()=>handleBottomHeader(item.id)} onMouseLeave={handleMouseleave}>
-    <p className='headerText pl-2 tracking-tight text-sm'>{item.label}</p>
-    <div className='arrowContainer flex justify-center items-center ml-1 '>
-    <img src={arrayDown} className={`${item.showDropDown?"block" : 'hidden'} arrayDownHeader h-4 ${item.showDropDown&& dropdownBottom===item.id ? 'rotate-180' : 'rotate-0' }  hover:transition-transform duration-500 ease-in-out`} ></img>
-    </div>
+          @keyframes fadeUp {
+            from {
+              opacity: 0;
+              transform: translateY(12px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
 
-    <div className={`dropdown absolute top-12 left-0 right-0 ${item.showDropDown&& dropdownBottom===item.id ? 'flex' : 'hidden'} flex-col w-72  bg-white justify-center items-center`} >
+          @keyframes profileMenuIn {
+            from {
+              opacity: 0;
+              transform: translateY(10px) scale(0.98);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+        `}
+      </style>
 
-<div className='arrow-up'></div>
-
-<div className='dropDownItemsBox  w-11/12 flex justify-between h-16'>
-<button className=' pl-6 tracking-tight rounded-lg  w-fit text-sm '>BestSellers</button>
-<img src={arrayDown} className={`rotateItemImage h-4 pr-6 mt-2 `}></img>
-</div>
-
-<div className='dropDownItemsBox  w-11/12 flex justify-between h-16'>
-<button className=' pl-6 tracking-tight rounded-lg  w-fit text-sm '>BestSellers</button>
-<img src={arrayDown} className={`rotateItemImage h-4 pr-6 mt-2 `}></img>
-</div>
-
-
-<div className='dropDownItemsBox  w-11/12 flex justify-between h-16'>
-<button className=' pl-6 tracking-tight rounded-lg  w-fit text-sm '>BestSellers</button>
-<img src={arrayDown} className={`rotateItemImage h-4 pr-6 mt-2 `}></img>
-</div>
-
-
-
-<div className='dropDownItemsBox  w-11/12 flex justify-between h-16'>
-<button className=' pl-6 tracking-tight rounded-lg  w-fit text-sm '>BestSellers</button>
-<img src={arrayDown} className={`rotateItemImage h-4 pr-6 mt-2 `}></img>
-</div>
-
-
-
-<div className='dropDownItemsBox  w-11/12 flex justify-between h-16'>
-<button className=' pl-6 tracking-tight rounded-lg  w-fit text-sm '>BestSellers</button>
-<img src={arrayDown} className={`rotateItemImage h-4 pr-6 mt-2 `}></img>
-</div>
-
-
-<div className='dropDownItemsBox  w-11/12 flex justify-between h-16'>
-<button className=' pl-6 tracking-tight rounded-lg  w-fit text-sm '>BestSellers</button>
-<img src={arrayDown} className={`rotateItemImage h-4 pr-6 mt-2 `}></img>
-</div>
-
-
-</div>
-</div>
-
-
-))
-
+      {showLoginModal && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-[1.75rem] bg-white p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.3)]">
+            <h2 className="text-2xl font-black text-slate-950">Login Required</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Please login to continue shopping and access your cart.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLoginModal(false);
+                  navigate("/users/login");
+                }}
+                className="flex-1 rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white transition hover:bg-emerald-700"
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowLoginModal(false)}
+                className="flex-1 rounded-xl bg-slate-200 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
-</div>
-</div>
 
-    </div>
-  )
-}
-
-export default Header
+export default Header;

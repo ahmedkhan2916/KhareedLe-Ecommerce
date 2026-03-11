@@ -23,6 +23,7 @@ import {
   fetchProductQuantity,
   fetchBagData,
   fetchBagTotal2,
+  setBagData,
 } from "../store/dataSlice.js";
 import { BASE_URL } from "../config/config.js";
 
@@ -91,16 +92,28 @@ const CartPage = () => {
   const deleteQuantity = async (productId) => {
     try {
       const ID = UserID;
+      const nextBagItems = bagItems.filter((item) => item.productId !== productId);
+
+      dispatch(
+        setBagData({
+          ...bagData,
+          bagItems: nextBagItems,
+        })
+      );
 
       await axios.post(`${BASE_URL}/users/deletequantity`, {
         userId: ID,
         productId,
       });
 
-      dispatch(fetchBagData(ID));
-      dispatch(fetchBagTotal2(ID));
+      await dispatch(fetchBagData(ID));
+      await dispatch(fetchBagTotal2({ ID }));
+      fetchTotalPrice();
     } catch (error) {
       console.error("Error deleting product from cart:", error);
+      if (UserID) {
+        dispatch(fetchBagData(UserID));
+      }
     }
   };
 
