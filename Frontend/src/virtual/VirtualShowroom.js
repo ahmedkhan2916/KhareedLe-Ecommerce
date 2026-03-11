@@ -1157,6 +1157,7 @@ export default function VirtualShowroom() {
   });
 
   const [maxAnisotropy, setMaxAnisotropy] = useState(0);
+  const [sceneError, setSceneError] = useState(null);
 
   const webglReady = useMemo(() => canInitializeWebGL(), []);
   const qualityPreset = useMemo(() => {
@@ -1175,13 +1176,15 @@ export default function VirtualShowroom() {
   const dpr = useMemo(() => {
     if (typeof window === "undefined") return 1;
     const capByQuality = {
-      low: isMobileViewport ? 1.25 : 1.5,
-      balanced: isMobileViewport ? 1.6 : 2,
+      low: isMobileViewport ? 1 : 1.5,
+      balanced: isMobileViewport ? 1.1 : 2,
       high: isMobileViewport ? 2 : 2.5,
     };
     const cap = capByQuality[qualityPreset] ?? 1.5;
     return Math.min(window.devicePixelRatio || 1, cap);
   }, [isMobileViewport, qualityPreset]);
+
+  const mobileSafeMode = isMobileViewport || qualityPreset === "low";
 
   useEffect(() => {
     const onResize = () => {
@@ -1432,6 +1435,34 @@ export default function VirtualShowroom() {
     );
   }
 
+  if (sceneError) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#0b1020",
+          color: "#e2e8f0",
+          padding: "24px",
+          textAlign: "center",
+        }}
+      >
+        <div>
+          <p style={{ fontSize: "20px", fontWeight: 600 }}>Virtual showroom could not load</p>
+          <p style={{ marginTop: "8px", opacity: 0.85 }}>
+            Your device may not support this 3D scene configuration. Try desktop or a
+            lighter mobile browser.
+          </p>
+          <p style={{ marginTop: "10px", fontSize: "12px", opacity: 0.65 }}>
+            {String(sceneError?.message || sceneError)}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
 
 
@@ -1478,59 +1509,65 @@ export default function VirtualShowroom() {
 
 <Canvas
   camera={{ fov: 60, near: 0.1, far: 1000, position: [0, CAMERA_HEIGHT, 6] }}
-  shadows
+  shadows={!mobileSafeMode}
   dpr={dpr}
   gl={{
-    antialias: true,
+    antialias: !mobileSafeMode,
     alpha: false,
-    powerPreference: "high-performance",
+    powerPreference: mobileSafeMode ? "default" : "high-performance",
   }}
   onCreated={({ gl }) => {
     gl.outputColorSpace = THREE.SRGBColorSpace;
     gl.toneMapping = THREE.ACESFilmicToneMapping;
     gl.toneMappingExposure = 0.95; // Lower exposure for more natural showroom tones
     gl.physicallyCorrectLights = true;
-    gl.shadowMap.enabled = true;
+    gl.shadowMap.enabled = !mobileSafeMode;
     gl.shadowMap.type = THREE.PCFSoftShadowMap;
 
     setMaxAnisotropy(gl.capabilities.getMaxAnisotropy());
+  }}
+  onError={(error) => {
+    console.error("Virtual showroom canvas error:", error);
+    setSceneError(error);
   }}
 >
   {/* Background */}
   <color attach="background" args={["#f2f2f2"]} />
 
   {/* 🔥 HDR Environment (BIG UPGRADE) */}
-<Environment
-  files="/hdr/warehouse.hdr"
-  background={false}
-/>
+  {!mobileSafeMode ? (
+    <Environment
+      files="/hdr/warehouse.hdr"
+      background={false}
+    />
+  ) : null}
 
   {/* Soft base light, avoid washed-out whites */}
-  <ambientLight intensity={0.18} />
+  <ambientLight intensity={mobileSafeMode ? 0.42 : 0.18} />
 
   <hemisphereLight
-    args={["#f8f9fb", "#c2cad2", 0.24]}
+    args={["#f8f9fb", "#c2cad2", mobileSafeMode ? 0.42 : 0.24]}
   />
 
   {/* Main ceiling key light */}
   <spotLight
     position={[16, 5.8, -16.2]}
-    intensity={7.2}
+    intensity={mobileSafeMode ? 4.4 : 7.2}
     distance={11}
     angle={Math.PI / 8}
     penumbra={0.85}
     decay={1.8}
-    castShadow
+    castShadow={!mobileSafeMode}
     shadow-bias={-0.00008}
     shadow-normalBias={0.02}
-    shadow-mapSize-width={2048}
-    shadow-mapSize-height={2048}
+    shadow-mapSize-width={mobileSafeMode ? 1024 : 2048}
+    shadow-mapSize-height={mobileSafeMode ? 1024 : 2048}
     target={spotTargetRef.current}
   />
 
   {/* Gentle showroom fill from opposite sides */}
-  <pointLight position={[-10, 3.2, 3]} intensity={0.58} distance={26} color="#fff6ea" />
-  <pointLight position={[10, 2.8, -6]} intensity={0.44} distance={22} color="#f2f7ff" />
+  <pointLight position={[-10, 3.2, 3]} intensity={mobileSafeMode ? 0.72 : 0.58} distance={26} color="#fff6ea" />
+  <pointLight position={[10, 2.8, -6]} intensity={mobileSafeMode ? 0.6 : 0.44} distance={22} color="#f2f7ff" />
 
   <primitive object={spotTargetRef.current} />
 
