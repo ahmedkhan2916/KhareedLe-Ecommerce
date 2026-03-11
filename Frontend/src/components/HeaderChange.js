@@ -200,7 +200,7 @@ function Header() {
                 />
 
                 {(searchInput || hasSearchResults) && (
-                  <div className="absolute left-0 right-0 top-14 rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+                  <div className="absolute left-0 right-0 top-14 z-40 rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
                     {hasSearchResults ? (
                       <ul className="space-y-1">
                         {searchQuery.map((company) => (
@@ -235,7 +235,7 @@ function Header() {
               </button>
 
               <div
-                className="relative"
+                className="relative z-50"
                 onMouseEnter={() => setIsProfileOpen(true)}
                 onMouseLeave={() => setIsProfileOpen(false)}
               >
@@ -256,7 +256,7 @@ function Header() {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full w-64 animate-[profileMenuIn_220ms_cubic-bezier(0.16,1,0.3,1)] rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+                  <div className="absolute right-0 top-full z-[70] w-64 animate-[profileMenuIn_220ms_cubic-bezier(0.16,1,0.3,1)] rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
                     <div className="rounded-[1.25rem] bg-white/5 px-4 py-4">
                       <p className="text-sm font-semibold text-white">
                         {username || "Guest"}
@@ -323,7 +323,7 @@ function Header() {
               />
 
               {(searchInput || hasSearchResults) && (
-                <div className="absolute left-0 right-0 top-14 rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+                <div className="absolute left-0 right-0 top-14 z-40 rounded-[1.5rem] border border-white/10 bg-slate-950/95 p-3 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
                   {hasSearchResults ? (
                     <ul className="space-y-1">
                       {searchQuery.map((company) => (

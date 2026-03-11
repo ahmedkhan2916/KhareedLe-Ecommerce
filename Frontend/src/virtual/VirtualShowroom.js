@@ -17,17 +17,10 @@ import { OrbitControls, useCursor, useGLTF, useProgress } from "@react-three/dre
 
 import { a, useSpring } from "@react-spring/three";
 
-
-
-import storeModel from "../assets/Models/store2.glb";
-
-
-
-import PhoneDemo from "../assets/Models/iphone17prodemo.glb";
-
-
-
 import ProductPanel from "./productpanel/ProductPanel";
+
+const storeModel = "/models/store2.glb";
+const PhoneDemo = "/models/iphone17prodemo.glb";
 
 function canInitializeWebGL() {
   if (typeof window === "undefined") return true;
