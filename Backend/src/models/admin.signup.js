@@ -4,13 +4,16 @@ import bcrypt from "bcrypt"
 
     const adminSignupSchema = new Schema({
 
-    firstname:String,
+    firstname:{
+        type:String,
+        required:true,
+        trim:true,
+    },
 
-    lastname:String,
-
-    // phone:String,
-
-    phonenumber:Number,
+    phonenumber:{
+        type:Number,
+        required:true,
+    },
 
     password:{
 
@@ -26,6 +29,43 @@ import bcrypt from "bcrypt"
     unique:true,
     lowercase:true,
     trim:true,
+    },
+
+    role:{
+        type:String,
+        enum:["admin","seller"],
+        default:"seller",
+    },
+
+    storeName:{
+        type:String,
+        required:true,
+        trim:true,
+    },
+
+    businessAddress:{
+        type:String,
+        required:true,
+        trim:true,
+    },
+
+    gstNumber:{
+        type:String,
+        trim:true,
+        default:"",
+    },
+
+    bankAccount:{
+        type:String,
+        required:true,
+        trim:true,
+    },
+
+    ifscCode:{
+        type:String,
+        required:true,
+        trim:true,
+        uppercase:true,
     },
     
     refreshToken:{
@@ -66,9 +106,7 @@ catch(err)
 
 adminSignupSchema.virtual("totalQuantity").get(function()
 {
-
-
-    return this.bag.reduce((total,item)=>total+item.quantity,0);
+    return 0;
 
 
 });

@@ -134,21 +134,40 @@ const generateRefreshToken=(user)=>{
   
   const SignUpAdmin = async (req, res) => {
 
-    const { firstname, lastname, phonenumber, password, email } = req.body;
+    const {
+      firstname,
+      phonenumber,
+      password,
+      email,
+      role,
+      storeName,
+      businessAddress,
+      gstNumber,
+      bankAccount,
+      ifscCode,
+    } = req.body;
   
     // Validate input fields
 
-    console.log(firstname,lastname,phonenumber,password,email);
+    console.log(firstname,phonenumber,password,email,role,storeName,businessAddress,gstNumber,bankAccount,ifscCode);
 
   if (
   !firstname?.trim() ||
-  !lastname?.trim() ||
   !email?.trim() ||
   !password?.trim() ||
-  !phonenumber
+  !phonenumber ||
+  !role?.trim() ||
+  !storeName?.trim() ||
+  !businessAddress?.trim() ||
+  !bankAccount?.trim() ||
+  !ifscCode?.trim()
 ) {
   return res.status(400).json({ error: "All fields are required." });
 }
+
+  if (!["admin", "seller"].includes(role)) {
+    return res.status(400).json({ error: "Invalid account role." });
+  }
 
  
     try {
@@ -170,10 +189,15 @@ const generateRefreshToken=(user)=>{
       // Create user
       const user = await Admin.create({
         firstname,
-        lastname,
         phonenumber,
         password,
         email,
+        role,
+        storeName,
+        businessAddress,
+        gstNumber,
+        bankAccount,
+        ifscCode,
       });
 
       console.log("user created....",user)
@@ -185,7 +209,17 @@ const generateRefreshToken=(user)=>{
 
       res.status(201).json({
         message: "Signup successful!",
-        user: { firstname, lastname, email,phonenumber,password },
+        user: {
+          firstname,
+          email,
+          phonenumber,
+          role,
+          storeName,
+          businessAddress,
+          gstNumber,
+          bankAccount,
+          ifscCode,
+        },
       });
     } catch (error) {
       console.error("Signup error:", error);

@@ -1,301 +1,220 @@
-// import React from "react";
-// import { useState } from "react";
-// import "../assets/Style/ferris.css";
-// import Downarrow from "../assets/images/downarrow.png";
-// import {useNavigate}  from "react-router-dom"
-// import Celebrate from "../pages/Confetti.js"
-// import "../assets/Style/Headings.css"
-
-// const FerrisWheel = () => {
-//   const items = Array.from({ length: 8 }, (_, i) => i + 1); // Generate 8 items
-//   const prizes = ["powerbank", "headphone", "glass", "cases", "neckband", "watch", "charger", "smartwatch"];
-
-//   const [rotation, setRotation] = useState(0); // Tracks rotation angle
-//   const [isSpinning, setIsSpinning] = useState(false); // To disable button while spinning
-//   const [winningPrize, setWinningPrize] = useState(null); // Tracks the winning prize
-//   const navigate=useNavigate();
-
-
-//   const congratsThreeTimes=()=>{
-        
-//     Celebrate();
-    
-    
-//         }
-    
-    
-  
-
-
-
-
-//   const spinWheel = () => {
-//     setIsSpinning(true);
-//     setWinningPrize(null); // Reset winning prize
-
-//     // Simulate stopping randomly after spinning
-//     setTimeout(() => {
-//       const randomStop = Math.floor(Math.random() * 360); // Random degree
-//       const alignedStop = Math.ceil(randomStop / 45) * 45; // Align to 45° (8 items)
-//       const finalRotation = rotation + 360 * 4 + alignedStop; // 3 full spins + random position
-
-//       setRotation(finalRotation); // Set the final rotation
-
-//       // Calculate the winning prize
-//       const normalizedRotation = (finalRotation % 360 + 360) % 360; // Normalize to [0, 360)
-//       const segmentAngle = 360 / items.length; // Angle per segment
-//       const prizeIndex = Math.floor(normalizedRotation / segmentAngle); // Determine prize index
-//       console.log(prizeIndex);
-//       setTimeout(()=>{
-
-//         setWinningPrize(prizes[prizeIndex]); // Set the winning prize
-       
-//         const intervalID=setInterval(()=>{
-    
-             
-//           congratsThreeTimes();
-
-
-
-//       },1500)
-
-//       setTimeout(() => {
-//           clearInterval(intervalID);
-          
-//         }, 5000);
-     
-//         return () => clearInterval(intervalID); 
-//       },4000)
-    
-//       setTimeout(()=>{
-
-//         navigate("/users/payment");
-      
-//       },12000)
-
-//       setIsSpinning(false);
-//     }, 1000); // Spins for 2 seconds before stopping
-//   };
-
-//   return (
-//     <div className="ferrisWheelParentContainer flex items-center">
-//     <div className="ferrisWheelContainer w-1/2 flex flex-col items-center justify-center h-screen">
-//       {/* Pointer */}
-//       <div>
-//         <img src={Downarrow} alt="Pointer" className="w-11 h-11" />
-//       </div>
-
-//       {/* Ferris Wheel */}
-//       <div
-//         className="circle"
-//         style={{
-//           transform: `rotate(${rotation}deg)`,
-//           transition: isSpinning ? "none" : "transform 4s ease-out",
-//         }}
-//       >
-//         {items.map((item, index) => (
-//           <div
-//             key={prizes[index]}
-//             className="item"
-//             id={prizes[index]}
-//             style={getPositionStyle(index, items.length)}
-//           >
-//             {item}
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Spin Button */}
-//       <button onClick={spinWheel} disabled={isSpinning} className="buttonFerris">
-//         Spin
-//       </button>
-
-//       {/* Winning Prize Message */}
-
-     
-    
-//     </div>
-
-//     <div className="absolute top-7 left-1/2">
-//       <h1 className="text-5xl HeadingPlayFair">Winning Spin Wheel🎡</h1>
-//     </div>
-
-//     {winningPrize && (
-//         <div className="winning-message mt-4">
-//           <h1 className="text-3xl">🎉 Congratulations! You won: {winningPrize} 🎉</h1>
-//         </div>
-//       )}
-
-//     </div>
-
-//   );
-// };
-
-// // Function to calculate the position for each item
-// const getPositionStyle = (index, totalItems) => {
-//   const radius = 150; // Adjust based on the size of the circle
-//   const angle = (index / totalItems) * 2 * Math.PI;
-//   const x = radius + radius * Math.cos(angle); // X-coordinate
-//   const y = radius + radius * Math.sin(angle); // Y-coordinate
-
-//   return {
-//     position: "absolute",
-//     left: `${x}px`,
-//     top: `${y}px`,
-//     transform: "translate(-50%, -50%)", // Center each item
-//   };
-// };
-
-// export default FerrisWheel;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBolt,
+  faCircleCheck,
+  faGift,
+  faLock,
+  faShieldHalved,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
 import "../assets/Style/ferris.css";
 import Downarrow from "../assets/images/downarrow.png";
-import { useNavigate } from "react-router-dom";
 import Celebrate from "../pages/Confetti.js";
-import "../assets/Style/Headings.css";
+
+const prizes = [
+  { name: "Powerbank", tone: "from-amber-400 to-orange-500" },
+  { name: "Headphone", tone: "from-fuchsia-500 to-pink-500" },
+  { name: "Glass", tone: "from-sky-400 to-cyan-500" },
+  { name: "Cases", tone: "from-emerald-400 to-teal-500" },
+  { name: "Neckband", tone: "from-violet-500 to-purple-600" },
+  { name: "Watch", tone: "from-rose-500 to-red-500" },
+  { name: "Charger", tone: "from-lime-400 to-green-500" },
+  { name: "Smartwatch", tone: "from-indigo-500 to-blue-600" },
+];
+
+const SPIN_DURATION = 5200;
+const REDIRECT_DELAY = 4200;
 
 const FerrisWheel = () => {
-  const items = Array.from({ length: 8 }, (_, i) => i + 1);
-  const prizes = ["powerbank", "headphone", "glass", "cases", "neckband", "watch", "charger", "smartwatch"];
-
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [winningPrize, setWinningPrize] = useState(null);
   const navigate = useNavigate();
+  const timeoutsRef = useRef([]);
 
-  const congratsThreeTimes = () => {
-    Celebrate();
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach((timerId) => clearTimeout(timerId));
+    };
+  }, []);
+
+  const queueTimeout = (callback, delay) => {
+    const timerId = setTimeout(callback, delay);
+    timeoutsRef.current.push(timerId);
   };
 
   const spinWheel = () => {
+    if (isSpinning) {
+      return;
+    }
+
     setIsSpinning(true);
     setWinningPrize(null);
 
-    setTimeout(() => {
-      const randomStop = Math.floor(Math.random() * 360);
-      const alignedStop = Math.ceil(randomStop / 45) * 45;
-      const finalRotation = rotation + 360 * 4 + alignedStop;
+    const segmentAngle = 360 / prizes.length;
+    const prizeIndex = Math.floor(Math.random() * prizes.length);
+    const targetSegment = 360 - prizeIndex * segmentAngle;
+    const centeredTarget = targetSegment - segmentAngle / 2;
+    const finalRotation = rotation + 360 * 7 + centeredTarget;
 
-      setRotation(finalRotation);
+    setRotation(finalRotation);
 
-      const normalizedRotation = (finalRotation % 360 + 360) % 360;
-      const segmentAngle = 360 / items.length;
-      const prizeIndex = Math.floor(normalizedRotation / segmentAngle);
-
-      setTimeout(() => {
-        setWinningPrize(prizes[prizeIndex]);
-
-        const intervalID = setInterval(() => {
-          congratsThreeTimes();
-        }, 1500);
-
-        setTimeout(() => {
-          clearInterval(intervalID);
-        }, 5000);
-
-        return () => clearInterval(intervalID);
-      }, 4000);
-
-      setTimeout(() => {
-        navigate("/users/payment");
-      }, 12000);
-
+    queueTimeout(() => {
+      const prize = prizes[prizeIndex];
+      setWinningPrize(prize);
       setIsSpinning(false);
-    }, 1000);
+      Celebrate();
+
+      queueTimeout(() => {
+        navigate("/users/payment");
+      }, REDIRECT_DELAY);
+    }, SPIN_DURATION);
   };
 
   return (
-   <div className="ferrisWheelParentContainer flex flex-col  justify-center min-h-screen px-4 relative font-[Poppins] bg-gradient-to-br from-blue-100 to-purple-200">
+    <div className="ferris-page">
+      <div className="ferris-page__orb ferris-page__orb--left" />
+      <div className="ferris-page__orb ferris-page__orb--right" />
+      <div className="ferris-page__grid">
+        <section className="ferris-hero">
+          <span className="ferris-badge">
+            <FontAwesomeIcon icon={faStar} />
+            Reward checkpoint
+          </span>
 
-      <div className={`ferrisWheelContainer w-full mt-14 md:w-1/2 ${winningPrize?'hidden': 'flex'} flex-col items-center justify-center`}>
-        {/* Pointer */}
-       <img src={Downarrow} alt="Pointer" className="w-10 h-10 z-10 mb-4 drop-shadow-lg" />
+          <h1 className="ferris-title">Spin the reward wheel before payment.</h1>
+          <p className="ferris-subtitle">
+            A stronger prize experience with a more visual stage, smoother motion,
+            and a cleaner reveal before checkout continues.
+          </p>
 
-
-        {/* Ferris Wheel */}
-        <div
-          className="circle"
-          style={{
-            transform: `rotate(${rotation}deg)`,
-            transition: isSpinning ? "none" : "transform 4s ease-out",
-          }}
-        >
-          {items.map((item, index) => (
-            <div
-              key={prizes[index]}
-              className="item"
-              id={prizes[index]}
-              style={getPositionStyle(index, items.length)}
-            >
-              {item}
+          <div className="ferris-feature-list">
+            <div className="ferris-feature-card">
+              <FontAwesomeIcon icon={faGift} />
+              <div>
+                <strong>8 rotating rewards</strong>
+                <p>Every segment is clearly visible before and after the spin.</p>
+              </div>
             </div>
-          ))}
-        </div>
+            <div className="ferris-feature-card">
+              <FontAwesomeIcon icon={faBolt} />
+              <div>
+                <strong>Smoother wheel motion</strong>
+                <p>The wheel now lands with a cleaner eased finish.</p>
+              </div>
+            </div>
+            <div className="ferris-feature-card">
+              <FontAwesomeIcon icon={faShieldHalved} />
+              <div>
+                <strong>Checkout continuity</strong>
+                <p>The prize reveal stays visible before redirecting to payment.</p>
+              </div>
+            </div>
+          </div>
 
-        {/* Spin Button */}
-     <button
-  onClick={spinWheel}
-  disabled={isSpinning}
-  className="buttonFerris mt-6 px-6 py-3 rounded-xl text-lg font-bold text-white bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-500 hover:to-pink-500 shadow-lg transition-all duration-300 disabled:opacity-50"
->
-  {isSpinning ? "Spinning..." : "🎯 Spin Now"}
-</button>
+          <div className="ferris-trust-row">
+            <span>
+              <FontAwesomeIcon icon={faLock} />
+              Secure flow
+            </span>
+            <span>
+              <FontAwesomeIcon icon={faStar} />
+              Premium UI
+            </span>
+          </div>
+        </section>
+
+        <section className="ferris-stage">
+          <div className="ferris-stage__top">
+            <div>
+              <p className="ferris-kicker">Lucky draw</p>
+              <h2 className="ferris-stage__title">Pick your surprise reward</h2>
+            </div>
+            <div className="ferris-stage__status">
+              {isSpinning ? "Wheel in motion" : winningPrize ? "Prize unlocked" : "Ready to spin"}
+            </div>
+          </div>
+
+          <div className="ferris-wheel-shell">
+            <div className="ferris-pointer-wrap">
+              <img src={Downarrow} alt="Pointer" className="ferris-pointer" />
+            </div>
+
+            <div
+              className={`circle ${isSpinning ? "circle--spinning" : ""}`}
+              style={{
+                transform: `rotate(${rotation}deg)`,
+                transition: `transform ${SPIN_DURATION}ms cubic-bezier(0.12, 0.8, 0.18, 1)`,
+              }}
+            >
+              <div className="circle__innerRing" />
+              <div className="circle__center">
+                <FontAwesomeIcon icon={faGift} />
+              </div>
+
+              {prizes.map((prize, index) => (
+                <div
+                  key={prize.name}
+                  className={`item item--${index + 1}`}
+                  style={getPositionStyle(index, prizes.length)}
+                >
+                  <div className={`item__pill bg-gradient-to-br ${prize.tone}`}>
+                    <span>{prize.name}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={spinWheel}
+            disabled={isSpinning}
+            className="buttonFerris"
+          >
+            {isSpinning ? "Spinning..." : "Spin the Wheel"}
+          </button>
+
+          <p className="ferris-note">
+            The winning reward is revealed first, then checkout continues automatically.
+          </p>
+
+          <div className={`winning-message ${winningPrize ? "winning-message--visible" : ""}`}>
+            {winningPrize ? (
+              <div className="winning-message__card">
+                <span className="winning-message__eyebrow">
+                  <FontAwesomeIcon icon={faCircleCheck} />
+                  Reward unlocked
+                </span>
+                <h3>You won {winningPrize.name}</h3>
+                <p>Your reward has been added to this checkout flow. Redirecting to payment.</p>
+              </div>
+            ) : (
+              <div className="winning-message__placeholder">
+                Your reward will appear here after the spin stops.
+              </div>
+            )}
+          </div>
+        </section>
       </div>
-
-      {/* Title */}
-    <div className="absolute top-6 left-1/2 transform -translate-x-1/2 text-center">
-  <h1 className="text-3xl md:text-5xl font-[Playfair_Display] font-bold bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 text-transparent bg-clip-text drop-shadow-lg">
-    🎡 Spin & Win Surprise Gifts 🎁
-  </h1>
-  <p className="text-sm md:text-base mt-2 text-gray-700 font-[Poppins] italic">
-    Test your luck and claim your reward!
-  </p>
-</div>
-
-      {/* Winning Prize */}
-{winningPrize && (
-  <div className="winning-message  text-center px-4">
-    <h1 className="text-2xl md:text-3xl font-bold text-green-600 bg-white py-4 px-6 rounded-xl shadow-xl inline-block">
-      🎉 You won: <span className="text-purple-600">{winningPrize}</span> 🎉
-    </h1>
-  </div>
-)}
     </div>
   );
 };
 
-// Responsive position calculation
 const getPositionStyle = (index, totalItems) => {
   const screenWidth = window.innerWidth;
   const isMobile = screenWidth <= 768;
-  const radius = isMobile ? 100 : 150;
-  const angle = (index / totalItems) * 2 * Math.PI;
-  const x = radius + radius * Math.cos(angle);
-  const y = radius + radius * Math.sin(angle);
+  const radius = isMobile ? 118 : 176;
+  const center = isMobile ? 140 : 210;
+  const angle = (index / totalItems) * 2 * Math.PI - Math.PI / 2;
+  const x = center + radius * Math.cos(angle);
+  const y = center + radius * Math.sin(angle);
 
   return {
-    position: "absolute",
     left: `${x}px`,
     top: `${y}px`,
-    transform: "translate(-50%, -50%)",
   };
 };
 

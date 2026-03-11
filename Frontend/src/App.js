@@ -34,7 +34,9 @@ import AddProductAdmin from "./pages/Admin/AddProductAdmin.js"
 import AdminAddProduct from './pages/Admin/AddProductAdmin.js';
 import VRSHOWROOM from "./pages/VirtualStore.js";
 import AdminLoginPage from './pages/Admin/AdminLoginPage.js';
+import AdminSignupPage from './pages/Admin/AdminSignupPage.js';
 import AnimationTest from './virtual/AnimationTest.js';
+
 
 function App() {
 
@@ -126,7 +128,9 @@ function App() {
                <Route path="users/adminadd" element={<AdminAddProduct/>}> </Route>
                 <Route path="users/VR" element={<VRSHOWROOM/>}> </Route>
                  <Route path="users/admin-login" element={<AdminLoginPage/>}> </Route>
+                 <Route path="users/admin-signup" element={<AdminSignupPage/>}> </Route>
                <Route path="users/animate" element={<AnimationTest/>}> </Route>
+                <Route path="users/signup-admin" element={<AdminSignupPage/>}> </Route>
       </Routes>
       
 </Router>

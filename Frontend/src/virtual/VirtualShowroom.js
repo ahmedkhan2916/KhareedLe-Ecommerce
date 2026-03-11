@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
-
+import { Environment } from "@react-three/drei";
+// import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import * as THREE from "three";
 
@@ -18,7 +19,7 @@ import { a, useSpring } from "@react-spring/three";
 
 
 
-import storeModel from "../assets/Models/store.glb";
+import storeModel from "../assets/Models/store2.glb";
 
 
 
@@ -27,6 +28,21 @@ import PhoneDemo from "../assets/Models/iphone17prodemo.glb";
 
 
 import ProductPanel from "./productpanel/ProductPanel";
+
+function canInitializeWebGL() {
+  if (typeof window === "undefined") return true;
+  try {
+    const canvas = document.createElement("canvas");
+    return Boolean(
+      window.WebGLRenderingContext &&
+        (canvas.getContext("webgl2") ||
+          canvas.getContext("webgl") ||
+          canvas.getContext("experimental-webgl"))
+    );
+  } catch (error) {
+    return false;
+  }
+}
 
 
 
@@ -55,14 +71,16 @@ function Store({ collidablesRef, maxAnisotropy }) {
 
 
     const box = new THREE.Box3().setFromObject(store);
-
-
-
-    const center = box.getCenter(new THREE.Vector3());
-
-
-
-    store.position.sub(center);
+    if (!box.isEmpty()) {
+      const center = box.getCenter(new THREE.Vector3());
+      if (
+        Number.isFinite(center.x) &&
+        Number.isFinite(center.y) &&
+        Number.isFinite(center.z)
+      ) {
+        store.position.sub(center);
+      }
+    }
 
 
 
@@ -91,6 +109,7 @@ function Store({ collidablesRef, maxAnisotropy }) {
 
 
       child.receiveShadow = true;
+      child.frustumCulled = false;
 
 
 
@@ -102,8 +121,15 @@ function Store({ collidablesRef, maxAnisotropy }) {
 
 
 
-      child.userData.originalMaterial = child.material.clone();
-      if (maxAnisotropy && child.material) {
+      const materials = Array.isArray(child.material)
+        ? child.material
+        : child.material
+        ? [child.material]
+        : [];
+      child.userData.originalMaterial = materials.map((material) =>
+        material?.clone ? material.clone() : material
+      );
+      if (maxAnisotropy && materials.length > 0) {
         const texKeys = [
           "map",
           "normalMap",
@@ -112,12 +138,15 @@ function Store({ collidablesRef, maxAnisotropy }) {
           "aoMap",
           "emissiveMap",
         ];
-        texKeys.forEach((key) => {
-          const tex = child.material[key];
-          if (tex) {
-            tex.anisotropy = maxAnisotropy;
-            tex.needsUpdate = true;
-          }
+        materials.forEach((material) => {
+          if (!material) return;
+          texKeys.forEach((key) => {
+            const tex = material[key];
+            if (tex) {
+              tex.anisotropy = maxAnisotropy;
+              tex.needsUpdate = true;
+            }
+          });
         });
       }
 
@@ -223,7 +252,7 @@ function Phone({
 
 
   const basePosition = useMemo(
-    () => new THREE.Vector3(16, isMobileViewport ? 1.21 : 0.98, -16.45),
+    () => new THREE.Vector3(0, isMobileViewport ? -1.16 : -1.22, 0),
     [isMobileViewport]
   );
 
@@ -610,6 +639,7 @@ function Movement({
 
 
 }) {
+  const CAMERA_HEIGHT = -1.0;
 
 
 
@@ -740,7 +770,7 @@ function Movement({
 
 
 
-          : new THREE.Vector3(16, 0.42, -16.5);
+          : new THREE.Vector3(0, -1.22, 0);
 
 
 
@@ -913,7 +943,7 @@ function Movement({
 
 
 
-      camera.position.y = 1.6;
+      camera.position.y = CAMERA_HEIGHT;
 
 
 
@@ -1041,7 +1071,7 @@ function Movement({
 
 
 
-    camera.position.y = 1.6;
+    camera.position.y = CAMERA_HEIGHT;
 
 
 
@@ -1118,6 +1148,7 @@ function Movement({
 
 
 export default function VirtualShowroom() {
+  const CAMERA_HEIGHT = -1.0;
 
 
 
@@ -1134,11 +1165,30 @@ export default function VirtualShowroom() {
 
   const [maxAnisotropy, setMaxAnisotropy] = useState(0);
 
+  const webglReady = useMemo(() => canInitializeWebGL(), []);
+  const qualityPreset = useMemo(() => {
+    if (typeof window === "undefined") return "balanced";
+    const forced = new URLSearchParams(window.location.search).get("quality");
+    if (forced === "low" || forced === "balanced" || forced === "high") return forced;
+
+    const memory = navigator.deviceMemory || 4;
+    const cores = navigator.hardwareConcurrency || 4;
+    if (isMobileViewport) return "low";
+    if (memory <= 2 || cores <= 2) return "low";
+    if (memory >= 8 && cores >= 8) return "high";
+    return "balanced";
+  }, [isMobileViewport]);
+
   const dpr = useMemo(() => {
     if (typeof window === "undefined") return 1;
-    const cap = isMobileViewport ? 2.5 : 2;
+    const capByQuality = {
+      low: isMobileViewport ? 1.25 : 1.5,
+      balanced: isMobileViewport ? 1.6 : 2,
+      high: isMobileViewport ? 2 : 2.5,
+    };
+    const cap = capByQuality[qualityPreset] ?? 1.5;
     return Math.min(window.devicePixelRatio || 1, cap);
-  }, [isMobileViewport]);
+  }, [isMobileViewport, qualityPreset]);
 
   useEffect(() => {
     const onResize = () => {
@@ -1364,11 +1414,30 @@ export default function VirtualShowroom() {
 
   }, []);
 
-
-
-
-
-
+  if (!webglReady) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "grid",
+          placeItems: "center",
+          background: "#0b1020",
+          color: "#e2e8f0",
+          padding: "24px",
+          textAlign: "center",
+        }}
+      >
+        <div>
+          <p style={{ fontSize: "20px", fontWeight: 600 }}>3D view is unavailable</p>
+          <p style={{ marginTop: "8px", opacity: 0.85 }}>
+            WebGL could not be initialized. Enable hardware acceleration or try another
+            browser.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
 
@@ -1414,330 +1483,113 @@ export default function VirtualShowroom() {
 
 
 
-        <Canvas
-
-
-
-          camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 1.6, 6] }}
-
-
-
-          shadows
-          dpr={dpr}
-          gl={{ antialias: true, powerPreference: "high-performance" }}
-
-
-
-          onCreated={({ gl }) => {
-
-
-
-            gl.outputColorSpace = THREE.SRGBColorSpace;
-
-
-
-            gl.toneMapping = THREE.ACESFilmicToneMapping;
-
-
-
-            gl.toneMappingExposure = 1.85;
-
-
-
-            gl.physicallyCorrectLights = true;
-
-
-
-            gl.shadowMap.enabled = true;
-
-
-
-            gl.shadowMap.type = THREE.PCFSoftShadowMap;
-            setMaxAnisotropy(gl.capabilities.getMaxAnisotropy());
-
-
-
-          }}
-
-
-
-        >
-
-
-
-          <color attach="background" args={[0xf2f2f2]} />
-
-
-
-
-
-
-
-          <ambientLight intensity={0.95} />
-          <hemisphereLight args={["#fbfcff", "#dde2eb", 0.5]} />
-
-
-
-          <spotLight
-
-
-
-            position={[16, 5.8, -16.2]}
-
-
-
-            intensity={18.8}
-
-
-
-            distance={7}
-
-
-
-            angle={Math.PI / 14}
-
-
-
-            penumbra={0.55}
-
-
-
-            decay={2}
-
-
-
-            castShadow
-
-
-
-            target={spotTargetRef.current}
-
-
-
-          />
-
-
-
-          <spotLight
-
-
-
-            position={[15.2, 3.4, -15.3]}
-
-
-
-            intensity={6.4}
-
-
-
-            color="#f8f9ff"
-
-
-
-            distance={6.3}
-
-
-
-            angle={Math.PI / 12}
-
-
-
-            penumbra={0.75}
-
-
-
-            decay={2}
-
-
-
-            target={spotTargetRef.current}
-
-
-
-          />
-
-
-
-          <spotLight
-
-
-
-            position={[16.9, 3.2, -17.2]}
-
-
-
-            intensity={5.2}
-
-
-
-            color="#f1f4ff"
-
-
-
-            distance={6.1}
-
-
-
-            angle={Math.PI / 11}
-
-
-
-            penumbra={0.7}
-
-
-
-            decay={2}
-
-
-
-            target={spotTargetRef.current}
-
-
-
-          />
-
-
-
-          <primitive object={spotTargetRef.current} />
-
-          <OrbitControls
-
-
-
-            ref={controlsRef}
-
-
-
-            makeDefault
-
-
-
-            enableDamping
-
-
-
-            enablePan={false}
-
-
-
-            enableZoom={false}
-
-
-
-            enableRotate
-
-
-
-          />
-
-
-
-
-
-
-
-          <Suspense fallback={null}>
-
-
-
-            <Store
-              collidablesRef={collidablesRef}
-              maxAnisotropy={maxAnisotropy}
-            />
-
-
-
-            <Phone
-
-
-
-              isActive={isActive}
-
-
-
-              setIsActive={setIsActive}
-
-
-
-              phoneRef={phoneRef}
-              isMobileViewport={isMobileViewport}
-              maxAnisotropy={maxAnisotropy}
-
-
-
-              onToggle={(next) => {
-
-
-
-                cameraPulseRef.current = {
-
-
-
-                  id: performance.now(),
-
-
-
-                  action: next ? "focus" : "unfocus",
-
-
-
-                };
-
-
-
-              }}
-
-
-
-            />
-
-
-
-          </Suspense>
-
-
-
-
-
-
-
-          <Movement
-
-
-
-            keysRef={keysRef}
-
-
-
-            collidablesRef={collidablesRef}
-
-
-
-            controlsRef={controlsRef}
-
-
-
-            phoneRef={phoneRef}
-
-
-
-            spotTargetRef={spotTargetRef}
-
-
-
-            isActive={isActive}
-
-
-
-            cameraPulseRef={cameraPulseRef}
-
-
-
-          />
-
-
-
-        </Canvas>
+<Canvas
+  camera={{ fov: 60, near: 0.1, far: 1000, position: [0, CAMERA_HEIGHT, 6] }}
+  shadows
+  dpr={dpr}
+  gl={{
+    antialias: true,
+    alpha: false,
+    powerPreference: "high-performance",
+  }}
+  onCreated={({ gl }) => {
+    gl.outputColorSpace = THREE.SRGBColorSpace;
+    gl.toneMapping = THREE.ACESFilmicToneMapping;
+    gl.toneMappingExposure = 0.95; // Lower exposure for more natural showroom tones
+    gl.physicallyCorrectLights = true;
+    gl.shadowMap.enabled = true;
+    gl.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    setMaxAnisotropy(gl.capabilities.getMaxAnisotropy());
+  }}
+>
+  {/* Background */}
+  <color attach="background" args={["#f2f2f2"]} />
+
+  {/* 🔥 HDR Environment (BIG UPGRADE) */}
+<Environment
+  files="/hdr/warehouse.hdr"
+  background={false}
+/>
+
+  {/* Soft base light, avoid washed-out whites */}
+  <ambientLight intensity={0.18} />
+
+  <hemisphereLight
+    args={["#f8f9fb", "#c2cad2", 0.24]}
+  />
+
+  {/* Main ceiling key light */}
+  <spotLight
+    position={[16, 5.8, -16.2]}
+    intensity={7.2}
+    distance={11}
+    angle={Math.PI / 8}
+    penumbra={0.85}
+    decay={1.8}
+    castShadow
+    shadow-bias={-0.00008}
+    shadow-normalBias={0.02}
+    shadow-mapSize-width={2048}
+    shadow-mapSize-height={2048}
+    target={spotTargetRef.current}
+  />
+
+  {/* Gentle showroom fill from opposite sides */}
+  <pointLight position={[-10, 3.2, 3]} intensity={0.58} distance={26} color="#fff6ea" />
+  <pointLight position={[10, 2.8, -6]} intensity={0.44} distance={22} color="#f2f7ff" />
+
+  <primitive object={spotTargetRef.current} />
+
+  <OrbitControls
+    ref={controlsRef}
+    makeDefault
+    enableDamping
+    enablePan={false}
+    enableZoom={false}
+  />
+
+  <Suspense fallback={null}>
+    <Store
+      collidablesRef={collidablesRef}
+      maxAnisotropy={maxAnisotropy}
+    />
+
+    <Phone
+      isActive={isActive}
+      setIsActive={setIsActive}
+      phoneRef={phoneRef}
+      isMobileViewport={isMobileViewport}
+      maxAnisotropy={maxAnisotropy}
+      onToggle={(next) => {
+        cameraPulseRef.current = {
+          id: performance.now(),
+          action: next ? "focus" : "unfocus",
+        };
+      }}
+    />
+  </Suspense>
+
+  <Movement
+    keysRef={keysRef}
+    collidablesRef={collidablesRef}
+    controlsRef={controlsRef}
+    phoneRef={phoneRef}
+    spotTargetRef={spotTargetRef}
+    isActive={isActive}
+    cameraPulseRef={cameraPulseRef}
+  />
+
+  {/* 🔥 OPTIONAL BLOOM */}
+  {/* <EffectComposer>
+    <Bloom
+      intensity={0.5}
+      luminanceThreshold={0.25}
+      mipmapBlur
+    />
+  </EffectComposer> */}
+
+</Canvas>
 
 
 
@@ -2028,28 +1880,9 @@ export default function VirtualShowroom() {
             onClose={() => setSelectedShelf(null)}
 
 
-
           />
-
-
-
         </div>
-
-
-
       )}
-
-
-
     </div>
-
-
-
   );
-
-
-
 }
-
-
-
