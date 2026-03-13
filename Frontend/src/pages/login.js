@@ -7,13 +7,15 @@ import headphone from "../assets/LoginLogos/headphone.png";
 import apple from "../assets/LoginLogos/apple.png";
 import samsung from "../assets/LoginLogos/samsung.png";
 import applelogo from "../assets/LoginLogos/applelogo.png";
-import oneplus from "../assets/LoginLogos/one-plus.png";
-import oppo from "../assets/LoginLogos/oppo.png";
-import vivo from "../assets/LoginLogos/vivo.png";
-import moto from "../assets/LoginLogos/motorola.png";
+import kitchenware from "../assets/LoginLogos/kitchenware2.png";
+import livingroom from "../assets/LoginLogos/livingroom.png";
+
+
+
 import playstation from "../assets/LoginLogos/playstation.png";
-import xbox from "../assets/LoginLogos/xbox.png";
+
 import airpods from "../assets/LoginLogos/airpods.png";
+import hanger from "../assets/LoginLogos/hanger.png";
 import { loginUser, refreshToken } from "../store/dataSlice.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +24,7 @@ import "../assets/Style/Headings.css";
 import GELOGO2 from "../assets/images/HeaderLogos/arena3.png";
 
 function Login() {
-  const imgArray = [headphone, apple, airpods, samsung, applelogo, oneplus, oppo, vivo, moto, playstation, xbox];
+  const imgArray = [headphone,hanger, airpods,kitchenware, samsung, applelogo, playstation,livingroom];
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();

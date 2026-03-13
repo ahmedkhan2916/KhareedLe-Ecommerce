@@ -20,12 +20,12 @@ import { fetchSearchItems } from "../Services/apiService.js";
 import { BASE_URL } from "../config/config.js";
 
 const desktopNavItems = [
-  "Products",
-  "Start selling",
-  "Tools and apps",
-  "Pricing",
-  "Resources",
-  "Pro sellers",
+  "Electronics",
+  "Clothing",
+  "Home Decor",
+  "Kitchenware",
+  "Books",
+  "Gaming",
 ];
 
 function Header() {
@@ -144,7 +144,12 @@ function Header() {
   const mobileMenuItems = useMemo(
     () => [
       { label: "Home", action: () => navigate("/") },
-      { label: "Products", action: () => navigate("/") },
+      { label: "Electronics", action: () => navigate("/") },
+      { label: "Clothing", action: () => navigate("/") },
+      { label: "Home Decor", action: () => navigate("/") },
+      { label: "Kitchenware", action: () => navigate("/") },
+      { label: "Books", action: () => navigate("/") },
+      { label: "Gaming", action: () => navigate("/") },
       { label: "My Orders", action: handleOrders },
       { label: "Address", action: () => navigate("/users/address") },
       { label: "Cart", action: handleCartRoute },
