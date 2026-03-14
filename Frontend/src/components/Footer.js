@@ -2,7 +2,7 @@
 
 import { Link, useNavigate } from "react-router-dom";
 
-import khareedLe from "../assets/images/HeaderLogos/khareedLe.png";
+import xarenaWordmark from "../assets/images/HeaderLogos/xarena.png";
 
 import Facebook from "../assets/Socialicons/facebook.png";
 
@@ -20,7 +20,7 @@ import master from "../assets/Socialicons/card.png";
 
 import ssl from "../assets/Socialicons/ssl2.png";
 
-import KhareedLeLogo from "../assets/images/HeaderLogos/arena3.png";
+import XArenaLogo from "../assets/images/HeaderLogos/arena3.png";
 
 
 
@@ -74,7 +74,7 @@ function Footer() {
 
             <div className="flex items-center gap-4">
 
-              <img src={KhareedLeLogo} alt="X Arena" className="h-12 w-12 rounded-xl border border-cyan-400/30 bg-black/40 p-1" />
+              <img src={XArenaLogo} alt="X Arena" className="h-12 w-12 rounded-xl border border-cyan-400/30 bg-black/40 p-1" />
 
               <div>
 
@@ -152,7 +152,7 @@ function Footer() {
 
           <div className="space-y-4">
 
-            <img src={khareedLe} alt="KhareedLe" className="h-10" />
+            <img src={xarenaWordmark} alt="X Arena" className="h-10" />
 
             <p className="text-sm text-slate-300">
 

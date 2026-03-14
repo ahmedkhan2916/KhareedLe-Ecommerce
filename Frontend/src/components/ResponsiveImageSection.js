@@ -20,7 +20,7 @@ const ResponsiveImageSection = ({ productColors, selectedColor }) => {
   };
 
   return (
-    <div className="w-full md:w-11/12 mx-auto">
+    <div className="mx-auto w-full md:w-11/12">
       <div className="hidden md:block space-y-2">
         {filteredImages.map((url, idx) => (
           <img
@@ -32,17 +32,19 @@ const ResponsiveImageSection = ({ productColors, selectedColor }) => {
         ))}
       </div>
       <div className="block md:hidden">
-        <Slider {...settings}>
-          {filteredImages.map((url, idx) => (
-            <div key={idx}>
-              <img
-                src={url}
-                alt="Product"
-                className="w-full h-64 object-contain rounded-xl"
-              />
-            </div>
-          ))}
-        </Slider>
+        <div className="overflow-hidden rounded-[28px] border border-white/80 bg-white/85 p-3 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+          <Slider {...settings}>
+            {filteredImages.map((url, idx) => (
+              <div key={idx}>
+                <img
+                  src={url}
+                  alt="Product"
+                  className="h-[300px] w-full rounded-[20px] bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] object-contain p-4"
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
       </div>
     </div>
   );

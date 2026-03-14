@@ -15,7 +15,7 @@ import {
 } from "../store/dataSlice.js";
 import Search from "../assets/images/Search.png";
 import cart from "../assets/images/HeaderLogos/cart.png";
-import KhareedLeLogo from "../assets/images/HeaderLogos/arena3.png";
+import XArenaLogo from "../assets/images/HeaderLogos/arena3.png";
 import { fetchSearchItems } from "../Services/apiService.js";
 import { BASE_URL } from "../config/config.js";
 
@@ -182,8 +182,8 @@ function Header() {
                 className="flex items-center gap-3"
               >
                 <img
-                  src={KhareedLeLogo}
-                  alt="KhareedLe"
+                  src={XArenaLogo}
+                  alt="X Arena"
                   className="h-12 w-auto sm:h-14"
                 />
               </button>
