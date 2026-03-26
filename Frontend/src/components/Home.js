@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { ArrowRight, Sparkles, Smartphone, Zap } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductSlider from "../components/ProductSlider.js";
-import Specification from "../components/Specification.js";
 import ExploreContainer from "../components/ExploreContainer.js";
 import Footer from "./Footer.js";
 import Header from "./HeaderChange.js";
 import Why from "../components/why.js";
-import GameConsole from "./GameConsole.js";
 import MostSearchedSP from "./MostSearchedSP.js";
 import ShopByCategory from "./ShopByCategory.js";
 import Welcome from "./Welcome.js";
@@ -38,15 +36,15 @@ function Home() {
         <div className="pointer-events-none absolute left-0 top-28 h-64 w-64 rounded-full bg-orange-200/30 blur-3xl" />
         <div className="pointer-events-none absolute right-0 top-44 h-72 w-72 rounded-full bg-cyan-200/25 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[28px] border border-white/70 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_42%,#eff6ff_100%)] px-4 py-5 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:rounded-[36px] sm:px-7 sm:py-10 sm:shadow-[0_28px_90px_rgba(15,23,42,0.1)] lg:px-10 lg:py-12">
-          <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-[0.88fr_1.12fr]">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[28px] border border-white/70 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_42%,#eff6ff_100%)] px-4 py-6 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:rounded-[36px] sm:px-7 sm:py-10 sm:shadow-[0_28px_90px_rgba(15,23,42,0.1)] lg:px-10 lg:py-12">
+          <div className="grid items-start gap-6 sm:gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-orange-700 shadow-sm sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.28em]">
                 <Sparkles size={14} />
                 Smartphone Spotlight
               </span>
 
-              <h1 className="HeadingPlayFair mt-4 text-[2.1rem] leading-[1.05] text-slate-950 sm:mt-5 sm:text-5xl lg:text-6xl">
+              <h1 className="HeadingPlayFair mt-4 max-w-[11ch] text-[2rem] leading-[1.02] text-slate-950 sm:mt-5 sm:max-w-none sm:text-5xl lg:text-6xl">
                 Powerful Smartphones,
                 <span className="block text-blue-500">Presented Like a Flagship Drop</span>
               </h1>
@@ -86,7 +84,7 @@ function Home() {
               </div>
             </div>
 
-            <div className="rounded-[24px] border border-white/80 bg-white/70 p-3 shadow-[0_14px_40px_rgba(15,23,42,0.08)] sm:rounded-[30px] sm:p-5 sm:shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+            <div className="rounded-[24px] border border-white/80 bg-white/75 p-3 shadow-[0_14px_40px_rgba(15,23,42,0.08)] sm:rounded-[30px] sm:p-5 sm:shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
               <div className="mb-3 flex items-center justify-between gap-3 sm:mb-4">
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 sm:text-xs sm:tracking-[0.26em]">
