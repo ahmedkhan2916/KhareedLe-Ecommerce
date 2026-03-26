@@ -38,7 +38,7 @@ function Home() {
 
         <div className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-[0px] border-y border-white/70 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_42%,#eff6ff_100%)] px-3 py-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:rounded-[36px] sm:border sm:px-7 sm:py-10 sm:shadow-[0_28px_90px_rgba(15,23,42,0.1)] lg:px-10 lg:py-12">
           <div className="grid items-start gap-4 sm:gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
-            <div className="max-w-2xl">
+            <div className="hidden max-w-2xl sm:block">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-white/90 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-orange-700 shadow-sm sm:gap-2 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.28em]">
                 <Sparkles size={14} />
                 Smartphone Spotlight
@@ -85,7 +85,7 @@ function Home() {
             </div>
 
             <div className="rounded-[18px] border border-white/80 bg-white/85 p-2.5 shadow-[0_14px_40px_rgba(15,23,42,0.08)] sm:rounded-[30px] sm:p-5 sm:shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
-              <div className="mb-2 flex items-start justify-between gap-2 sm:mb-4 sm:items-center sm:gap-3">
+              <div className="mb-2 flex items-start justify-between gap-2 pt-10 sm:mb-4 sm:items-center sm:gap-3">
                 <div className="min-w-0">
                   <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:text-xs sm:tracking-[0.26em]">
                     Trending Devices
