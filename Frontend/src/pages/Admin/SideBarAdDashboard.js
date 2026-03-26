@@ -4,12 +4,17 @@ import { LayoutDashboard, Package, PlusCircle, Settings, LogOut } from "lucide-r
 import XARENA from "../../assets/images/HeaderLogos/arena3.png"
 import { useNavigate,useLocation } from 'react-router-dom';
 import { useState ,useEffect} from 'react';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { logout, logoutAccessTK, clearBagSlice } from '../../store/dataSlice.js';
+import { BASE_URL } from '../../config/config.js';
 
 function SideBarAdDashboard() {
 
    const [activeTab, setActiveTab] = useState("dashboard");
   const navigate=useNavigate();
   const location=useLocation();
+  const dispatch = useDispatch();
 
 
     useEffect(() => {
@@ -20,10 +25,10 @@ function SideBarAdDashboard() {
     } else if (path.includes("/users/admindash")) {
       setActiveTab("dashboard");
     } 
-    else if(path.includes("/users/addproducts"))
+    else if(path.includes("/users/adminadd"))
     {
 
- setActiveTab("addproducts");
+ setActiveTab("add");
 
     }
     
@@ -67,6 +72,20 @@ navigate("/users/adminadd")
 
 
 
+ }
+
+ const handleLogout = async () => {
+  try {
+    await axios.post(`${BASE_URL}/users/logout`, {}, { withCredentials: true });
+  } catch (error) {
+    console.error("Admin logout error", error);
+  } finally {
+    localStorage.clear();
+    dispatch(logout());
+    dispatch(logoutAccessTK());
+    dispatch(clearBagSlice());
+    navigate("/users/admin-login");
+  }
  }
 
 
@@ -120,7 +139,7 @@ navigate("/users/adminadd")
         </nav>
 
         <div className="admin-sidebar__footer">
-          <button className="admin-sidebar__item admin-sidebar__item--ghost">
+          <button className="admin-sidebar__item admin-sidebar__item--ghost" onClick={handleLogout}>
             <LogOut size={18} />
             Logout
           </button>

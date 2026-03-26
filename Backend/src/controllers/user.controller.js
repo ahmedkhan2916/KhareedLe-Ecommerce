@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from 'uuid';  // Correct import
 import Razorpay from "razorpay";
 import axios from "axios";
 import { Admin } from "../models/admin.signup.js";
+import { uploadBufferToCloudinary } from "../utils/cloudinary.js";
 
 const router=Router();
 
@@ -232,81 +233,77 @@ const generateRefreshToken=(user)=>{
   const LoginAdmin= async (req, res, next) => {
   const { EMAILORPHONENO, password } = req.body;
 
-  // Separate into email or phone number
   let email = "";
   let phonenumber = "";
 
-  if (EMAILORPHONENO) {
-    // If it contains only digits, treat as phone number
-    if (/^\d+$/.test(EMAILORPHONENO)) {
-      phonenumber = EMAILORPHONENO;
-    } else {
-      email = EMAILORPHONENO;
-    }
+  if (!EMAILORPHONENO || !password) {
+    return res.status(400).json({ error: "Email or phone and password are required." });
   }
 
-  // Validate presence
- if (!EMAILORPHONENO || !password) {
-  return res.status(400).json({ error: "Email or phone and password are required." });
-}
-
-
-  if ([EMAILORPHONENO, password].some(field => !field || field.trim() === "")) {
+  if ([EMAILORPHONENO, password].some((field) => !field || field.trim() === "")) {
     return res.status(400).json({
-      error: "Email or Phone Number and password are required."
+      error: "Email or phone number and password are required.",
     });
+  }
+
+  if (/^\d+$/.test(EMAILORPHONENO)) {
+    phonenumber = EMAILORPHONENO;
+  } else {
+    email = EMAILORPHONENO.trim().toLowerCase();
   }
 
   try {
-    // Find user based on email or phone
-   let query = {};
+    const query = {};
 
-if (email) query.email = email;// insert email in query array
+    if (email) query.email = email;
+    if (phonenumber) query.phonenumber = phonenumber;
 
-if (phonenumber) query.phonenumber = phonenumber; // insert phone number in query array
+    const user = await Admin.findOne(query);
 
-const user = await Admin.findOne(query); // send query here
-
-   if (!user) {
-  throw new classErrorHandling("User Not Found", 404); // Or 401
-}
-
-    // Validate password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid password." });
+    if (!user) {
+      return res.status(401).json({
+        error: "Incorrect email, phone number, or password.",
+      });
     }
 
-    // Encrypt user ID
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        error: "Incorrect email, phone number, or password.",
+      });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(403).json({
+        error: "Only admin accounts can access this dashboard.",
+      });
+    }
+
     const ID = user._id.toString();
     const encrypt = encryptIDS(ID);
-
-    // Generate tokens
-    const accessToken = generateAccessToken({ id: encrypt });
+    const accessToken = generateAccessToken({ id: encrypt, role: user.role });
     const refreshToken = generateRefreshToken({ id: encrypt });
 
-    // Store refresh token in DB
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
 
-    // Set cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false,
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // Success response
-    res.status(200).json({
+    return res.status(200).json({
       message: "Login successful!",
       accessToken,
       user: {
         id: encrypt,
         name: user.firstname,
+        role: user.role,
       },
     });
-
   } catch (error) {
     next(error);
   }
@@ -324,6 +321,8 @@ const Login = async (req, res, next) => {
   const { EMAILORPHONENO, password } = req.body;
 
   // Separate into email or phone number
+  console.log("Received login request with:", EMAILORPHONENO, password);
+  
   let email = "";
   let phonenumber = "";
 
@@ -359,7 +358,7 @@ if (phonenumber) query.phonenumber = phonenumber; // insert phone number in quer
 const user = await User.findOne(query); // send query here
 
    if (!user) {
-  throw new classErrorHandling("User Not Found", 404); // Or 401
+  return res.status(402).json({ error: "User not found." }); // Or 401
 }
 
     // Validate password
@@ -373,7 +372,7 @@ const user = await User.findOne(query); // send query here
     const encrypt = encryptIDS(ID);
 
     // Generate tokens
-    const accessToken = generateAccessToken({ id: encrypt });
+    const accessToken = generateAccessToken({ id: encrypt, role: user.role });
     const refreshToken = generateRefreshToken({ id: encrypt });
 
     // Store refresh token in DB
@@ -395,6 +394,7 @@ const user = await User.findOne(query); // send query here
       user: {
         id: encrypt,
         name: user.firstname,
+        role:user.role,
       },
     });
 
@@ -606,6 +606,47 @@ const UploadPost= async(req,res) => {
 
 }
 
+const uploadAdminImages = async (req, res) => {
+  try {
+    if (
+      !process.env.CLOUDINARY_CLOUD_NAME ||
+      !process.env.CLOUDINARY_API_KEY ||
+      !process.env.CLOUDINARY_API_SECRET
+    ) {
+      return res.status(500).json({ message: "Cloudinary configuration is missing on the server." });
+    }
+
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "Please upload at least one image file." });
+    }
+
+    const folder = req.body?.folder?.trim() || "khareedle/admin-products";
+
+    const uploadedImages = await Promise.all(
+      req.files.map(async (file) => {
+        const result = await uploadBufferToCloudinary(file.buffer, {
+          folder,
+          resource_type: "image",
+        });
+
+        return {
+          url: result.secure_url,
+          public_id: result.public_id,
+          original_name: file.originalname,
+        };
+      })
+    );
+
+    return res.status(200).json({
+      message: "Images uploaded successfully.",
+      images: uploadedImages,
+    });
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+    return res.status(500).json({ message: "Failed to upload images." });
+  }
+};
+
 const getData=async (req,res)=>{
 
 
@@ -656,6 +697,8 @@ console.log("this is my payload",payload);
  }
  
  console.log("this is userProduct ID",userProduct._id);
+
+ return res.json(userProduct);
 
  
 
@@ -863,57 +906,45 @@ const updateProductImage=async (req,res)=>{
 
   try{
 
-    const product= await ProductD.findById('69837e00131d969894673482');
+    const { productId, color, image_urls, product_color } = req.body;
 
-    if(product)
+    if(!productId)
     {
-
-      product.product_color=[
-
-        {
-          color:"Orange",
-
-          image_urls:[
-
-            "https://www.designinfo.in/wp-content/uploads/2025/09/Apple-iPhone-17-Pro.webp",
-
-           "https://photos5.appleinsider.com/gallery/65450-136950-65239-136382-IMG_3643-xl-xl.jpg",
-
-           "https://substackcdn.com/image/fetch/$s_!s4E9!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb85847f6-b5fc-4c87-9981-483ea60df09d_2400x1350.jpeg",
-
-           
-
-
-
-          ],
-        },
-
-
-        {
-          color:`white`,
-
-          image_urls:[
-
-            "https://static0.pocketlintimages.com/wordpress/wp-content/uploads/wm/2025/09/iphone-17-pro-header-final.jpg?w=1600&h=900&fit=crop",
-
-            "https://i.ytimg.com/vi/cUwyBf8vafE/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAukDy6woDjSvoEZdJsXSCyrKYuLw",
-
-            "https://i.ytimg.com/vi/K4sRf2vwLwc/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBBAwoi8S9FyxmTh52r019o-4wzpQ"
-
-
-          ]
-
-        },
-
-  
-
-      ]
-
+      return res.status(400).json({message:"Product ID is required."});
     }
+
+    const product= await ProductD.findById(productId);
+
+    if(!product)
+    {
+      return res.status(404).json({message:"Product not found."});
+    }
+
+    const incomingColors = Array.isArray(product_color)
+      ? product_color
+      : color
+      ? [{ color, image_urls }]
+      : [];
+
+    const normalizedColors = incomingColors
+      .map((item) => ({
+        color: item?.color?.trim(),
+        image_urls: Array.isArray(item?.image_urls)
+          ? item.image_urls.map((url) => url?.trim()).filter(Boolean)
+          : [],
+      }))
+      .filter((item) => item.color && item.image_urls.length > 0);
+
+    if(normalizedColors.length===0)
+    {
+      return res.status(400).json({message:"At least one color with image URLs is required."});
+    }
+
+    product.product_color = normalizedColors;
 
     await product.save();
     console.log("successfully updated");
-    res.send("success")
+    return res.json({message:"Product images updated successfully.",product});
 
   }
 
@@ -921,7 +952,7 @@ const updateProductImage=async (req,res)=>{
   {
 
     console.log(err);
-    res.send("error")
+    return res.status(500).json({message:"error"});
 
 
   }
@@ -1849,4 +1880,4 @@ const AdminLoginPage=async (req,res)=>{
 
 
 
-export { SignUp , Login , Logout , UploadPost , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch ,getProductIdFromCookies , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus , handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin,SignUpAdmin,LoginAdmin};
+export { SignUp , Login , Logout , UploadPost , uploadAdminImages , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus , handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin,SignUpAdmin,LoginAdmin};

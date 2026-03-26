@@ -8,11 +8,15 @@ function ProductCategoryClicked() {
   const [savedTextState, setSavedTextState] = useState([]);
 
   useEffect(() => {
-    if (Array.isArray(savedText)) {
+    if (Array.isArray(savedText)) 
+    {
       setSavedTextState(savedText);
     } else if (savedText) {
       setSavedTextState([savedText]); // wrap single object into array
-    } else {
+    } 
+
+    else 
+    {
       setSavedTextState([]);
     }
   }, [savedText]);

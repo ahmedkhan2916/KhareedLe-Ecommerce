@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Search, PlusCircle, Trash2, Edit2, Download, ChevronLeft, ChevronRight, Box, Filter } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import SideBarAdDashboard from "./SideBarAdDashboard";
+import { BASE_URL } from "../../config/config.js";
 
 // AdminProductsPage - fully responsive product management UI (Tailwind CSS)
 // - Features: fetch products, search, filters, sort, pagination, bulk select, export CSV, edit/delete, responsive cards/table
 
 export default function AdminProductsPage() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -25,7 +28,7 @@ export default function AdminProductsPage() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:1000/users/DashboardData");
+        const res = await axios.get(`${BASE_URL}/users/DashboardData`);
         if (cancelled) return;
         const data = Array.isArray(res.data) ? res.data : [];
         setProducts(data.map((p, i) => ({ id: p._id || i, ...p })));
@@ -158,7 +161,7 @@ export default function AdminProductsPage() {
                   <input value={query} onChange={(e) => { setQuery(e.target.value); setPage(1); }} placeholder="Search product name or id" className="pl-10 pr-3 py-2 rounded-md border bg-white text-sm shadow-sm w-64" />
                 </div>
 
-                <button onClick={() => setEditItem({})} className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-md shadow hover:bg-green-700"><PlusCircle /> Add</button>
+                <button onClick={() => navigate("/users/adminadd")} className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-md shadow hover:bg-green-700"><PlusCircle /> Add</button>
 
                 <button onClick={exportCSV} className="inline-flex items-center gap-2 bg-white px-3 py-2 rounded-md border shadow hover:bg-gray-50"><Download /> Export</button>
               </div>

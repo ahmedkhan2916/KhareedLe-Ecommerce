@@ -1,13 +1,16 @@
 import {Router} from "express";
-import { SignUp ,Login,Logout,UploadPost,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,getProductIdFromCookies,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment,handle_My_Ordered_Data,changeOrderStatus, handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin, SignUpAdmin, LoginAdmin} from "../controllers/user.controller.js";
+import { SignUp ,Login,Logout,UploadPost,uploadAdminImages,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment,handle_My_Ordered_Data,changeOrderStatus, handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin, SignUpAdmin, LoginAdmin} from "../controllers/user.controller.js";
 // import runSample from "../controllers/chatbotmodel.js"
 import verifyToken from "../middlewares/verifyToken.js"
+import adminAndSellerAuth from "../middlewares/adminAndSellerAuth.js";
+import adminImageUpload from "../middlewares/adminImageUpload.js";
 const router=Router();
 
 router.route("/signup").post(SignUp)
 router.route("/login").post(Login)
 router.route("/logout").post(Logout)
-router.route("/uploadpost").post(UploadPost);
+router.route("/uploadpost").post(verifyToken,adminAndSellerAuth,UploadPost) // Add verifyToken middleware to protect this route;
+router.route("/admin-upload-images").post(verifyToken,adminAndSellerAuth,adminImageUpload.array("images", 10),uploadAdminImages);
 router.route("/getdata").get(getData);
 router.route("/getdataByCategory").get(getDataByItemCategory); //tommorow i will work on it create a route for it and create a good one use component for it.
 router.route("/postdetails").post(sendDataById);
@@ -15,7 +18,7 @@ router.route("/update").get(update);
 router.route("/userreview").post(user_review);
 router.route("/fetchuser").get(fetch_userReviews);
 router.route("/userSearch").get(userSearch);
-router.route("/updateproductimage").get(updateProductImage);
+router.route("/updateproductimage").post(verifyToken,adminAndSellerAuth,updateProductImage);
 router.route("/chatbotResponse").post(chatbotResponse);
 router.route("/addbag").post(addCountItems);
 router.route("/showtotal").post(showTotalItemsCount);
@@ -26,7 +29,6 @@ router.route("/changetext").post(changeText);
 router.route("/totalprice").post(totalItemsPrice);
 router.route("/refresh-token-handler").post(refreshTokenHandler);
 router.route("/userid-fetch").get(verifyToken,handleUserIDFetch);
-router.route("/getProductId").get(getProductIdFromCookies);
 router.route("/track-search").post(searchHistory);
 router.route("/fetch-search-history").post(fetchMostSearchedProducts);
 router.route("/update-spp").get(updatePricesSP);

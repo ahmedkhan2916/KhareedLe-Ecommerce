@@ -72,11 +72,11 @@ export const loginAdmin = createAsyncThunk(
     try {
       const response = await axios.post(`${BASE_URL}/users/login-admin`, bodyData, {
         headers: { "Content-Type": "application/json" },
-        withCredentials: true, // for cookies
+        withCredentials: true,
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || { error: "Admin login failed." });
     }
   }
 );
@@ -766,16 +766,16 @@ const authLoginAdmin = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loginAdmin.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loadingadmin = true;
+        state.erroradmin = null;
       })
       .addCase(loginAdmin.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingadmin = false;
         state.admin = action.payload;
       })
       .addCase(loginAdmin.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Login failed";
+        state.loadingadmin = false;
+        state.erroradmin = action.payload || "Login failed";
       });
   },
 });

@@ -31,8 +31,7 @@ const verifyToken=async(req,res,next)=>{
       console.log("before payment verification............................",decoded)
 
       next();
-  
-  
+      
     }catch(error)
     {
       next(error);

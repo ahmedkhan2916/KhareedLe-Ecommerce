@@ -30,7 +30,6 @@ import ProductCategoryClicked from './components/ProductCategoryClicked.js';
 import AdminDashboard from "./pages/Admin/AdminDashboard.js";
 import AdminProducts from "./pages/Admin/products.js"
 import SideBarAdDashboard from './pages/Admin/SideBarAdDashboard.js';
-import AddProductAdmin from "./pages/Admin/AddProductAdmin.js"
 import AdminAddProduct from './pages/Admin/AddProductAdmin.js';
 import VRSHOWROOM from "./pages/VirtualStore.js";
 import AdminLoginPage from './pages/Admin/AdminLoginPage.js';
@@ -115,17 +114,17 @@ function App() {
         <Route path="users/payment" element={<PaymentGateway/>}></Route>
         <Route path="users/completed" element={<CongratsPage/>}></Route>
         <Route path="users/confetti" element={<Confetti/>}> </Route>
-         <Route path="users/Cart" element={<CartPage/>}> </Route>
-          <Route path="users/Razorpay" element={<RazorpayButton/>}> </Route>
+        <Route path="users/Cart" element={<CartPage/>}> </Route>
+        <Route path="users/Razorpay" element={<RazorpayButton/>}> </Route>
           <Route path="users/Gsap" element={<GsapAnimation/>}> </Route>
            <Route path="users/my-orders" element={<OrdersPage/>}> </Route>
            <Route path="users/filter" element={<FilterSearch/>}> </Route>
            <Route path="users/filteredSearch" element={<FilteredByUserSearch/>}> </Route>
            <Route path="users/ProductByCategory" element={<ProductCategoryClicked/>}> </Route>
             <Route path="users/admin-d" element={<SideBarAdDashboard/>}> </Route>
-            <Route path="users/adminproducts" element={<AdminProducts/>}> </Route>
-               <Route path="users/admindash" element={<AdminDashboard/>}> </Route>
-               <Route path="users/adminadd" element={<AdminAddProduct/>}> </Route>
+            <Route path="users/adminproducts" element={<ProtectedRoute><AdminProducts/></ProtectedRoute>}> </Route>
+               <Route path="users/admindash" element={<ProtectedRoute><AdminDashboard/></ProtectedRoute>}></Route>
+               <Route path="users/adminadd" element={<ProtectedRoute><AdminAddProduct/></ProtectedRoute>}> </Route>
                 <Route path="users/VR" element={<VRSHOWROOM/>}> </Route>
                  <Route path="users/admin-login" element={<AdminLoginPage/>}> </Route>
                  <Route path="users/admin-signup" element={<AdminSignupPage/>}> </Route>

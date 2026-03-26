@@ -48,7 +48,7 @@ function Home() {
 
               <h1 className="HeadingPlayFair mt-4 text-[2.1rem] leading-[1.05] text-slate-950 sm:mt-5 sm:text-5xl lg:text-6xl">
                 Powerful Smartphones,
-                <span className="block text-orange-600">Presented Like a Flagship Drop</span>
+                <span className="block text-blue-500">Presented Like a Flagship Drop</span>
               </h1>
 
               <p className="mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:mt-5 sm:text-base sm:leading-7">
