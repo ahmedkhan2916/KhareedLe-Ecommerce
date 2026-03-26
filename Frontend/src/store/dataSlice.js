@@ -532,16 +532,30 @@ export const access_Tok_Store=createSlice({
 
   extraReducers:(building)=>{
 
-    building.addCase(refreshToken.pending, (state) => {
-      state.status = 'loading';
-    })  .addCase(refreshToken.fulfilled, (state, action) => {
-      state.status = 'succeeded';
-      state.token = action.payload;
-    }) .addCase(refreshToken.rejected, (state, action) => {
-      state.status = 'failed';
-      state.error = action.payload;
-      state.token = null;
-    });
+    building
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.token = action.payload?.accessToken || null;
+        state.status = action.payload?.accessToken ? 'succeeded' : 'idle';
+        state.errorAccess = null;
+      })
+      .addCase(loginAdmin.fulfilled, (state, action) => {
+        state.token = action.payload?.accessToken || null;
+        state.status = action.payload?.accessToken ? 'succeeded' : 'idle';
+        state.errorAccess = null;
+      })
+      .addCase(refreshToken.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(refreshToken.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.token = action.payload;
+        state.errorAccess = null;
+      })
+      .addCase(refreshToken.rejected, (state, action) => {
+        state.status = 'failed';
+        state.errorAccess = action.payload;
+        state.token = null;
+      });
 
 
 
