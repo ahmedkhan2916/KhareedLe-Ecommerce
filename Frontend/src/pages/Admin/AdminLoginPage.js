@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Arena3 from "../../assets/images/HeaderLogos/arena3.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../store/dataSlice.js";
+import { loginAdmin } from "../../store/dataSlice.js";
 
 const highlights = [
   {
@@ -30,9 +30,9 @@ function AdminLoginPage() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { users, error, loading } = useSelector((state) => state.auth);
+  const { admin, erroradmin, loadingadmin } = useSelector((state) => state.authAdmin);
 
-  const errorMessage = formError || error?.error || error?.message || error || "";
+  const errorMessage = formError || erroradmin?.error || erroradmin?.message || erroradmin || "";
   const hasError = Boolean(errorMessage);
 
   const triggerErrorFeedback = (message) => {
@@ -41,19 +41,19 @@ function AdminLoginPage() {
   };
 
   useEffect(() => {
-    if (users?.user?.role === "admin") {
+    if (admin?.user?.role === "admin") {
       navigate("/users/admindash");
       return;
     }
 
-    if (error) {
+    if (erroradmin) {
       triggerErrorFeedback(
-        error?.error ||
-          error?.message ||
+        erroradmin?.error ||
+          erroradmin?.message ||
           "Incorrect login details. Please review your email and password."
       );
     }
-  }, [navigate, users, error]);
+  }, [navigate, admin, erroradmin]);
 
   const handleAdminLogin = (event) => {
     event.preventDefault();
@@ -66,7 +66,7 @@ function AdminLoginPage() {
     setFormError("");
 
     dispatch(
-      loginUser({
+      loginAdmin({
         EMAILORPHONENO: email,
         password,
       })
@@ -235,10 +235,10 @@ function AdminLoginPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loadingadmin}
                 className="rounded-[18px] bg-[linear-gradient(90deg,#16a34a_0%,#22c55e_45%,#4ade80_100%)] bg-[length:220%_100%] px-[22px] py-4 text-base font-bold text-white shadow-[0_18px_36px_rgba(34,197,94,0.24)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(34,197,94,0.30)] disabled:cursor-wait disabled:opacity-75 motion-safe:animate-bg-flow"
               >
-                {loading ? "Checking your access..." : "Sign In To Dashboard"}
+                {loadingadmin ? "Checking your access..." : "Sign In To Dashboard"}
               </button>
 
               <p className="m-0 text-center text-slate-500">

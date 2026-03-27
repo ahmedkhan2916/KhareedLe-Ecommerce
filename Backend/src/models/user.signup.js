@@ -10,7 +10,7 @@ import bcrypt from "bcrypt"
 
     // phone:String,
 
-    phonenumber:Number,
+    phonenumber:String,
 
     password:{
 
@@ -27,6 +27,57 @@ import bcrypt from "bcrypt"
     lowercase:true,
     trim:true,
     },
+
+    // 🔐 FRAUD & TRUST SYSTEM
+trustScore: {
+    type: Number,
+    default: 100
+},
+
+totalOrders: {
+    type: Number,
+    default: 0
+},
+
+totalReturns: {
+    type: Number,
+    default: 0
+},
+
+failedDeliveries: {
+    type: Number,
+    default: 0
+},
+
+codOrders: {
+    type: Number,
+    default: 0
+},
+
+prepaidOrders: {
+    type: Number,
+    default: 0
+},
+
+// 🚨 CONTROL FLAGS
+isBlocked: {
+    type: Boolean,
+    default: false
+},
+
+isCODAllowed: {
+    type: Boolean,
+    default: true
+},
+
+isReturnAllowed: {
+    type: Boolean,
+    default: true
+},
+
+// 🕵️ SECURITY TRACKING
+ipHistory: {type:String},
+deviceHistory: {type:String},
     
     bag:[
 
@@ -86,6 +137,9 @@ import bcrypt from "bcrypt"
     }
 
 },{timestamps:true});
+
+
+userSignupSchema.index({ trustScore: 1 });
 
 //pre function() for hashing password just before from save the data into database
 userSignupSchema.pre('save',async function (next)

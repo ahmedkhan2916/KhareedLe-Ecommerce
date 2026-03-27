@@ -231,6 +231,7 @@ const generateRefreshToken=(user)=>{
 
 
   const LoginAdmin= async (req, res, next) => {
+    
   const { EMAILORPHONENO, password } = req.body;
 
   let email = "";
@@ -258,7 +259,8 @@ const generateRefreshToken=(user)=>{
     if (email) query.email = email;
     if (phonenumber) query.phonenumber = phonenumber;
 
-    const user = await Admin.findOne(query);
+    // Support legacy admin accounts that were created in the normal user collection.
+    const user = await Admin.findOne(query) || await User.findOne(query);
 
     if (!user) {
       return res.status(401).json({
@@ -532,11 +534,19 @@ const Only_refresh_Token_Access_Token_Handler = async (req, res) => {
         }
         return res.status(403).json({ error: "Invalid refresh token." });
       }
-      
-      const userId = decoded.id;
 
-      const newAccessToken = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "15m",
+      const account =
+        (await Admin.findOne({ refreshToken })) ||
+        (await User.findOne({ refreshToken }));
+
+      if (!account) {
+        return res.status(403).json({ error: "Invalid or expired session. Please log in again." });
+      }
+
+      const encryptedId = decoded.id;
+      const newAccessToken = generateAccessToken({
+        id: encryptedId,
+        role: account.role,
       });
 
       console.log("it is my new accessToken here",newAccessToken)
@@ -544,6 +554,11 @@ const Only_refresh_Token_Access_Token_Handler = async (req, res) => {
       return res.status(200).json({
         message: "Token refreshed successfully.",
         accessToken: newAccessToken,
+        user: {
+          id: encryptedId,
+          name: account.firstname,
+          role: account.role,
+        },
       
       });
 
@@ -1858,6 +1873,33 @@ const DashboardDataAdmin=async(req,res)=>{
 
 }
 
+const deleteProductAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Product ID is required." });
+    }
+
+    const deletedProduct = await ProductD.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    await ProductInsights.deleteOne({ productId: id });
+    await review.deleteMany({ productId: id });
+
+    return res.json({
+      message: "Product deleted successfully.",
+      productId: id,
+    });
+  } catch (error) {
+    console.error("Delete product error:", error);
+    return res.status(500).json({ message: "Failed to delete product." });
+  }
+}
+
 
 // under development
 const AdminLoginPage=async (req,res)=>{
@@ -1880,4 +1922,4 @@ const AdminLoginPage=async (req,res)=>{
 
 
 
-export { SignUp , Login , Logout , UploadPost , uploadAdminImages , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus , handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin,SignUpAdmin,LoginAdmin};
+export { SignUp , Login , Logout , UploadPost , uploadAdminImages , getData , sendDataById , update , user_review , fetch_userReviews ,userSearch , updateProductImage , chatbotResponse , addCountItems , showTotalItemsCount , fetchBagItems ,deleteCountItems , address , changeText , totalItemsPrice , refreshTokenHandler , handleUserIDFetch , searchHistory , fetchMostSearchedProducts , updatePricesSP , Gifts_DB ,Only_refresh_Token_Access_Token_Handler , AddAndRemoveQuantity , RazorPay_Gateway_Integration ,testManuallyCookies , handle_Users_Order , verify_user_payment , handle_My_Ordered_Data,changeOrderStatus , handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin,deleteProductAdmin,SignUpAdmin,LoginAdmin};

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Search, PlusCircle, Trash2, Edit2, Download, ChevronLeft, ChevronRight, Box, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import SideBarAdDashboard from "./SideBarAdDashboard";
 import { BASE_URL } from "../../config/config.js";
 
@@ -10,6 +11,7 @@ import { BASE_URL } from "../../config/config.js";
 
 export default function AdminProductsPage() {
   const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.users?.accessToken || state.userAuth.token);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -102,11 +104,16 @@ export default function AdminProductsPage() {
 
   // delete product
   async function handleDelete(id) {
-    // if (!confirm("Delete this product?")) return;
+    if (!window.confirm("Delete this product?")) return;
     try {
       // optimistic UI
       setProducts((prev) => prev.filter((p) => p.id !== id));
-      await axios.delete(`http://localhost:1000/users/product/${id}`);
+      await axios.delete(`${BASE_URL}/users/product/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
       setSelected((s) => { const n = new Set(s); n.delete(id); return n; });
     } catch (err) {
       console.error(err);

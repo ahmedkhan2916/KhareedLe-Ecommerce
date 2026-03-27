@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { SignUp ,Login,Logout,UploadPost,uploadAdminImages,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment,handle_My_Ordered_Data,changeOrderStatus, handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin, SignUpAdmin, LoginAdmin} from "../controllers/user.controller.js";
+import { SignUp ,Login,Logout,UploadPost,uploadAdminImages,getData,sendDataById,update,user_review,fetch_userReviews,userSearch,updateProductImage,chatbotResponse, addCountItems, showTotalItemsCount,fetchBagItems, deleteCountItems,address, changeText, totalItemsPrice, refreshTokenHandler, handleUserIDFetch,searchHistory,fetchMostSearchedProducts,updatePricesSP,Gifts_DB,Only_refresh_Token_Access_Token_Handler,AddAndRemoveQuantity,RazorPay_Gateway_Integration,testManuallyCookies,handle_Users_Order,verify_user_payment,handle_My_Ordered_Data,changeOrderStatus, handle_Filter_Search,getDataByItemCategory,DashboardDataAdmin,deleteProductAdmin, SignUpAdmin, LoginAdmin} from "../controllers/user.controller.js";
 // import runSample from "../controllers/chatbotmodel.js"
 import verifyToken from "../middlewares/verifyToken.js"
 import adminAndSellerAuth from "../middlewares/adminAndSellerAuth.js";
@@ -11,6 +11,7 @@ router.route("/login").post(Login)
 router.route("/logout").post(Logout)
 router.route("/uploadpost").post(verifyToken,adminAndSellerAuth,UploadPost) // Add verifyToken middleware to protect this route;
 router.route("/admin-upload-images").post(verifyToken,adminAndSellerAuth,adminImageUpload.array("images", 10),uploadAdminImages);
+router.route("/product/:id").delete(verifyToken,adminAndSellerAuth,deleteProductAdmin);
 router.route("/getdata").get(getData);
 router.route("/getdataByCategory").get(getDataByItemCategory); //tommorow i will work on it create a route for it and create a good one use component for it.
 router.route("/postdetails").post(sendDataById);

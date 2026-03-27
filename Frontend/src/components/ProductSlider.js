@@ -123,10 +123,10 @@ function ProductSlider() {
           <button
             type="button"
             onClick={() => goToSlide(currentIndex + 1)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50 mr-2"
             aria-label="Next phone"
           >
-            <ChevronRight size={16} />
+            <ChevronRight size={16}  />
           </button>
         </div>
 

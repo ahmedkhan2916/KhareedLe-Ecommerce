@@ -6,7 +6,7 @@ import { useNavigate,useLocation } from 'react-router-dom';
 import { useState ,useEffect} from 'react';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
-import { logout, logoutAccessTK, clearBagSlice } from '../../store/dataSlice.js';
+import { logout, logoutAccessTK, clearBagSlice, logoutAdmin } from '../../store/dataSlice.js';
 import { BASE_URL } from '../../config/config.js';
 
 function SideBarAdDashboard() {
@@ -82,6 +82,7 @@ navigate("/users/adminadd")
   } finally {
     localStorage.clear();
     dispatch(logout());
+    dispatch(logoutAdmin());
     dispatch(logoutAccessTK());
     dispatch(clearBagSlice());
     navigate("/users/admin-login");

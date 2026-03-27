@@ -105,7 +105,7 @@ export const refreshToken = createAsyncThunk("auth/refreshToken", async (_, thun
         withCredentials: true, 
       }// Send cookies
     );
-    return response.data.accessToken;
+    return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue('Token refresh failed');
   }
@@ -548,7 +548,7 @@ export const access_Tok_Store=createSlice({
       })
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.token = action.payload;
+        state.token = action.payload?.accessToken || null;
         state.errorAccess = null;
       })
       .addCase(refreshToken.rejected, (state, action) => {
@@ -757,6 +757,23 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Login failed";
+      })
+      .addCase(loginAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+      })
+      .addCase(loginAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Login failed";
+      })
+      .addCase(refreshToken.fulfilled, (state, action) => {
+        if (action.payload?.user) {
+          state.users = action.payload;
+        }
       });
   },
 });
@@ -772,9 +789,10 @@ const authLoginAdmin = createSlice({
     erroradmin: null,
   },
   reducers: {
-    logout: (state) => {
-      state.users = null;
-      state.error = null;
+    logoutAdmin: (state) => {
+      state.admin = null;
+      state.loadingadmin = false;
+      state.erroradmin = null;
     },
   },
   extraReducers: (builder) => {
@@ -790,6 +808,19 @@ const authLoginAdmin = createSlice({
       .addCase(loginAdmin.rejected, (state, action) => {
         state.loadingadmin = false;
         state.erroradmin = action.payload || "Login failed";
+      })
+      .addCase(refreshToken.pending, (state) => {
+        state.loadingadmin = true;
+      })
+      .addCase(refreshToken.fulfilled, (state, action) => {
+        state.loadingadmin = false;
+        state.erroradmin = null;
+        state.admin = action.payload?.user?.role === "admin" ? action.payload : null;
+      })
+      .addCase(refreshToken.rejected, (state, action) => {
+        state.loadingadmin = false;
+        state.erroradmin = action.payload || null;
+        state.admin = null;
       });
   },
 });
@@ -965,6 +996,7 @@ export const {clearBagSlice} = bagSlice.actions;
 export const fetchIDStoreReducer=fetchIDStore.reducer;
 export const fetchCartQty=fetchCartProductQty.reducer;
 export const {logout}=authSlice.actions;
+export const {logoutAdmin}=authLoginAdmin.actions;
 export const fetchBagDataStore= fetchBagTotalReduxStore.reducer;
 export const { setTotalBagNull } = fetchBagTotalReduxStore.actions;
 export const { userIDNULL} =  fetchIDStore.actions;

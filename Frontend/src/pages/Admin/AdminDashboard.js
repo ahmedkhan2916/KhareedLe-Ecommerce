@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LayoutDashboard, Package, PlusCircle, Settings, LogOut, Menu, X, Search } from "lucide-react";
+import { LayoutDashboard, Package, PlusCircle, Settings, LogOut, Menu, X, Search, Trash2 } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -20,6 +20,7 @@ export default function AdminDashboard() {
   const [colorUploadIndex, setColorUploadIndex] = useState(null);
   const [galleryMessage, setGalleryMessage] = useState("");
   const [galleryError, setGalleryError] = useState("");
+  const [deleteLoadingId, setDeleteLoadingId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -190,6 +191,43 @@ export default function AdminDashboard() {
       );
     } finally {
       setGalleryLoading(false);
+    }
+  }
+
+  async function handleDeleteProduct(productId) {
+    if (!productId) {
+      return;
+    }
+
+    if (!token) {
+      window.alert("Admin token is missing. Please sign in again.");
+      return;
+    }
+
+    const confirmed = window.confirm("Delete this product from the dashboard?");
+    if (!confirmed) {
+      return;
+    }
+
+    setDeleteLoadingId(productId);
+
+    try {
+      await axios.delete(`${BASE_URL}/users/product/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      setDataDash((current) => current.filter((item) => item._id !== productId));
+      setLengthSize((current) => {
+        const deletedItem = dataDash.find((item) => item._id === productId);
+        return deletedItem?.inStock === false ? Math.max(0, current - 1) : current;
+      });
+    } catch (error) {
+      window.alert(error.response?.data?.message || "Failed to delete product.");
+    } finally {
+      setDeleteLoadingId(null);
     }
   }
 
@@ -442,12 +480,13 @@ export default function AdminDashboard() {
                       <th className="text-left px-4 py-3">Price</th>
                       <th className="text-left px-4 py-3">Quantity</th>
                       <th className="text-left px-4 py-3">Status</th>
+                      <th className="text-left px-4 py-3">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {loading ? (
                       <tr>
-                        <td colSpan={4} className="p-6 text-center text-gray-500">
+                        <td colSpan={5} className="p-6 text-center text-gray-500">
                           Loading products...
                         </td>
                       </tr>
@@ -463,6 +502,16 @@ export default function AdminDashboard() {
                             ) : (
                               <span className="text-sm text-red-600">Out of stock</span>
                             )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <button
+                              onClick={() => handleDeleteProduct(dat._id)}
+                              disabled={deleteLoadingId === dat._id}
+                              className="inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                              <Trash2 size={14} />
+                              {deleteLoadingId === dat._id ? "Deleting..." : "Delete"}
+                            </button>
                           </td>
                         </tr>
                       ))
@@ -490,6 +539,14 @@ export default function AdminDashboard() {
                         <div className={`text-sm font-medium ${dat.inStock ? "text-green-600" : "text-red-600"}`}>
                           {dat.inStock ? "In stock" : "Out"}
                         </div>
+                        <button
+                          onClick={() => handleDeleteProduct(dat._id)}
+                          disabled={deleteLoadingId === dat._id}
+                          className="mt-3 inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
+                        >
+                          <Trash2 size={12} />
+                          {deleteLoadingId === dat._id ? "Deleting..." : "Delete"}
+                        </button>
                       </div>
                     </div>
                   ))
