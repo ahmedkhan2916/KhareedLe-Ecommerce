@@ -13,14 +13,10 @@ const highlights = [
     title: "Protected Access",
     description: "Your admin and seller workflows stay behind a secure sign-in layer.",
   },
-  {
-    title: "Commerce Ready",
-    description: "Built for daily marketplace management with a fast, focused interface.",
-  },
 ];
 
 const fieldBaseClasses =
-  "w-full rounded-2xl border px-4 py-3.5 text-[0.98rem] text-slate-900 transition duration-200 placeholder:text-slate-400 focus:-translate-y-0.5 focus:outline-none";
+  "w-full rounded-2xl border px-4 py-2.5 text-[0.9rem] text-slate-900 transition duration-200 placeholder:text-slate-400 focus:-translate-y-0.5 focus:outline-none";
 
 function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -116,84 +112,84 @@ function AdminLoginPage() {
         `}
       </style> */}
 
-      <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#0d1321_0%,#121c2d_45%,#f7f3ec_45%,#f4efe7_100%)] px-4 py-4 sm:px-5 sm:py-8">
+      <div className="relative h-screen overflow-hidden bg-[linear-gradient(135deg,#0d1321_0%,#121c2d_45%,#f7f3ec_45%,#f4efe7_100%)] px-3 py-2 sm:px-4 sm:py-3">
         <div className="pointer-events-none absolute -left-24 -top-28 h-[420px] w-[420px] rounded-full bg-[rgba(255,153,0,0.26)] blur-[90px]" />
         <div className="pointer-events-none absolute -bottom-28 -right-28 h-[420px] w-[420px] rounded-full bg-[rgba(0,187,255,0.24)] blur-[90px]" />
 
-        <div className="relative z-10 mx-auto grid max-w-[1280px] overflow-hidden rounded-[32px] bg-white/80 shadow-[0_24px_80px_rgba(5,10,20,0.22)] backdrop-blur-[14px] lg:grid-cols-[minmax(320px,1.05fr)_minmax(320px,0.95fr)]">
-          <section className="order-2 flex flex-col justify-center bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_100%),linear-gradient(155deg,#07111f_0%,#12243a_52%,#183c53_100%)] px-5 py-7 text-slate-50 sm:px-7 sm:py-10 lg:order-1 lg:px-12 lg:py-14">
-            <div className="mb-6 inline-flex w-fit items-center rounded-full bg-[linear-gradient(90deg,#ffd166_0%,#ff9f1c_100%)] px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.14em] text-slate-950">
+        <div className="relative z-10 mx-auto grid h-[calc(100vh-1rem)] max-w-[1120px] overflow-hidden rounded-[26px] bg-white/80 shadow-[0_24px_80px_rgba(5,10,20,0.22)] backdrop-blur-[14px] lg:grid-cols-[minmax(280px,0.95fr)_minmax(320px,0.88fr)]">
+          <section className="order-2 flex flex-col justify-center overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_100%),linear-gradient(155deg,#07111f_0%,#12243a_52%,#183c53_100%)] px-5 py-5 text-slate-50 sm:px-6 sm:py-6 lg:order-1 lg:px-8 lg:py-6">
+            <div className="mb-3 inline-flex w-fit items-center rounded-full bg-[linear-gradient(90deg,#ffd166_0%,#ff9f1c_100%)] px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-slate-950">
               Secure Access
             </div>
 
             <img
-              className="mb-7 w-[130px] drop-shadow-[0_12px_24px_rgba(0,0,0,0.25)]"
+              className="mb-4 w-[82px] drop-shadow-[0_12px_24px_rgba(0,0,0,0.25)] lg:w-[92px]"
               src={Arena3}
               alt="X Arena"
             />
 
-            <h1 className="m-0 text-[2.2rem] leading-[0.98] sm:text-[2.7rem] lg:text-[clamp(2.4rem,5vw,4.4rem)]">
+            <h1 className="m-0 text-[1.7rem] leading-[0.98] sm:text-[1.9rem] lg:text-[clamp(1.8rem,3vw,2.8rem)]">
               Return to your
               <span className="block text-sky-200"> seller or admin workspace</span>
             </h1>
 
-            <p className="mt-4 max-w-[520px] text-base leading-7 text-slate-100/75">
+            <p className="mt-3 max-w-[470px] text-[0.86rem] leading-5 text-slate-100/75">
               Access the same premium commerce control center to manage catalogs,
               monitor orders, and operate your storefront with clarity.
             </p>
 
-            <div className="mt-9 grid gap-4">
+            <div className="mt-5 grid gap-3">
               {highlights.map((item) => (
                 <article
                   key={item.title}
-                  className="rounded-[20px] border border-white/10 bg-white/5 px-5 py-[18px]"
+                  className="rounded-[18px] border border-white/10 bg-white/5 px-4 py-3"
                 >
-                  <strong className="mb-1.5 block text-base">{item.title}</strong>
-                  <span className="block leading-6 text-slate-100/70">{item.description}</span>
+                  <strong className="mb-1 block text-[0.9rem]">{item.title}</strong>
+                  <span className="block text-[0.82rem] leading-5 text-slate-100/70">{item.description}</span>
                 </article>
               ))}
             </div>
           </section>
 
-          <section className="order-1 bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(247,242,234,0.95)_100%)] px-5 py-7 sm:px-7 sm:py-10 lg:order-2 lg:px-10 lg:py-12">
+          <section className="order-1 overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(247,242,234,0.95)_100%)] px-5 py-5 sm:px-6 sm:py-6 lg:order-2 lg:px-8 lg:py-7">
             <div>
-              <p className="inline-flex w-fit items-center rounded-full bg-orange-400/15 px-3.5 py-2 text-[0.72rem] font-bold uppercase tracking-[0.14em] text-amber-800">
+              <p className="inline-flex w-fit items-center rounded-full bg-orange-400/15 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-amber-800">
                 Welcome Back
               </p>
-              <h2 className="mb-2.5 mt-3.5 text-[2rem] font-semibold text-slate-900 sm:text-[2.2rem] lg:text-[clamp(1.9rem,3vw,2.6rem)]">
+              <h2 className="mb-2 mt-2.5 text-[1.55rem] font-semibold text-slate-900 sm:text-[1.7rem] lg:text-[clamp(1.45rem,1.9vw,2rem)]">
                 Admin / Seller Login
               </h2>
-              <p className="mb-7 text-[15px] leading-7 text-slate-500">
+              <p className="mb-4 text-[0.84rem] leading-5 text-slate-500">
                 Sign in to continue to your dashboard and business controls.
               </p>
             </div>
 
-            <form className="grid gap-6" onSubmit={handleAdminLogin}>
+            <form className="grid gap-3.5" onSubmit={handleAdminLogin}>
               {hasError ? (
                 <div
                   key={errorTick}
-                  className="admin-alert-enter grid grid-cols-[auto_1fr] items-start gap-3.5 rounded-[18px] border border-red-600/20 bg-[linear-gradient(180deg,rgba(254,242,242,0.98)_0%,rgba(255,233,233,0.98)_100%)] px-[18px] py-4 shadow-[0_18px_34px_rgba(220,38,38,0.09)]"
+                  className="admin-alert-enter grid grid-cols-[auto_1fr] items-start gap-3 rounded-[18px] border border-red-600/20 bg-[linear-gradient(180deg,rgba(254,242,242,0.98)_0%,rgba(255,233,233,0.98)_100%)] px-4 py-2.5 shadow-[0_18px_34px_rgba(220,38,38,0.09)]"
                   role="alert"
                   aria-live="assertive"
                 >
-                  <div className="relative mt-0.5 h-[38px] w-[34px]" aria-hidden="true">
+                  <div className="relative mt-0.5 h-[34px] w-[30px]" aria-hidden="true">
                     <span className="absolute left-2 top-0.5 h-[30px] w-[3px] rounded-full bg-[linear-gradient(180deg,#5b5b5b_0%,#2f2f2f_100%)]" />
                     <span className="admin-flag-wave absolute left-[11px] top-1 h-[14px] w-[19px] rounded-[3px_10px_10px_3px] bg-[linear-gradient(135deg,#ff6b6b_0%,#dc2626_100%)] shadow-[0_8px_20px_rgba(220,38,38,0.28)] [clip-path:polygon(0_0,100%_8%,82%_52%,100%_100%,0_100%)]" />
                   </div>
                   <div className="grid gap-1">
-                    <strong className="text-[0.98rem] text-red-800">
+                    <strong className="text-[0.93rem] text-red-800">
                       Sign in needs attention
                     </strong>
-                    <span className="text-[0.94rem] leading-6 text-red-900">
+                    <span className="text-[0.88rem] leading-5 text-red-900">
                       {errorMessage}
                     </span>
                   </div>
                 </div>
               ) : null}
 
-              <div className="grid gap-4">
+              <div className="grid gap-2.5">
                 <label className={`grid gap-2 ${hasError ? "admin-field-shake" : ""}`}>
-                  <span className="text-[0.95rem] font-semibold text-slate-800">Email</span>
+                  <span className="text-[0.84rem] font-semibold text-slate-800">Email</span>
                   <input
                     type="email"
                     placeholder="seller@xarena.com"
@@ -213,7 +209,7 @@ function AdminLoginPage() {
                 </label>
 
                 <label className={`grid gap-2 ${hasError ? "admin-field-shake" : ""}`}>
-                  <span className="text-[0.95rem] font-semibold text-slate-800">Password</span>
+                  <span className="text-[0.84rem] font-semibold text-slate-800">Password</span>
                   <input
                     type="password"
                     placeholder="Enter your password"
@@ -236,16 +232,16 @@ function AdminLoginPage() {
               <button
                 type="submit"
                 disabled={loadingadmin}
-                className="rounded-[18px] bg-[linear-gradient(90deg,#16a34a_0%,#22c55e_45%,#4ade80_100%)] bg-[length:220%_100%] px-[22px] py-4 text-base font-bold text-white shadow-[0_18px_36px_rgba(34,197,94,0.24)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(34,197,94,0.30)] disabled:cursor-wait disabled:opacity-75 motion-safe:animate-bg-flow"
+                className="rounded-[18px] bg-[linear-gradient(90deg,#16a34a_0%,#22c55e_45%,#4ade80_100%)] bg-[length:220%_100%] px-[20px] py-3 text-[0.9rem] font-bold text-white shadow-[0_18px_36px_rgba(34,197,94,0.24)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(34,197,94,0.30)] disabled:cursor-wait disabled:opacity-75 motion-safe:animate-bg-flow"
               >
                 {loadingadmin ? "Checking your access..." : "Sign In To Dashboard"}
               </button>
 
-              <p className="m-0 text-center text-slate-500">
+              <p className="m-0 text-center text-[0.82rem] text-slate-500">
                 Authorized personnel only. Activity may be monitored for security.
               </p>
 
-              <p className="m-0 text-center text-slate-500">
+              <p className="m-0 text-center text-[0.82rem] text-slate-500">
                 Need a seller or admin account?{" "}
                 <button
                   type="button"

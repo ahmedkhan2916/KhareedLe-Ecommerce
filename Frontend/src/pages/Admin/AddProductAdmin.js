@@ -201,7 +201,7 @@ export default function AdminAddProduct() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.14),_transparent_28%),linear-gradient(180deg,#f5f7fb_0%,#eef3f7_100%)]">
       <div className="md:flex">
-        <aside className="hidden min-h-screen md:block">
+        <aside className="hidden md:sticky md:top-0 md:block md:h-screen md:shrink-0">
           <SideBarAdDashboard />
         </aside>
 

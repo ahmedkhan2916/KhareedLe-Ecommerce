@@ -21,6 +21,8 @@ export default function AdminDashboard() {
   const [galleryMessage, setGalleryMessage] = useState("");
   const [galleryError, setGalleryError] = useState("");
   const [deleteLoadingId, setDeleteLoadingId] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [deleteError, setDeleteError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -194,22 +196,38 @@ export default function AdminDashboard() {
     }
   }
 
-  async function handleDeleteProduct(productId) {
-    if (!productId) {
+  function openDeleteModal(product) {
+    if (!product?._id) {
       return;
     }
+
+    setDeleteError("");
+    setProductToDelete(product);
+  }
+
+  function closeDeleteModal() {
+    if (deleteLoadingId) {
+      return;
+    }
+
+    setProductToDelete(null);
+    setDeleteError("");
+  }
+
+  async function handleDeleteProduct() {
+    if (!productToDelete?._id) {
+      return;
+    }
+
+    const productId = productToDelete._id;
 
     if (!token) {
-      window.alert("Admin token is missing. Please sign in again.");
-      return;
-    }
-
-    const confirmed = window.confirm("Delete this product from the dashboard?");
-    if (!confirmed) {
+      setDeleteError("Admin token is missing. Please sign in again.");
       return;
     }
 
     setDeleteLoadingId(productId);
+    setDeleteError("");
 
     try {
       await axios.delete(`${BASE_URL}/users/product/${productId}`, {
@@ -219,13 +237,14 @@ export default function AdminDashboard() {
         withCredentials: true,
       });
 
-      setDataDash((current) => current.filter((item) => item._id !== productId));
-      setLengthSize((current) => {
-        const deletedItem = dataDash.find((item) => item._id === productId);
-        return deletedItem?.inStock === false ? Math.max(0, current - 1) : current;
+      setDataDash((current) => {
+        const updatedProducts = current.filter((item) => item._id !== productId);
+        setLengthSize(updatedProducts.filter((item) => item.inStock === false).length);
+        return updatedProducts;
       });
+      setProductToDelete(null);
     } catch (error) {
-      window.alert(error.response?.data?.message || "Failed to delete product.");
+      setDeleteError(error.response?.data?.message || "Failed to delete product.");
     } finally {
       setDeleteLoadingId(null);
     }
@@ -233,6 +252,78 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
+      {productToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 backdrop-blur-md">
+          <div className="relative w-full max-w-lg overflow-hidden rounded-[32px] border border-white/70 bg-[linear-gradient(160deg,rgba(255,255,255,0.98)_0%,rgba(255,247,247,0.96)_55%,rgba(255,255,255,0.98)_100%)] p-7 shadow-[0_28px_80px_rgba(15,23,42,0.28)]">
+            <div className="absolute -left-16 top-0 h-40 w-40 rounded-full bg-rose-200/55 blur-3xl" />
+            <div className="absolute -right-10 bottom-0 h-36 w-36 rounded-full bg-orange-200/50 blur-3xl" />
+
+            <div className="relative">
+              <div className="flex items-start gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#ef4444_0%,#fb7185_100%)] text-white shadow-[0_18px_36px_rgba(244,63,94,0.28)]">
+                  <Trash2 size={24} />
+                </div>
+
+                <div className="flex-1">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-rose-500">
+                    Delete Product
+                  </p>
+                  <h2 className="mt-2 text-[28px] font-semibold leading-tight text-slate-900">
+                    Remove this product from your store?
+                  </h2>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    This action will permanently remove{" "}
+                    <span className="font-semibold text-slate-900">{productToDelete.product_name}</span>{" "}
+                    from the database and update the admin dashboard instantly.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-[24px] border border-rose-100 bg-white/75 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] backdrop-blur">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                      Selected Product
+                    </p>
+                    <p className="mt-2 text-base font-semibold text-slate-900">
+                      {productToDelete.product_name}
+                    </p>
+                  </div>
+                  <div className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-600">
+                    Permanent delete
+                  </div>
+                </div>
+              </div>
+
+              {deleteError && (
+                <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50/95 px-4 py-3 text-sm text-rose-700">
+                  {deleteError}
+                </div>
+              )}
+
+              <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={closeDeleteModal}
+                  disabled={deleteLoadingId === productToDelete._id}
+                  className="rounded-2xl border border-slate-200 bg-white/90 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  No, keep product
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteProduct}
+                  disabled={deleteLoadingId === productToDelete._id}
+                  className="rounded-2xl bg-[linear-gradient(135deg,#dc2626_0%,#f43f5e_100%)] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(244,63,94,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_40px_rgba(244,63,94,0.34)] disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {deleteLoadingId === productToDelete._id ? "Deleting product..." : "Yes, delete now"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <header className="md:hidden bg-white border-b">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
@@ -262,12 +353,12 @@ export default function AdminDashboard() {
       </header>
 
       <div className="md:flex">
-        <aside className="hidden md:block bg-white border-r min-h-screen">
+        <aside className="hidden md:sticky md:top-0 md:block md:h-screen md:shrink-0">
           <SideBarAdDashboard />
         </aside>
 
         <main className="flex-1 p-6 md:p-10">
-          <div className="max-w-7xl mx-auto">
+          <div className="mx-auto max-w-7xl">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h1 className="text-2xl md:text-3xl font-semibold">Welcome, Admin</h1>
@@ -505,7 +596,7 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-4 py-3">
                             <button
-                              onClick={() => handleDeleteProduct(dat._id)}
+                              onClick={() => openDeleteModal(dat)}
                               disabled={deleteLoadingId === dat._id}
                               className="inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
                             >
@@ -540,7 +631,7 @@ export default function AdminDashboard() {
                           {dat.inStock ? "In stock" : "Out"}
                         </div>
                         <button
-                          onClick={() => handleDeleteProduct(dat._id)}
+                          onClick={() => openDeleteModal(dat)}
                           disabled={deleteLoadingId === dat._id}
                           className="mt-3 inline-flex items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
                         >
@@ -568,9 +659,9 @@ export default function AdminDashboard() {
                 </button>
               </div>
             </div>
-          </div>
-        </main>
-      </div>
+            </div>
+          </main>
+        </div>
     </div>
   );
 }

@@ -66,6 +66,22 @@ function Header() {
     }
   }, [dispatch, UserID, token]);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
   const hasSearchResults = Array.isArray(searchQuery) && searchQuery.length > 0;
 
   const handleSearchInput = async (e) => {
@@ -141,20 +157,25 @@ function Header() {
     navigate("/users/my-orders");
   };
 
+  const handleMobileNavigation = (path) => {
+    setIsMobileMenuOpen(false);
+    navigate(path);
+  };
+
   const mobileMenuItems = useMemo(
     () => [
-      { label: "Home", action: () => navigate("/") },
-      { label: "Electronics", action: () => navigate("/") },
-      { label: "Clothing", action: () => navigate("/") },
-      { label: "Home Decor", action: () => navigate("/") },
-      { label: "Kitchenware", action: () => navigate("/") },
-      { label: "Books", action: () => navigate("/") },
-      { label: "Gaming", action: () => navigate("/") },
+      { label: "Home", action: () => handleMobileNavigation("/") },
+      { label: "Electronics", action: () => handleMobileNavigation("/") },
+      { label: "Clothing", action: () => handleMobileNavigation("/") },
+      { label: "Home Decor", action: () => handleMobileNavigation("/") },
+      { label: "Kitchenware", action: () => handleMobileNavigation("/") },
+      { label: "Books", action: () => handleMobileNavigation("/") },
+      { label: "Gaming", action: () => handleMobileNavigation("/") },
       { label: "My Orders", action: handleOrders },
-      { label: "Address", action: () => navigate("/users/address") },
+      { label: "Address", action: () => handleMobileNavigation("/users/address") },
       { label: "Cart", action: handleCartRoute },
     ],
-    [navigate, handleOrders, handleCartRoute]
+    [handleOrders, handleCartRoute]
   );
 
   return (
@@ -373,7 +394,7 @@ function Header() {
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
-          <div className="absolute left-0 top-0 h-full w-[84%] max-w-sm border-r border-white/10 bg-slate-950 text-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] animate-[slideInLeft_320ms_cubic-bezier(0.16,1,0.3,1)]">
+          <div className="absolute left-0 top-0 flex h-full w-[84%] max-w-sm flex-col overflow-hidden border-r border-white/10 bg-slate-950 text-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] animate-[slideInLeft_320ms_cubic-bezier(0.16,1,0.3,1)]">
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
               <div>
                 <p className="translate-y-0 animate-[fadeUp_320ms_ease-out] text-lg font-black">Menu</p>
@@ -390,7 +411,7 @@ function Header() {
               </button>
             </div>
 
-            <div className="px-5 py-5">
+            <div className="flex-1 overflow-y-auto px-5 py-5 overscroll-contain">
               <div className="rounded-[1.5rem] bg-white/5 p-4 animate-[fadeUp_420ms_ease-out]">
                 <p className="text-sm font-semibold text-white">
                   {username || "Guest user"}

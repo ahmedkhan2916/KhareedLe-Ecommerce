@@ -76,8 +76,14 @@ isReturnAllowed: {
 },
 
 // 🕵️ SECURITY TRACKING
-ipHistory: {type:String},
-deviceHistory: {type:String},
+ipHistory: {
+    type: [String],
+    default: [],
+},
+deviceHistory: {
+    type: [String],
+    default: [],
+},
     
     bag:[
 

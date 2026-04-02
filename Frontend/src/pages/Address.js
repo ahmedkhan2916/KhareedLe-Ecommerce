@@ -394,7 +394,9 @@ function Address() {
         </div>
       </div>
 
-      <Footer />
+      <div className="-mt-12 bg-slate-950">
+        <Footer />
+      </div>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import "../../assets/Style/adminSidebar.css";
-import { LayoutDashboard, Package, PlusCircle, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, PlusCircle, Settings, LogOut, Sparkles, ChevronRight } from "lucide-react";
 import XARENA from "../../assets/images/HeaderLogos/arena3.png"
 import { useNavigate,useLocation } from 'react-router-dom';
 import { useState ,useEffect} from 'react';
@@ -15,6 +15,27 @@ function SideBarAdDashboard() {
   const navigate=useNavigate();
   const location=useLocation();
   const dispatch = useDispatch();
+
+  const navigationItems = [
+    {
+      key: "dashboard",
+      label: "Dashboard",
+      hint: "Overview and quick stats",
+      icon: LayoutDashboard,
+    },
+    {
+      key: "Products",
+      label: "Products",
+      hint: "Manage inventory",
+      icon: Package,
+    },
+    {
+      key: "add",
+      label: "Add Product",
+      hint: "Create a new listing",
+      icon: PlusCircle,
+    },
+  ];
 
 
     useEffect(() => {
@@ -101,48 +122,74 @@ navigate("/users/adminadd")
       <div className="admin-sidebar__glow" />
       <div className="admin-sidebar__inner">
         <div className="admin-sidebar__brand">
-          <img src={XARENA} className="admin-sidebar__logo" alt="X Arena" />
+          <div className="admin-sidebar__logo-shell">
+            <img src={XARENA} className="admin-sidebar__logo" alt="X Arena" />
+          </div>
           <div>
-            <p className="admin-sidebar__brand-title">Techarena Admin</p>
-            <p className="admin-sidebar__brand-sub">Smart Shopping, Fast Living</p>
+            <p className="admin-sidebar__eyebrow">Admin Workspace</p>
+            <p className="admin-sidebar__brand-title">TechArena Control</p>
+            <p className="admin-sidebar__brand-sub">Store operations, catalog flow, and team productivity</p>
           </div>
         </div>
 
+        <div className="admin-sidebar__pulse-card">
+          <div className="admin-sidebar__pulse-icon">
+            <Sparkles size={16} />
+          </div>
+          <div>
+            <p className="admin-sidebar__pulse-title">Today Focus</p>
+            <p className="admin-sidebar__pulse-copy">Review products, update inventory, and publish fresh listings.</p>
+          </div>
+        </div>
+
+        <div className="admin-sidebar__section-label">Navigation</div>
+
         <nav className="admin-sidebar__nav">
-          <button
-            className={`admin-sidebar__item ${activeTab === "dashboard" ? "admin-sidebar__item--active" : ""}`}
-            onClick={() => (handleRoutes("dashboard"))}
-          >
-            <LayoutDashboard size={18} />
-            Dashboard
-          </button>
+          {navigationItems.map(({ key, label, hint, icon: Icon }) => (
+            <button
+              key={key}
+              className={`admin-sidebar__item ${activeTab === key ? "admin-sidebar__item--active" : ""}`}
+              onClick={() => handleRoutes(key)}
+            >
+              <div className="admin-sidebar__item-icon">
+                <Icon size={18} />
+              </div>
+              <div className="admin-sidebar__item-content">
+                <span className="admin-sidebar__item-label">{label}</span>
+                <span className="admin-sidebar__item-hint">{hint}</span>
+              </div>
+              <ChevronRight size={16} className="admin-sidebar__item-arrow" />
+            </button>
+          ))}
 
-          <button
-            className={`admin-sidebar__item ${activeTab === "Products" ? "admin-sidebar__item--active" : ""}`}
-            onClick={() => (handleRoutes("Products"))}
-          >
-            <Package size={18} />
-            Products
-          </button>
-
-          <button
-            className={`admin-sidebar__item ${activeTab === "add" ? "admin-sidebar__item--active" : ""}`}
-            onClick={() => (handleRoutes("add"))}
-          >
-            <PlusCircle size={18} />
-            Add Products
-          </button>
-
-          <button className="admin-sidebar__item">
-            <Settings size={18} />
-            Settings
+          <button className="admin-sidebar__item admin-sidebar__item--muted" type="button">
+            <div className="admin-sidebar__item-icon">
+              <Settings size={18} />
+            </div>
+            <div className="admin-sidebar__item-content">
+              <span className="admin-sidebar__item-label">Settings</span>
+              <span className="admin-sidebar__item-hint">Configuration coming soon</span>
+            </div>
+            <span className="admin-sidebar__badge">Soon</span>
           </button>
         </nav>
 
         <div className="admin-sidebar__footer">
+          <div className="admin-sidebar__profile-card">
+            <div className="admin-sidebar__profile-avatar">A</div>
+            <div>
+              <p className="admin-sidebar__profile-name">Admin Panel</p>
+              <p className="admin-sidebar__profile-role">Secure management access</p>
+            </div>
+          </div>
           <button className="admin-sidebar__item admin-sidebar__item--ghost" onClick={handleLogout}>
-            <LogOut size={18} />
-            Logout
+            <div className="admin-sidebar__item-icon">
+              <LogOut size={18} />
+            </div>
+            <div className="admin-sidebar__item-content">
+              <span className="admin-sidebar__item-label">Logout</span>
+              <span className="admin-sidebar__item-hint">End current admin session</span>
+            </div>
           </button>
         </div>
       </div>

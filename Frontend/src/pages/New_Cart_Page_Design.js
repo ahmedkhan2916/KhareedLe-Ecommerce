@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,6 +16,7 @@ import {
   faTruckFast,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../components/HeaderChange.js";
+import Footer from "../components/Footer.js";
 import DeleteIcon from "../assets/Brandlogo/trash.png";
 import {
   fetchUserID,
@@ -37,8 +38,10 @@ const CartPage = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const checkoutButtonRef = useRef(null);
 
   const [total, setTotal] = useState(0);
+  const [showStickyCheckout, setShowStickyCheckout] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -125,11 +128,53 @@ const CartPage = () => {
   const platformFee = bagItems.length > 0 ? 49 : 0;
   const grandTotal = total + platformFee;
   const showEmptyState = !loading && bagItems.length === 0;
+  const isCheckoutDisabled = bagItems.length === 0;
+  const handleCheckout = () => navigate("/users/address");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const isMobileViewport = () => window.innerWidth < 1024;
+    const target = checkoutButtonRef.current;
+
+    if (!target || !isMobileViewport()) {
+      setShowStickyCheckout(false);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyCheckout(!entry.isIntersecting);
+      },
+      {
+        threshold: 0.2,
+      }
+    );
+
+    observer.observe(target);
+
+    const handleResize = () => {
+      if (!isMobileViewport()) {
+        setShowStickyCheckout(false);
+      } else if (checkoutButtonRef.current) {
+        const rect = checkoutButtonRef.current.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight && rect.bottom > 0;
+        setShowStickyCheckout(!inView);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [bagItems.length, loading]);
 
   return (
     <>
       <Header />
-      <div className="relative min-h-screen overflow-hidden bg-slate-950 px-4 pb-24 pt-32 sm:px-6 lg:px-8">
+      <div className="relative min-h-screen overflow-hidden bg-slate-950 px-4 pb-32 pt-32 sm:px-6 lg:px-8">
         <div className="absolute inset-0">
           <div className="absolute left-0 top-24 h-80 w-80 rounded-full bg-emerald-500/12 blur-3xl" />
           <div className="absolute right-0 top-10 h-96 w-96 rounded-full bg-cyan-500/12 blur-3xl" />
@@ -359,9 +404,10 @@ const CartPage = () => {
                 </div>
 
                 <button
+                  ref={checkoutButtonRef}
                   type="button"
-                  onClick={() => navigate("/users/address")}
-                  disabled={bagItems.length === 0}
+                  onClick={handleCheckout}
+                  disabled={isCheckoutDisabled}
                   className="mt-6 flex w-full items-center justify-center gap-3 rounded-[1.5rem] bg-emerald-600 px-6 py-4 text-lg font-bold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Continue to Checkout
@@ -371,6 +417,30 @@ const CartPage = () => {
             </aside>
           </div>
         </div>
+
+        {showStickyCheckout && !isCheckoutDisabled && (
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-slate-950/96 px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-3 shadow-[0_-18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl lg:hidden">
+            <div className="mx-auto flex max-w-md items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  Payable now
+                </p>
+                <p className="mt-1 truncate text-lg font-black text-white">{formatPrice(grandTotal)}</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleCheckout}
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
+              >
+                Continue to Checkout
+                <FontAwesomeIcon icon={faArrowRight} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="-mt-12 bg-slate-950">
+        <Footer />
       </div>
     </>
   );
