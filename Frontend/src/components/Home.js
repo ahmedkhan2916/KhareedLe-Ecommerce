@@ -94,7 +94,7 @@ function Home() {
                     Curated Smartphone Lineup
                   </p>
                 </div>
-                <span className="shrink-0 rounded-full bg-orange-50 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] text-orange-700 sm:px-3 sm:text-xs sm:tracking-[0.22em]">
+                <span className="hidden shrink-0 rounded-full bg-orange-50 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] text-orange-700 sm:inline-flex sm:px-3 sm:text-xs sm:tracking-[0.22em]">
                   Updated
                 </span>
               </div>

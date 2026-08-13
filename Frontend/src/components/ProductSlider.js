@@ -98,7 +98,7 @@ function ProductSlider() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
           Flagship Carousel
         </p>
-        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 sm:px-3 sm:text-xs">
+        <span className="hidden rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 sm:inline-flex sm:px-3 sm:text-xs">
           {smartphoneProducts.length} Phones
         </span>
       </div>
@@ -111,7 +111,7 @@ function ProductSlider() {
         <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-white via-white/80 to-transparent sm:w-16" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white via-white/80 to-transparent sm:w-16" />
 
-        <div className="mb-3 flex items-center justify-end gap-2 sm:mb-4">
+        <div className="mb-3 hidden items-center justify-end gap-2 sm:mb-4 sm:flex">
           <button
             type="button"
             onClick={() => goToSlide(currentIndex - 1)}
