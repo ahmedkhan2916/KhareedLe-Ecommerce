@@ -136,11 +136,11 @@ function ProductSlider() {
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {smartphoneProducts.map((item) => (
-              <div key={item._id} className="w-full flex-none">
+              <div key={item._id} className="w-full flex-none flex justify-center">
                 <div
                   data-id={item._id}
                   onClick={handleClick}
-                  className="mx-auto w-full max-w-[280px] cursor-pointer overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_18px_30px_rgba(15,23,42,0.08)] sm:max-w-[340px]"
+                  className="w-full max-w-[280px] cursor-pointer overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_18px_30px_rgba(15,23,42,0.08)] sm:max-w-[340px]"
                 >
                   <Link to={`/product/${item._id}`}>
                     <div className="flex h-[220px] items-center justify-center bg-[radial-gradient(circle_at_top,#fff7ed_0%,#ffffff_70%)] p-5 sm:h-[250px]">
