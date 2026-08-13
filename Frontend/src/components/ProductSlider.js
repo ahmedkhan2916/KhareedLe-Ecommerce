@@ -130,17 +130,17 @@ function ProductSlider() {
           </button>
         </div>
 
-        <div className="flex justify-center overflow-hidden">
+        <div className="overflow-hidden flex justify-center">
           <div
-            className="flex transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            className="flex items-center transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${currentIndex * 100}%)`, width: `${smartphoneProducts.length * 100}%` }}
           >
             {smartphoneProducts.map((item) => (
-              <div key={item._id} className="flex-none flex justify-center" style={{ width: '100%' }}>
+              <div key={item._id} className="flex-none flex justify-center px-1 sm:px-2" style={{ width: `${100 / smartphoneProducts.length}%` }}>
                 <div
                   data-id={item._id}
                   onClick={handleClick}
-                  className="max-w-[280px] cursor-pointer overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_18px_30px_rgba(15,23,42,0.08)] sm:max-w-[340px]"
+                  className="max-w-[280px] w-full cursor-pointer overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_18px_30px_rgba(15,23,42,0.08)] sm:max-w-[340px]"
                 >
                   <Link to={`/product/${item._id}`}>
                     <div className="flex h-[220px] items-center justify-center bg-[radial-gradient(circle_at_top,#fff7ed_0%,#ffffff_70%)] p-5 sm:h-[250px]">
