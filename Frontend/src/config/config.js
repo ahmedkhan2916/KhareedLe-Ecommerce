@@ -2,4 +2,6 @@ const dev = false //switch to false for production
 
 
 export const BASE_URL = dev
-  ? 'http://localhost:1000':'https://khareedle-ecommerce.onrender.com'
+  ? 'http://localhost:1000':"https://api.grandeempresa.com"
+  
+  // 'https://khareedle-ecommerce.onrender.com'
